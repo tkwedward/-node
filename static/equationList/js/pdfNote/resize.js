@@ -178,7 +178,6 @@ bookmarkContainer.saveBookmark = function(){
 }
 
 bookmarkContainer.loadBookmark = function(data){
-    console.log(data);
     data.forEach(p=>{
         console.log(p);
         bookmarkPanel.append(createBookmark(p))

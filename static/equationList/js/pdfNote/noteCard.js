@@ -138,7 +138,6 @@ function createSummaryContainer(){
     let latexMotherCell = latexCellComponents[0]
     let latexChildCell = latexCellComponents[1]
     let compileButton = latexCellComponents[2]
-    console.log(latexMotherCell, latexChildCell, compileButton);
     summaryCell.append(latexMotherCell, latexChildCell, compileButton)
 
     // controller
@@ -149,7 +148,6 @@ function createSummaryContainer(){
     addNewSummaryCellButton.innerHTML = "addNewSummaryCell"
     addNewSummaryCellButton.addEventListener("click", function (){
         let newSummaryCellContainer = createSummaryContainer()
-        console.log(event.target.parentNode.parentNode.parentNode)
         summaryContainer.insertBefore(newSummaryCellContainer, summaryCellContainer)
         summaryContainer.insertBefore(summaryCellContainer, newSummaryCellContainer)
 

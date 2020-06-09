@@ -9,7 +9,7 @@ class masterController{
 master = new masterController("fast")
 
 
-let masterWindow = document.querySelector(".noteContainer")
-k = new CellManager(0, masterWindow)
-k.createNewCell()
-console.log(k)
+// let masterWindow = document.querySelector(".noteContainer")
+// k = new CellManager(0, masterWindow)
+// k.createNewCell()
+// console.log(k)

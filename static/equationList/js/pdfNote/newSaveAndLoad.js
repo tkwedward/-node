@@ -122,7 +122,7 @@ resolve('foo');
 });
 
 promise1.then(function(value) {
-console.log(value);
+
 // expected output: "foo"
 });
 

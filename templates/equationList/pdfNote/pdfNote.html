@@ -85,23 +85,24 @@
             </div><!-- functionButton -->
         </div>
 
+
         <div id="pageWrapper">
 
-            <div class="left noteContainer">
+            <!-- <div class="left noteContainer">
                 <div class="noteInfo">
                     <h1 class="noteTitle" contenteditable="true">{{title}}</h1>
                     <h2 class="noteChapter" contenteditable="true">{{chapter}}</h2>
                     <h2 class="book" contenteditable="true">{{book}}</h2>
                 </div>
 
-            </div>
+            </div> -->
 
             <!-- <div class="noteContainer"></div> -->
 
-            <div class="pdfContainer">
+            <!-- <div class="pdfContainer"> -->
 
                 <!-- <div class="pdfImageContainer pdfContainerDirectChild"></div> -->
-                <div class="summaryContainer pdfContainerDirectChild">
+                <!-- <div class="summaryContainer pdfContainerDirectChild">
                     <div class="summaryDIV" contenteditable="">summary column</div>
                 </div>
 
@@ -128,11 +129,11 @@
                     <button class="next">next</button>
                     <button class="correct">correct</button>
                     <button class="wrong">wrong</button>
-                </div>
+                </div> -->
 
-                <div class="flashCardContainer pdfContainerDirectChild">
+                <!-- <div class="flashCardContainer pdfContainerDirectChild"> -->
                     <!-- Searched Result -->
-                    <div class="searchResultArea"></div>
+                    <!-- <div class="searchResultArea"></div>
 
                     Flash Card
                     <div class="flashCardControlPannel">
@@ -145,10 +146,11 @@
 
                         </span>
                     </div>
-                    <div class="flashCardArea"></div>
-                </div> <!-- flashcard container -->
+                    <div class="flashCardArea"></div> -->
+                <!-- </div>  -->
+                <!-- flashcard container -->
 
-                <div id="pdfIframe" class="pdfContainerDirectChild">
+                <!-- <div id="pdfIframe" class="pdfContainerDirectChild">
                     <div class="pdfContent">
                         <div class="controlPannel">
                             <input id="pdf-page" type="text"></input>
@@ -161,11 +163,13 @@
                             <div class="head monitorLine"></div>
                             <div class="tail monitorLine"></div>
                         </div>
-                    </div>
-                </div><!-- iframe container -->
-            </div> <!-- pdfContainer -->
+                    </div> -->
+                <!-- </div> -->
+                <!-- iframe container -->
+            <!-- </div>  -->
+            <!-- pdfContainer -->
 
-            <div class="bookmarkContainer">
+            <!-- <div class="bookmarkContainer">
                 <div class="bookmarkInput">
                     <input type="text" class="bookmarkTitleInput">
                     <button class="addBookmarkButton"> add Bookamrk </button>
@@ -178,9 +182,11 @@
                 </div>
                 <div class="bookmarkPanel">
 
-                </div> <!-- bookmarkPanel -->
+                </div> -->
+                 <!-- bookmarkPanel -->
 
-            </div><!-- bookmarkContainer -->
+            <!-- </div> -->
+            <!-- bookmarkContainer -->
 <!--
             <iframe id="pdfIframe" src="/static/equationList/books/Introduction_to_Electrodynamics/Introduction to Electrodynamics 4th Edition.pdf" style="border: none;"></iframe> -->
 
@@ -217,17 +223,17 @@
         // };
     </script>
 
-    <script src="{% static 'equationList/js/pdfNote/initializeFunctions.js' %}" charset="utf-8"></script>
+    <!-- <script src="{% static 'equationList/js/pdfNote/initializeFunctions.js' %}" charset="utf-8"></script>
     <script src="{% static 'equationList/js/pdfNote/globalVariables.js' %}" charset="utf-8"></script>
 
     <script src="{% static 'equationList/js/pdfNote/pasteEvent.js' %}" charset="utf-8"></script>
     <script src="{% static 'equationList/js/pdfNote/cellNew.js' %}" charset="utf-8"></script>
-    <script src="{% static 'equationList/js/pdfNote/resize.js' %}" charset="utf-8"></script>
+    <script src="{% static 'equationList/js/pdfNote/resize.js' %}" charset="utf-8"></script> -->
     <!-- <script src="{% static 'equationList/js/pdfNote/cell.js' %}" charset="utf-8"></script> -->
-    <script src="{% static 'equationList/js/pdfNote/cellsControl.js' %}" charset="utf-8"></script>
+    <!-- <script src="{% static 'equationList/js/pdfNote/cellsControl.js' %}" charset="utf-8"></script>
     <script src="{% static 'equationList/js/pdfNote/keyboardEvent.js' %}" charset="utf-8"></script>
     <script src="{% static 'equationList/js/pdfNote/newSaveAndLoad.js' %}" charset="utf-8"></script>
-    <script src="{% static 'equationList/js/pdfNote/noteCard.js' %}" charset="utf-8"></script>
+    <script src="{% static 'equationList/js/pdfNote/noteCard.js' %}" charset="utf-8"></script> -->
 
 
 
@@ -235,6 +241,7 @@
     <!-- <script src="{ static 'equationList/js/pdfNote/pdf.js' %}" charset="utf-8"></script> -->
     <script src="{% static 'equationList/js/pdfNote/pdf.worker.js' %}" charset="utf-8"></script>
     <!-- <script src="{% static 'equationList/js/pdfNote/controlPDF.js' }" charset="utf-8"></script> -->
+    <script src="{% static 'equationList/js/pdfNote/windowManager.js' %}" charset="utf-8"></script>
     <script src="{% static 'equationList/js/pdfNote/cellManager.js' %}" charset="utf-8"></script>
     <script src="{% static 'equationList/js/pdfNote/master.js' %}" charset="utf-8"></script>
 

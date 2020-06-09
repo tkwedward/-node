@@ -322,7 +322,6 @@ function createAnnotation(annotationType, addAnnotationID=true){
     // latexMotherCell, latexChildCell
     if (annotationType=="textAnnotation"){
         annotationContent = textAnnotationContent(annotationContent)
-        console.log(annotationContent);
         annotation.append(annotationContent)
     } else if (annotationType=="imageAnnotation"){
 
@@ -433,7 +432,6 @@ function createAnnotation(annotationType, addAnnotationID=true){
 
             questionButton.innerHTML = data["questionStatus"]
             questionButton.questionCreateDate = data["questionCreateDate"]
-            console.log(questionButton.questionCreateDate);
             if (data["questionStatus"]=="solved"){
                 annotationContent.style.border = "yellow 14px dashed"
 
@@ -589,7 +587,6 @@ function createLatexCell(loadData){
 function textAnnotationContent(annotationContent, loadData={}){
     // to create textAnnotationContenet if there is loadData.
     let latexCellComponents = createLatexCell(loadData)
-    console.log(latexCellComponents);
     let latexMotherCell = latexCellComponents[0]
     let latexChildCell = latexCellComponents[1]
     let compileButton = latexCellComponents[2]
