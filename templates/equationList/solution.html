@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <link rel="stylesheet" href="{% static 'equationList/css/solutionPage/solutionPage.css' %}">
+    </head>
+
+    <body>
+        <div class="contentWrapper">
+            <div class="TOCList"></div>
+            <div class="solutionContainer"></div>
+        </div>
+
+    </body>
+</html>
+
+<script src="{% static 'equationList/js/pdfNote/initializeFunctions.js' %}"></script>
+<script type="text/javascript">
+    let data = Object.entries(JSON.parse("{{jsonFile| escapejs }}"))
+    console.log(data);
+    let TOCListDIV = document.querySelector(".TOCList")
+    let solutionContainer = document.querySelector(".solutionContainer")
+
+    data.forEach(p=>{
+        let chapterTitle = p[0]
+        let chapterSolutionData = p[1]["solutions"]
+
+        // create TOC List
+        let TOCTitel = document.createElement("div")
+        let TOCLink = document.createElement("a")
+        TOCLink.innerHTML = chapterTitle
+        TOCLink.__chapterData__ = p
+
+        TOCLink.addEventListener("click", function(){
+            extractDataFromChapter(p, chapterTitle)
+        })
+
+        TOCTitel.append(TOCLink)
+        TOCListDIV.append(TOCTitel)
+        // console.log(chapterSolutionData);
+    })
+
+    console.log(data);
+
+
+
+
+    function extractDataFromChapter(chapter, title){
+        console.log(chapter);
+        let solutionContainer = document.querySelector(".solutionContainer")
+        solutionContainer.innerHTML = ""
+        let __chapterTitle = document.createElement("div")
+        __chapterTitle.innerHTML = title
+        solutionContainer.append(__chapterTitle)
+
+        let solutionList = Object.entries(chapter)
+        let chapterTitle = solutionList[1][0]
+        let solutions = solutionList[1][1]["solutions"]
+
+        console.log(solutionContainer);
+        solutions.forEach(problem=>{
+            console.log(problem);
+            let problemNumber = problem["problemNumber"]
+            let problemSolution = problem["html"]
+            let problemTitle = document.createElement("h2")
+            problemTitle.innerHTML = "Problem " + problemNumber
+            solutionContainer.append(problemTitle)
+            console.log(problemSolution);
+
+            let _problem = document.createElement("div")
+            _problem.style.padding = "50px"
+            _problem.style.background = "AliceBlue"
+            _problem.style.marginBottom = "100px"
+            problemSolution.forEach(r=>{
+                let section = document.createElement("section")
+
+                section.innerHTML = r
+                _problem.append(section)
+            })
+            solutionContainer.append(_problem)
+        })
+        // solutionContainer.append(chapterContainer, hr)
+
+    }
+    extractDataFromChapter(data[1], "chapter 1")
+    //
+
+
+
+
+
+</script>

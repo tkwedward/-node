@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAEA,eAAe;EACX,OAAO,EAAE,IAAI;EACb,qBAAqB,EAAE,OAAO;EAI9B,kCAAkB;IACd,MAAM,EAAE,IAAI;IACZ,UAAU,EAAE,MAAM",
+"sources": ["solutionPage.scss"],
+"names": [],
+"file": "solutionPage.css"
+}

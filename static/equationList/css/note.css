@@ -1,0 +1,60 @@
+body {
+  background: Beige; }
+  body .conceptCellAnnotation {
+    font-size: 20px; }
+  body .contentContainer {
+    position: absolute;
+    left: 150px;
+    display: grid;
+    width: 90%; }
+    body .contentContainer .cell {
+      margin: 4vh 5vw;
+      width: 90%;
+      background: Ivory;
+      border-left: 10px orange solid; }
+      body .contentContainer .cell .fileNameInput {
+        display: block;
+        width: 20vw; }
+      body .contentContainer .cell img {
+        width: 70vw; }
+      body .contentContainer .cell .uploadImage {
+        width: 80%; }
+      body .contentContainer .cell .annotation p, body .contentContainer .cell .annotation span {
+        font-size: 15px; }
+      body .contentContainer .cell .annotatoin[data-level="none"] {
+        display: none; }
+    body .contentContainer .cell.selected {
+      border: 5px green solid; }
+    body .contentContainer .conceptCell {
+      width: 75vw;
+      min-height: 100px; }
+      body .contentContainer .conceptCell .keyTerm {
+        display: block;
+        margin: 10px 20px; }
+      body .contentContainer .conceptCell .conceptCellAnnotation {
+        display: block;
+        margin: 10px 20px;
+        background: tan;
+        min-height: 40px; }
+  body .orderBar {
+    background: GhostWhite;
+    width: 12vw;
+    position: fixed;
+    top: 50vh;
+    left: 1vw; }
+    body .orderBar .CounterContainer {
+      font-size: 20px;
+      padding: 20px;
+      height: 45px;
+      cursor: pointer; }
+    body .orderBar .selected {
+      background: yellow; }
+  body .functionButton {
+    position: fixed;
+    top: 20vh;
+    left: 2vw; }
+    body .functionButton button {
+      display: block;
+      margin-top: 10px; }
+
+/*# sourceMappingURL=note.css.map */

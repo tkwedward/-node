@@ -1,0 +1,242 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>{{title}}/{{chapter}}</title>
+
+        <script>
+        window.MathJax = {
+            loader: {load: ['[tex]/physics']},
+            tex: {packages: {'[+]': ['physics']}},
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            svg:{
+                scale: 15
+            },
+            options:{
+                skipHtmlTags: [
+                    'script', 'noscript', 'style', 'textarea', 'pre', 'code', 'annotation', 'annotation-xml'
+                ],
+                processHtmlClass: 'selectedLatexChildCell',
+                // ignoreHtmlClass: 'tex2jax_ignore'
+            }
+
+        }// Mathjax
+        </script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/styles/atom-one-dark.min.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+
+        <link rel="stylesheet" href="{% static 'equationList/css/pdfNote/pdfNote.css' %}">
+        <!-- <script src="https://polyfill.io/v3/polyfill.js?features=es6"></script> -->
+
+        <style>
+            .MathJax{
+                font-size: 20px!important;
+
+            }
+        </style>
+
+    </head>
+    <body>
+        \(\require{physics}\)
+        \(\usepackage{gensymb}\)
+
+        <div class="mode">Command</div>
+        <!-- <div class="screenSwitch">hide</div> -->
+        <div class="counterContainer">
+
+            <div class="functionButton">
+
+                <div class="functionFirstLine">
+                    <button class="newPageButton">create New Note</button>
+                    <button class="saveButton">save Butotn</button>
+                    <button class="sizeSwitch"> switch size </button>
+                    <button class="flashCardOpen">flashCardOpen</button>
+                    <button class="saveCurrentPosition">savePosition</button>
+                    <button class="goToPosition">goToPosition</button>
+                    <button class="leftSide focus">L</button>
+                    <button class="rightSide">R</button>
+                    <button class="position1">1</button>
+                    <button class="position2">2</button>
+                    <button class="position3">3</button>
+                    <button class="position4">4</button>
+
+                    <span class="annotationID">1</span>
+                    <span class="cellID">1</span>
+                </div> <!--functionFirstLine  -->
+
+                <div class="functionSecondLine">
+                    <input type="text" class="searchInput" placeholder="search"></input>
+                    <button class="showQuestionButton">show Questions</button>
+                    <button class="changeFrameButton">showIframe</button>
+                    <button class="greMode">greMode</button>
+
+                    <a href="{% url 'tocPage' %}">to TOC</a>
+                </div><!-- functionSecondLine -->
+
+
+
+
+
+            </div><!-- functionButton -->
+        </div>
+
+        <div id="pageWrapper">
+
+            <div class="left noteContainer">
+                <div class="noteInfo">
+                    <h1 class="noteTitle" contenteditable="true">{{title}}</h1>
+                    <h2 class="noteChapter" contenteditable="true">{{chapter}}</h2>
+                    <h2 class="book" contenteditable="true">{{book}}</h2>
+                </div>
+
+            </div>
+
+            <!-- <div class="noteContainer"></div> -->
+
+            <div class="pdfContainer">
+
+                <!-- <div class="pdfImageContainer pdfContainerDirectChild"></div> -->
+                <div class="summaryContainer pdfContainerDirectChild">
+                    <div class="summaryDIV" contenteditable="">summary column</div>
+                </div>
+
+                <div class="noteCardContainer pdfContainerDirectChild">
+                    <div class="sectionColumn"></div>
+                </div>
+
+
+
+
+
+                <div class="right copyNoteContainer pdfContainerDirectChild"></div>
+
+                <div class="questionContainer pdfContainerDirectChild" ></div>
+
+                <div class="greContainer pdfContainerDirectChild" >
+                    <div class="vocabArea"></div>
+                    <div class="hintsArea"></div>
+                    <div class="answerArea"></div>
+                    <div class="cellIDArea"></div>
+                    <div class="cellCorrectArea"></div>
+                    <div class="cellWrongArea"></div>
+
+                    <button class="next">next</button>
+                    <button class="correct">correct</button>
+                    <button class="wrong">wrong</button>
+                </div>
+
+                <div class="flashCardContainer pdfContainerDirectChild">
+                    <!-- Searched Result -->
+                    <div class="searchResultArea"></div>
+
+                    Flash Card
+                    <div class="flashCardControlPannel">
+                        <div class="progessFlashCard"></div>
+                        <button type="button"  class="previousFlashCard">Last</button>
+                        <button type="button"  class="nextFlashCard">Next</button>
+                        <button type="button"  class="goToAnswer">goToAnswer</button>
+
+                        <span class="number">
+
+                        </span>
+                    </div>
+                    <div class="flashCardArea"></div>
+                </div> <!-- flashcard container -->
+
+                <div id="pdfIframe" class="pdfContainerDirectChild">
+                    <div class="pdfContent">
+                        <div class="controlPannel">
+                            <input id="pdf-page" type="text"></input>
+                            /<span id="totalPage"></span>
+                            <input class="scaleInput" type="text"></input>
+                            <button class="pdfBookmark">pdf-bookmark</button>
+                        </div>
+
+                        <div class="canvasContainer">
+                            <div class="head monitorLine"></div>
+                            <div class="tail monitorLine"></div>
+                        </div>
+                    </div>
+                </div><!-- iframe container -->
+            </div> <!-- pdfContainer -->
+
+            <div class="bookmarkContainer">
+                <div class="bookmarkInput">
+                    <input type="text" class="bookmarkTitleInput">
+                    <button class="addBookmarkButton"> add Bookamrk </button>
+                    <button class="bookmarkPanelClose"> < </button>
+                </div>
+                <div class="bookmarkController">
+                    <button class="bookmark_raiseLevel">raise</button>
+                    <button class="bookmark_lowerLevel">lower</button>
+                    <button class="bookmark_delete">delete</button>
+                </div>
+                <div class="bookmarkPanel">
+
+                </div> <!-- bookmarkPanel -->
+
+            </div><!-- bookmarkContainer -->
+<!--
+            <iframe id="pdfIframe" src="/static/equationList/books/Introduction_to_Electrodynamics/Introduction to Electrodynamics 4th Edition.pdf" style="border: none;"></iframe> -->
+
+
+        </div>
+
+    </body>
+    <script type="text/javascript">
+        let csrf_token = "{{ csrf_token }}"
+        let url = "{% url 'processData' %}"
+        let load = "{{load}}"
+        let docTitle = "{{title}}"
+        let docChapter = "{{chapter}}"
+        let LOADACTION = "load state"
+        let staticPath = "{% static 'equationList/books' %}"
+
+
+    </script>
+    <script type="text/x-mathjax-config">
+
+        //
+        // MathJax.Hub.Config({
+        //     font-size: "1.5em",
+        //     tex2jax: {ignoreClass: "latexMotherCell"}
+        //   CommonHTML: { linebreaks: { automatic: true } },
+        //   "HTML-CSS": { linebreaks: { automatic: true } },
+        //          SVG: { linebreaks: { automatic: true } },
+        //          ignoreHtmlClass: 'mathjax_ignore'
+        //          // ignoreClass: "mathjaxTarget"
+        // });
+        // window.MathJax = {
+        //   loader: {load: ['[tex]/physics']},
+        //   tex: {packages: {'[+]': ['physics']}}
+        // };
+    </script>
+
+    <script src="{% static 'equationList/js/pdfNote/initializeFunctions.js' %}" charset="utf-8"></script>
+    <script src="{% static 'equationList/js/pdfNote/globalVariables.js' %}" charset="utf-8"></script>
+
+    <script src="{% static 'equationList/js/pdfNote/pasteEvent.js' %}" charset="utf-8"></script>
+    <script src="{% static 'equationList/js/pdfNote/cellNew.js' %}" charset="utf-8"></script>
+    <script src="{% static 'equationList/js/pdfNote/resize.js' %}" charset="utf-8"></script>
+    <!-- <script src="{% static 'equationList/js/pdfNote/cell.js' %}" charset="utf-8"></script> -->
+    <script src="{% static 'equationList/js/pdfNote/cellsControl.js' %}" charset="utf-8"></script>
+    <script src="{% static 'equationList/js/pdfNote/keyboardEvent.js' %}" charset="utf-8"></script>
+    <script src="{% static 'equationList/js/pdfNote/newSaveAndLoad.js' %}" charset="utf-8"></script>
+    <script src="{% static 'equationList/js/pdfNote/noteCard.js' %}" charset="utf-8"></script>
+
+
+
+    <!-- <script src="{ static 'equationList/js/pdfNote/GRE.js' %}" charset="utf-8"></script> -->
+    <!-- <script src="{ static 'equationList/js/pdfNote/pdf.js' %}" charset="utf-8"></script> -->
+    <script src="{% static 'equationList/js/pdfNote/pdf.worker.js' %}" charset="utf-8"></script>
+    <!-- <script src="{% static 'equationList/js/pdfNote/controlPDF.js' }" charset="utf-8"></script> -->
+    <script src="{% static 'equationList/js/pdfNote/cellManager.js' %}" charset="utf-8"></script>
+    <script src="{% static 'equationList/js/pdfNote/master.js' %}" charset="utf-8"></script>
+
+
+</html>

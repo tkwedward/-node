@@ -1,0 +1,33 @@
+.wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  position: absolute;
+  top: 0px;
+  left: 0px; }
+  .wrapper .rightColumn {
+    background: wheat;
+    height: 100vh;
+    width: 50vw;
+    overflow-y: scroll; }
+    .wrapper .rightColumn .noteTitle {
+      padding: 10px;
+      font-size: 25px; }
+    .wrapper .rightColumn .noteArea {
+      font-size: 25px;
+      padding: 10px; }
+  .wrapper .leftColumn {
+    height: 100vh;
+    width: 50vw;
+    background: navy; }
+    .wrapper .leftColumn .loadDataArea {
+      background: white; }
+    .wrapper .leftColumn .bookmarkArea {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr); }
+      .wrapper .leftColumn .bookmarkArea .bookmark {
+        width: 100px;
+        padding: 10px;
+        margin: 10px;
+        background: pink; }
+
+/*# sourceMappingURL=videoPlayer.css.map */

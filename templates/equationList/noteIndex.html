@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <link rel="stylesheet" href="{% static 'equationList/css/note.css' %}">
+    </head>
+    <body>
+        <div id="wrapper">
+            <div class="noteInfo">
+
+            </div>
+
+            <div class="contentContainer">
+            </div>
+            <div class="functionButton">
+                <button class="createNewNote">New Note</button>
+                <button class="postData">postData</button>
+                <button class="addImportantButton">add important button</button>
+                <button class="addAnnotationButton">add Annotation button</button>
+                <button class="showImportantCellOnlhy">show important only</button>
+                <button class="showAllCells">show all cells </button>
+                <input type="text" class="equationFilter"/>
+            </div>
+            <div class="orderBar"></div> <!-- orderBar -->
+        </div><!-- wrapper -->
+    </body>
+</html>
+
+<script type="text/javascript">
+    let csrf_token = "{{ csrf_token }}"
+    let url = "{% url 'processData' %}"
+    let mode;
+    let load = "{{load}}"
+    let docTitle = "{{title}}"
+    let docChapter = "{{chapter}}"
+    let LOADACTION = "load state"
+
+</script>
+
+
+
+<script src="{% static 'equationList/js/initialFunctions.js' %}" charset="utf-8"></script>
+<script src="{% static 'equationList/js/pasetEvent.js' %}" charset="utf-8"></script>
+<script src="{% static 'equationList/js/loadAndSaveFunctions.js' %}" charset="utf-8"></script>
+<script src="{% static 'equationList/js/saveNote.js' %}" charset="utf-8"></script>
+<script src="{% static 'equationList/js/note.js' %}" charset="utf-8"></script>
+
+<script src="{% static 'equationList/js/cellsControl.js' %}" charset="utf-8"></script>

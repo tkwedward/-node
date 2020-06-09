@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAAA,SAAS;EACL,KAAK,EAAE,GAAG;EACV,MAAM,EAAE,SAAS;EACjB,MAAM,EAAE,KAAK;EACb,gBAAgB,EAAE,KAAK",
+"sources": ["pdfEditor.scss"],
+"names": [],
+"file": "pdfEditor.css"
+}

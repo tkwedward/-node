@@ -1,0 +1,101 @@
+body {
+
+    .conceptCellAnnotation {
+        font-size: 20px;
+    }
+    background: Beige;
+
+    .contentContainer{
+        position: absolute;
+        left: 150px;
+        display: grid;
+        width: 90%;
+        .cell{
+            margin: 4vh 5vw;
+            width: 90%;
+            background: Ivory;
+            border-left: 10px orange solid;
+
+            .fileNameInput {
+                display: block;
+                width: 20vw;
+            }
+            img{
+                width: 70vw;
+            }
+
+            .uploadImage{
+                width: 80%;
+            }
+
+            .annotation{
+                p, span {
+                    font-size: 15px;
+                }
+
+
+
+            }
+
+            .annotatoin[data-level="none"]{
+                display: none;
+            }
+
+        }
+        .cell.selected{
+            border: 5px green solid;
+        }
+
+        .conceptCell{
+            width: 75vw;
+            min-height: 100px;
+
+            .keyTerm{
+                display: block;
+                margin: 10px 20px;
+            }
+
+            .conceptCellAnnotation{
+                display: block;
+                margin: 10px 20px;
+                background: tan;
+                min-height: 40px;
+            }
+        }
+    }// contentContainer
+
+    .orderBar {
+        background: GhostWhite;
+        width: 12vw;
+        position: fixed;
+        top: 50vh;
+        left: 1vw;
+        .CounterContainer{
+            font-size: 20px;
+            padding: 20px;
+            height: 45px;
+            cursor: pointer;
+
+
+        }
+
+        .selected {
+            background: yellow;
+        }
+
+        .counter {
+            // pointer-events: none;
+        }
+
+    }
+
+    .functionButton{
+        position: fixed;
+        top: 20vh;
+        left: 2vw;
+        button {
+            display: block;
+            margin-top: 10px;
+        }
+    }
+}

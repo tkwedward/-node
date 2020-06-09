@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+
+        <link rel="stylesheet" href="{% static 'videoPlayer/css/videoPlayer.css' %}">
+    </head>
+    <body>
+        <div class="wrapper">
+            <div class="leftColumn">
+                <input class="youtubeLink" vtype="text"></input>
+                <button class="loadYoutubeButton"> load </button>
+                <button class="newNoteButton">new Note</button>
+                <div id="player"></div>
+
+
+
+                <div class="controlPanel">
+                    <button class="playOrStop">Play/Pause</button>
+                </div>
+
+                <div class="loadDataArea"></div>
+
+                <div class="bookmarkArea"></div>
+
+
+            </div> <!-- leftColumn -->
+
+            <div class="rightColumn">
+
+                <div class="noteTitle" contenteditable="true">Title</div>
+                <div class="noteArea" contenteditable="true">NoteArea</div>
+
+            </div>
+
+        </div>
+
+    </body>
+    <script>
+        let jsonFile = "{{json_files}}"
+        let csrf_token = "{{ csrf_token }}"
+        let url = "{% url 'processVideoSave' %}"
+
+
+
+    </script>
+    <script src="{% static 'videoPlayer/js/saveAndLoad.js' %}"></script>
+    <script src="{% static 'videoPlayer/js/initializeFunctions.js' %}" charset="utf-8"></script>
+
+    <script src="{% static 'videoPlayer/js/videoPlayerMain.js' %}"></script>
+</html>

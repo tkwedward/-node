@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Record Page</title>
+        <link rel="stylesheet" href="{% static 'equationList/css/record/record.css' %}">
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+    </head>
+    <body>
+        <div class="tabs">
+            <a class="record_tabs"> Record </a>
+            <a class="toDoList_tabs"> to DO List </a>
+        </div>
+        <div class="contentWrapper">
+            <div class="inputContainers">
+                <div class="recordInputContainer _inputContainer hidden">
+                    <textarea class="recordInput" name="recordInput" rows="20" cols="60"></textarea>
+                    <textarea class="diaryInput" name="diaryInput" rows="15" cols="60"></textarea>
+                </div>
+
+                <div class="toDoListContainer _inputContainer ">
+                    <div>To Do List</div>
+                    <textarea class="toDoList" name="toDoList" rows="15" cols="60"></textarea>
+                    <div class="toDoListOutput"></div>
+                </div>
+
+                <!-- <div class="recordInputContainer">
+                    <textarea class="recordInput" name="recordInput" rows="15" cols="60"></textarea>
+                    <textarea class="diaryInput" name="recordInput" rows="15" cols="60"></textarea>
+                </div> -->
+
+
+            </div>
+
+            <div class="recordResult">
+                <button class="saveButton">save information</button>
+                <div class="timeResult"></div>
+                <div class="moneyResult"></div>
+            </div>
+            <div class="pieChart">
+                <svg id="my_dataviz"></svg>
+            </div>
+
+        </div>
+
+
+
+    </body>
+    <script type="text/javascript">
+        let csrf_token = "{{ csrf_token }}"
+        let url = "{% url 'processData' %}"
+    </script>
+    <script src="{% static 'equationList/js/record/record.js' %}" charset="utf-8"></script>
+    <script src="{% static 'equationList/js/record/toDoList.js' %}" charset="utf-8"></script>
+</html>

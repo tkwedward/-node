@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <!-- <link rel="stylesheet" href="{% static 'equationList/css/pdfEditor/pdfEditor.css' %"> -->
+    </head>
+
+    <style>
+        .dropzone {
+          border: 5px solid blue;
+          width:  200px;
+          height: 100px;
+        }
+
+        .body_wrapper{
+            display: grid;
+            grid-template-columns: 1fr 5fr;
+        }
+
+    </style>
+    <body>
+        <div class="body_wrapper">
+            <div class="sideBar">
+                All notes
+                <div class="sideBar_panel">
+                    <input class="newItem" type="text"></input><button class="newItemButton"> add new </button><br>
+                    <input class="search" type="text"></input>
+                </div>
+                <div class="sideBar_body"></div>
+            </div>
+            <div class="main_part">
+                <div class="wordListTitle"></div>
+                <div class="navBar">
+                    <span class="modeAll"> All <span>
+                </div>
+                <div class="wordNumber"></div>
+                <div class="word"></div>
+                (ID: <span class="wordId"></span>, view count: <span class="wordViewNumber"></span>, left: <span class="wordLeft"></span>)
+                <div class="controlPanel">
+                    <button class="addToVocabListButton"> addToVocabList </button>
+                    <button class="next"> next </button>
+                    <button class="showAnswer"> showAnswer </button>
+                    <button class="delete"> delete </button>
+
+                    <button class="mark"> mark </button>
+                    <button class="mnemonics"> Add Mnemonics </button>
+                    <button class="example"> Add Example </button>
+
+                </div>
+
+
+                <div class="wordMeaning"></div>
+
+                <div class="newWordZone">
+                    <input class="newWord"  placeholder="newWord"></input>
+                    <textarea class="newWordMeaning" contenteditable></textarea>
+                    <br>
+                    <textarea class="newWordExampleSentence" contenteditable></textarea>
+                    <div class="newWordMnemonic" contenteditable></div>
+                    <button type="button" class="addNewWord">add New Word</button>
+
+                </div>
+
+                <div class="vocabListPanel">
+
+                </div>
+
+            </div><!-- main part -->
+        </div>
+    </body>
+
+
+    <style>
+        .word {
+            font-size: 30px;
+        }
+
+
+
+        .wordMeaning {
+            margin-top: 20px;
+        }
+
+        .newWordZone{
+            width: 500px;
+
+        }
+
+        .newWord{
+            width: 100px;
+            margin: 10px 0;
+        }
+        .newWordMeaning{
+            width: 300px;
+            height: 40px;
+            display: block;
+
+        }
+        .newWordExampleSentence{
+            width: 300px;
+            height: 40px;
+
+        }
+        .newWordMnemonic{
+            width: 100px;
+            margin-top: 10px;
+
+        }
+    </style>
+
+    <script>
+        let link = "{% url 'generalQuizProcessData' %}"
+        let csrf_token = "{{csrf_token}}"
+        let tocContent = {{jsonFile|safe}}["all"]
+        let sideBarBody = document.querySelector(".sideBar_body")
+        console.log(tocContent)
+
+        function createRequestJson(target, title, jsonData){
+            let requestJson = {
+                "target": target,
+                "title": title,
+                "jsonData": jsonData
+            }
+
+            return requestJson
+        }
+
+        function ajaxSendJson(data, callback,url=link){
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    if (callback) {
+                        callback(JSON.parse(this.response))
+                    }
+                }// if xhr request success
+            }// callback function after request success
+
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("X-CSRFToken", csrf_token);
+            xhr.send(JSON.stringify(data));
+            console.log("successfully updated")
+        }// ajaxSendJson
+
+
+    </script>
+    <script src="{% static 'quizlet/js/wordList.js' %}" charset="utf-8"></script>
+    <script src="{% static 'quizlet/js/generalizedQuiz.js' %}" charset="utf-8"></script>
+    <script src="{% static 'quizlet/js/main_generalizedQuiz.js' %}" charset="utf-8"></script>
+
+</html>

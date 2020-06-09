@@ -1,0 +1,194 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>{{title}}/{{chapter}}</title>
+
+        <script>
+        window.MathJax = {
+            loader: {load: ['[tex]/physics']},
+            tex: {packages: {'[+]': ['physics']}},
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            options:{
+                skipHtmlTags: [
+                    'script', 'noscript', 'style', 'textarea', 'pre', 'code', 'annotation', 'annotation-xml'
+                ],
+                processHtmlClass: 'selectedLatexChildCell',
+                // ignoreHtmlClass: 'tex2jax_ignore'
+            }
+
+        }// Mathjax
+        </script>
+        <link rel="stylesheet" href="{% static 'equationList/css/pdfNote/pdfNote.css' %}">
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+        </script>
+
+
+    </head>
+    <body>
+        \(\require{physics}\)
+
+        <div class="mode">Command</div>
+        <!-- <div class="screenSwitch">hide</div> -->
+        <div class="counterContainer">
+
+            <!-- <div class="counter equationCounter selected">Eq: <span  class="equationCount" contenteditable="true">1</span></div>
+            <div class="counter exampleCounter" data-text="Example">Ex: <span class="exampleCount"  contenteditable="true">1</span></div>
+            <div class="counter solutionCounter" data-text="Solution">Sol: <span class="solutionCount"  contenteditable="true">1</span></div>
+            <div class="counter figureCounter" data-text="Fig">Fig: <span class="figureCount"  contenteditable="true">1</span></div>
+            <div class="counter tableCounter" data-text="Table">Tb: <span class="tableCount"  contenteditable="true">1</span></div>
+            <div class="counter theoremCounter" data-text="Theorem">Thm: <span class="theoremCount"  contenteditable="true">1</span></div>
+            <div class="counter proofCounter">Pf: <span class="proofCount"  contenteditable="true">1</span></div>
+
+            <input type="file" accept="image" class="navUploadImageButton" title=" "></input> -->
+
+            <div class="functionButton">
+
+                <div class="functionFirstLine">
+                    <button class="newPageButton">create New Note</button>
+                    <input type="text" class="pdfImageFileName" label="fileName" placeholder="fileName"></input>
+                    <input type="text" class="pdfImageFileNameNumber" label="number" placeholder="page"></input>
+
+                    <input class="pdfImageSubmit" type="submit"></input>
+                    <button class="rotateImage">rotate</button>
+                    <!-- <input type="number" class="resizeWidth" label="number" placeholder="50"></input> -->
+
+                    <input type="text" class="pdfFileNameInput" placeholder="pdfName"></input>
+                    <input type="submit" class="pdfFileNameSubmit"></input>
+                    <span class="annotationID">1</span>
+                    <span class="cellID">1</span>
+                </div> <!--functionFirstLine  -->
+
+                <div class="functionSecondLine">
+                    {{chapter}}
+                    <input type="text" class="searchInput" placeholder="search"></input>
+                    <!-- <select class="pdfSelect" name="pdfSelect">
+                        <option value="audi">Audi</option>
+                    </select> -->
+                    <button class="resizeWidth">pdfView</button>
+                    <button class="showQuestionButton">show Questions</button>
+                    <button class="changeFrameButton">showIframe</button>
+                    <a href="{% url 'tocPage' %}">to TOC</a>
+                    <input class="truePdfNumber" type="text"> </input>
+
+                    <div class="pdfTOC"></div>
+                </div><!-- functionSecondLine -->
+
+
+
+
+
+            </div><!-- functionButton -->
+        </div>
+
+        <div id="pageWrapper">
+
+            <div class="noteContainer">
+                <div class="noteInfo">
+                    <h1 class="noteTitle" contenteditable="true">{{title}}</h1>
+                    <h2 class="noteChapter" contenteditable="true">{{chapter}}</h2>
+                    <h2 class="book" contenteditable="true">{{book}}</h2>
+                </div>
+
+                <button class="saveButton">save Butotn</button>
+                {{book}}
+                {% static 'equationList/books' %}/{{title}}/{{book}}
+
+            </div>
+
+            <!-- <div class="noteContainer"></div> -->
+
+            <div class="pdfContainer">
+
+                <div class="pdfImageContainer"></div>
+
+                <div id="pdfIframe">
+
+                    <div class="pdfContent">
+                        <div class="controlPannel">
+                            <input id="pdf-page" type="text"></input>
+                            /<span id="totalPage"></span>
+
+                            <input class="scaleInput" type="text"></input>
+                            <button class="lock">lock</button>
+
+                        </div>
+
+                        <div class="canvasContainer">
+                            <div class="head monitorLine"></div>
+
+                            <div class="tail monitorLine"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="noteCardContainer">
+                    <div class="sectionColumn"></div>
+                </div>
+
+                <div class="copyNoteContainer"></div>
+            </div>
+
+
+<!--
+            <iframe id="pdfIframe" src="/static/equationList/books/Introduction_to_Electrodynamics/Introduction to Electrodynamics 4th Edition.pdf" style="border: none;"></iframe> -->
+
+
+        </div>
+
+    </body>
+    <script type="text/javascript">
+        let pdfPath = "{% static 'equationList/books' %}/{{title}}/{{book}}"
+        let csrf_token = "{{ csrf_token }}"
+        let url = "{% url 'processData' %}"
+        let load = "{{load}}"
+        let docTitle = "{{title}}"
+        let docChapter = "{{chapter}}"
+        let LOADACTION = "load state"
+        let staticPath = "{% static 'equationList/books' %}"
+
+
+    </script>
+    <script type="text/x-mathjax-config">
+
+        //
+        // MathJax.Hub.Config({
+        //     font-size: "1.5em",
+        //     tex2jax: {ignoreClass: "latexMotherCell"}
+        //   CommonHTML: { linebreaks: { automatic: true } },
+        //   "HTML-CSS": { linebreaks: { automatic: true } },
+        //          SVG: { linebreaks: { automatic: true } },
+        //          ignoreHtmlClass: 'mathjax_ignore'
+        //          // ignoreClass: "mathjaxTarget"
+        // });
+        // window.MathJax = {
+        //   loader: {load: ['[tex]/physics']},
+        //   tex: {packages: {'[+]': ['physics']}}
+        // };
+    </script>
+
+    <script src="{% static 'equationList/js/pdfNote/initializeFunctions.js' %}" charset="utf-8"></script>
+    <script src="{% static 'equationList/js/pdfNote/globalVariables.js' %}" charset="utf-8"></script>
+
+    <script src="{% static 'equationList/js/pdfNote/pasteEvent.js' %}" charset="utf-8"></script>
+    <script src="{% static 'equationList/js/pdfNote/cellNew.js' %}" charset="utf-8"></script>
+    <!-- <script src="{% static 'equationList/js/pdfNote/cell.js' %}" charset="utf-8"></script> -->
+    <script src="{% static 'equationList/js/pdfNote/cellsControl.js' %}" charset="utf-8"></script>
+    <script src="{% static 'equationList/js/pdfNote/keyboardEvent.js' %}" charset="utf-8"></script>
+    <script src="{% static 'equationList/js/pdfNote/newSaveAndLoad.js' %}" charset="utf-8"></script>
+    <script src="{% static 'equationList/js/pdfNote/noteCard.js' %}" charset="utf-8"></script>
+
+
+    <script src="{% static 'equationList/js/pdfNote/resize.js' %}" charset="utf-8"></script>
+    <script src="{% static 'equationList/js/pdfNote/pdf.js' %}" charset="utf-8"></script>
+    <script src="{% static 'equationList/js/pdfNote/pdf.worker.js' %}" charset="utf-8"></script>
+    <script src="{% static 'equationList/js/pdfNote/controlPDF.js' %}" charset="utf-8"></script>
+
+
+</html>

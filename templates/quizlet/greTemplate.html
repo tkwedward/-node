@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <!-- <link rel="stylesheet" href="{% static 'equationList/css/pdfEditor/pdfEditor.css' %"> -->
+    </head>
+
+    <style>
+        .dropzone {
+          border: 5px solid blue;
+          width:  200px;
+          height: 100px;
+        }
+    </style>
+    <body>
+        <div class="navBar">
+            <span class="modeAll"> All <span>
+        </div>
+        <div class="wordNumber"></div>
+        <div class="word"></div>
+        (ID: <span class="wordId"></span>, view count: <span class="wordViewNumber"></span>, left: <span class="wordLeft"></span>)
+        <div class="controlPanel">
+            <button class="addToVocabListButton"> addToVocabList </button>
+            <button class="next"> next </button>
+            <button class="showAnswer"> showAnswer </button>
+            <button class="delete"> delete </button>
+
+            <button class="mark"> mark </button>
+            <button class="mnemonics"> Add Mnemonics </button>
+            <button class="example"> Add Example </button>
+
+        </div>
+
+
+        <div class="wordMeaning"></div>
+
+        <div class="newWordZone">
+            <input class="newWord"  placeholder="newWord"></div>
+            <textarea class="newWordMeaning" contenteditable></textarea>
+            <br>
+            <textarea class="newWordExampleSentence" contenteditable></textarea>
+            <div class="newWordMnemonic" contenteditable></div>
+            <button type="button" class="addNewWord">add New Word</button>
+
+        </div>
+
+        <div class="vocabListPanel">
+
+        </div>
+
+
+    </body>
+    <script>
+        let link = "{% url 'greProcessData' %}"
+        let csrf_token = "{{csrf_token}}"
+        let wordList = {{jsonFile|safe}}
+        let wordListArray = wordList["termArray"]
+
+
+
+    </script>
+
+    <style>
+        .word {
+            font-size: 30px;
+        }
+
+
+
+        .wordMeaning {
+            margin-top: 20px;
+        }
+
+        .newWordZone{
+            width: 500px;
+
+        }
+
+        .newWord{
+            width: 100px;
+            margin: 10px 0;
+        }
+        .newWordMeaning{
+            width: 300px;
+            height: 40px;
+            display: block;
+
+        }
+        .newWordExampleSentence{
+            width: 300px;
+            height: 40px;
+
+        }
+        .newWordMnemonic{
+            width: 100px;
+            margin-top: 10px;
+
+        }
+    </style>
+    <script src="{% static 'quizlet/js/gre.js' %}" charset="utf-8"></script>
+</html>

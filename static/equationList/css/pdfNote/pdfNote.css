@@ -1,0 +1,376 @@
+body {
+  height: 98vh;
+}
+
+.mode {
+  position: fixed;
+  background: white;
+  left: 95%;
+  top: 95%;
+}
+
+.counterContainer {
+  position: fixed;
+  height: 50px;
+  width: 100vw;
+  top: 0;
+  left: 0;
+  background: SteelBlue;
+  padding: 10px;
+  z-index: 100;
+}
+.counterContainer .counter {
+  display: inline-block;
+  width: 48px;
+  padding: 10px;
+  background: LightBlue;
+  border: 3px solid red;
+  border-radius: 50px;
+}
+.counterContainer .counter span {
+  pointer-events: none;
+}
+.counterContainer .counter.selected {
+  background: yellow;
+}
+.counterContainer .leftSide.focus, .counterContainer .rightSide.focus {
+  background: yellow;
+}
+
+.functionButton {
+  display: inline-block;
+}
+.functionButton .functionSecondLine {
+  position: relative;
+  top: 10px;
+}
+
+#pageWrapper {
+  position: relative;
+  overflow-y: hidden;
+  top: 44px;
+  left: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+#pageWrapper .noteContainer, #pageWrapper .copyNoteContainer {
+  background-color: Olive;
+  height: 92vh;
+  width: 100%;
+  overflow-y: scroll;
+}
+#pageWrapper .noteContainer .noteInfo, #pageWrapper .noteContainer .saveButton, #pageWrapper .copyNoteContainer .noteInfo, #pageWrapper .copyNoteContainer .saveButton {
+  margin: 8px;
+}
+#pageWrapper .noteContainer img, #pageWrapper .copyNoteContainer img {
+  margin: 20px 0px;
+  width: 100%;
+}
+#pageWrapper .noteContainer .cell.sectionTitle h2, #pageWrapper .copyNoteContainer .cell.sectionTitle h2 {
+  text-align: center;
+  font-size: 35px;
+}
+#pageWrapper .noteContainer .cell.sectionTitle button.sectionTitle, #pageWrapper .copyNoteContainer .cell.sectionTitle button.sectionTitle {
+  background: yellow;
+}
+#pageWrapper .noteContainer .cell, #pageWrapper .noteContainer .selectedCell, #pageWrapper .copyNoteContainer .cell, #pageWrapper .copyNoteContainer .selectedCell {
+  width: 95%;
+  margin: 40px auto;
+  background: BurlyWood;
+  padding: 10px;
+}
+#pageWrapper .noteContainer .cell .cellTitle, #pageWrapper .noteContainer .selectedCell .cellTitle, #pageWrapper .copyNoteContainer .cell .cellTitle, #pageWrapper .copyNoteContainer .selectedCell .cellTitle {
+  margin: 10px;
+}
+#pageWrapper .noteContainer .cell .annotation, #pageWrapper .noteContainer .selectedCell .annotation, #pageWrapper .copyNoteContainer .cell .annotation, #pageWrapper .copyNoteContainer .selectedCell .annotation {
+  padding-top: 10px;
+}
+#pageWrapper .noteContainer .cell [data-level=easy], #pageWrapper .noteContainer .selectedCell [data-level=easy], #pageWrapper .copyNoteContainer .cell [data-level=easy], #pageWrapper .copyNoteContainer .selectedCell [data-level=easy] {
+  background: #66ff33;
+}
+#pageWrapper .noteContainer .cell [data-level=medium], #pageWrapper .noteContainer .selectedCell [data-level=medium], #pageWrapper .copyNoteContainer .cell [data-level=medium], #pageWrapper .copyNoteContainer .selectedCell [data-level=medium] {
+  background: #66ccff;
+}
+#pageWrapper .noteContainer .cell [data-level=difficult], #pageWrapper .noteContainer .selectedCell [data-level=difficult], #pageWrapper .copyNoteContainer .cell [data-level=difficult], #pageWrapper .copyNoteContainer .selectedCell [data-level=difficult] {
+  background: #b20039;
+}
+#pageWrapper .noteContainer .cell .annotationControlPanel, #pageWrapper .noteContainer .selectedCell .annotationControlPanel, #pageWrapper .copyNoteContainer .cell .annotationControlPanel, #pageWrapper .copyNoteContainer .selectedCell .annotationControlPanel {
+  margin: 5px 28px;
+}
+#pageWrapper .noteContainer .cell .annotationContent, #pageWrapper .noteContainer .selectedCell .annotationContent, #pageWrapper .copyNoteContainer .cell .annotationContent, #pageWrapper .copyNoteContainer .selectedCell .annotationContent {
+  background-color: wheat;
+  min-height: 10vh;
+  margin: 10px;
+  padding: 8px;
+  width: 90%;
+  font-size: 20px;
+}
+#pageWrapper .noteContainer .cell .annotationContent input, #pageWrapper .noteContainer .selectedCell .annotationContent input, #pageWrapper .copyNoteContainer .cell .annotationContent input, #pageWrapper .copyNoteContainer .selectedCell .annotationContent input {
+  display: block;
+}
+#pageWrapper .noteContainer .cell .annotationContent .useful.addToUseful, #pageWrapper .noteContainer .selectedCell .annotationContent .useful.addToUseful, #pageWrapper .copyNoteContainer .cell .annotationContent .useful.addToUseful, #pageWrapper .copyNoteContainer .selectedCell .annotationContent .useful.addToUseful {
+  background: yellow;
+}
+#pageWrapper .noteContainer .cell .annotationContent .latexChildCell, #pageWrapper .noteContainer .selectedCell .annotationContent .latexChildCell, #pageWrapper .copyNoteContainer .cell .annotationContent .latexChildCell, #pageWrapper .copyNoteContainer .selectedCell .annotationContent .latexChildCell {
+  margin-top: 10px;
+  min-height: 30px;
+}
+#pageWrapper .noteContainer .cell .annotationContent .latexChildCell *, #pageWrapper .noteContainer .selectedCell .annotationContent .latexChildCell *, #pageWrapper .copyNoteContainer .cell .annotationContent .latexChildCell *, #pageWrapper .copyNoteContainer .selectedCell .annotationContent .latexChildCell * {
+  pointer-events: none;
+}
+#pageWrapper .noteContainer .cell .annotation:focus, #pageWrapper .noteContainer .selectedCell .annotation:focus, #pageWrapper .copyNoteContainer .cell .annotation:focus, #pageWrapper .copyNoteContainer .selectedCell .annotation:focus {
+  background-color: white;
+}
+#pageWrapper .noteContainer .selectedCell, #pageWrapper .copyNoteContainer .selectedCell {
+  border: 2px red solid;
+}
+#pageWrapper .cell[titlelevel="-1"] {
+  background: blue;
+}
+#pageWrapper .bookmarkContainer {
+  display: none;
+  width: 25%;
+  height: 90%;
+  position: fixed;
+  top: 75px;
+  left: 25%;
+  background: pink;
+  z-index: 100;
+}
+#pageWrapper .bookmarkContainer .bookmarkPanel {
+  background: gold;
+  width: 20vw;
+  height: 75vh;
+  position: relative;
+  left: 6%;
+  top: 10%;
+  overflow-y: scroll;
+  padding: 15px;
+}
+#pageWrapper .bookmarkContainer .bookmarkPanel .bookmarkTitle {
+  margin-bottom: 10px;
+}
+#pageWrapper .pdfContainer {
+  background-color: RosyBrown;
+  max-height: 92vh;
+  width: 100%;
+  position: relative;
+}
+#pageWrapper .pdfContainer #pdfIframe {
+  top: 5px;
+  left: 0px;
+  height: 91vh;
+  position: absolute;
+  overflow-y: scroll;
+}
+#pageWrapper .pdfContainer #pdfIframe .canvasContainer {
+  width: 50vw;
+  background: grey;
+}
+#pageWrapper .pdfContainer #pdfIframe .head {
+  position: relative;
+  height: 20px;
+}
+#pageWrapper .pdfContainer #pdfIframe .tail {
+  position: relative;
+  height: 20px;
+}
+#pageWrapper .pdfContainer #pdfIframe #pdf-page {
+  margin-left: 10px;
+  width: 30px;
+}
+#pageWrapper .pdfContainer #pdfIframe .scaleInput {
+  width: 30px;
+}
+#pageWrapper .pdfContainer #pdfIframe .pdfContent {
+  min-height: 92vh;
+  width: 50vw;
+}
+#pageWrapper .pdfContainer #pdfIframe .pdfContent .controlPannel {
+  position: fixed;
+  top: 100px;
+  z-index: 1;
+}
+#pageWrapper .pdfContainer #pdfIframe .canvasBottomLine {
+  width: 100%;
+  min-height: 5px;
+  background: red;
+}
+#pageWrapper .pdfContainer #pdfIframe .canvasDIV {
+  width: 100%;
+}
+#pageWrapper .pdfContainer #pdfIframe .canvasDIV canvas {
+  width: 100%;
+  display: block;
+  margin-bottom: 10px;
+}
+#pageWrapper .pdfContainer #pdfIframe .canvasDIV .textLayer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  /* opacity: 0.1; */
+  line-height: 1;
+  /* background: rgba(1, 1, 1, 0.2) */
+}
+#pageWrapper .pdfContainer #pdfIframe .canvasDIV .textLayer > div {
+  color: transparent;
+  position: absolute;
+  white-space: pre;
+  cursor: text;
+  transform-origin: 0% 0%;
+}
+#pageWrapper .pdfContainer .copyNoteContainer {
+  top: 5px;
+  left: 0px;
+  height: 91vh;
+  overflow-y: scroll;
+  z-index: 100;
+  background: CadetBlue;
+  position: absolute;
+  border-left: 10px CadetBlue solid;
+  width: 100%;
+}
+#pageWrapper .pdfContainer .copyNoteContainer img {
+  width: 100%;
+}
+#pageWrapper .pdfContainer .questionContainer {
+  top: 5px;
+  left: 0px;
+  height: 91vh;
+  overflow-y: scroll;
+  z-index: 100;
+  background: Lavender;
+  position: absolute;
+  width: 100%;
+}
+#pageWrapper .pdfContainer .questionContainer .annotationControlPanel {
+  margin: 5px 28px;
+}
+#pageWrapper .pdfContainer .questionContainer .annotationContent {
+  background-color: wheat;
+  min-height: 10vh;
+  margin: 10px auto;
+  padding: 8px;
+  width: 90%;
+  font-size: 20px;
+}
+#pageWrapper .pdfContainer .questionContainer .annotationContent input {
+  display: block;
+}
+#pageWrapper .pdfContainer .questionContainer .annotationContent .useful.addToUseful {
+  background: yellow;
+}
+#pageWrapper .pdfContainer .questionContainer .annotationContent .latexChildCell {
+  margin-top: 10px;
+  min-height: 30px;
+}
+#pageWrapper .pdfContainer .questionContainer .annotationContent .latexChildCell * {
+  pointer-events: none;
+}
+#pageWrapper .pdfContainer .questionContainer .annotation:focus {
+  background-color: white;
+}
+#pageWrapper .pdfContainer .flashCardContainer {
+  top: 5px;
+  left: 0px;
+  height: 91vh;
+  position: absolute;
+  width: 100%;
+  background: Goldenrod;
+}
+#pageWrapper .pdfContainer .greContainer {
+  top: 5px;
+  left: 0px;
+  height: 91vh;
+  position: absolute;
+  width: 100%;
+  background: Aquamarine;
+  margin-top: 5px;
+}
+#pageWrapper .pdfContainer .greContainer img {
+  height: 200px;
+}
+#pageWrapper .pdfContainer .noteCardContainer {
+  top: 5px;
+  left: 0px;
+  position: absolute;
+  height: 91vh;
+  overflow-y: scroll;
+  width: 100%;
+  background: PaleGreen;
+}
+#pageWrapper .pdfContainer .noteCardContainer .sectionLabel {
+  padding: 10px;
+  font-size: 25px;
+  cursor: pointer;
+}
+#pageWrapper .pdfContainer .noteCardContainer .subTitleLabel {
+  display: block;
+  margin-left: 30px;
+  font-size: 20px;
+}
+#pageWrapper .pdfContainer .summaryContainer {
+  top: 5px;
+  left: 0px;
+  width: 100%;
+  position: absolute;
+  height: 91vh;
+  overflow-y: scroll;
+  background: Cornsilk;
+  z-index: 1000;
+}
+#pageWrapper .pdfContainer .summaryContainer img {
+  width: 95%;
+}
+#pageWrapper .pdfContainer .summaryContainer .latexMotherCell {
+  padding: 10px;
+}
+#pageWrapper .pdfContainer .summaryContainer .latexChildCell {
+  font-size: 20px;
+  padding: 10px;
+}
+
+.copyCell, .flashCardArea, .searchResultArea, .questionContainer, .greContainer {
+  width: 95%;
+  margin: 40px auto;
+  padding: 10px;
+}
+.copyCell .cellTitle, .flashCardArea .cellTitle, .searchResultArea .cellTitle, .questionContainer .cellTitle, .greContainer .cellTitle {
+  margin: 10px;
+}
+.copyCell .cell, .flashCardArea .cell, .searchResultArea .cell, .questionContainer .cell, .greContainer .cell {
+  margin-top: 20px;
+  background: BurlyWood;
+}
+.copyCell .annotationControlPanel, .flashCardArea .annotationControlPanel, .searchResultArea .annotationControlPanel, .questionContainer .annotationControlPanel, .greContainer .annotationControlPanel {
+  margin: 5px 28px;
+}
+.copyCell .annotationContent, .flashCardArea .annotationContent, .searchResultArea .annotationContent, .questionContainer .annotationContent, .greContainer .annotationContent {
+  background-color: wheat;
+  min-height: 10vh;
+  margin: 10px auto;
+  padding: 8px;
+  width: 90%;
+  font-size: 20px;
+}
+.copyCell .annotationContent input, .flashCardArea .annotationContent input, .searchResultArea .annotationContent input, .questionContainer .annotationContent input, .greContainer .annotationContent input {
+  display: block;
+}
+.copyCell .annotationContent .useful.addToUseful, .flashCardArea .annotationContent .useful.addToUseful, .searchResultArea .annotationContent .useful.addToUseful, .questionContainer .annotationContent .useful.addToUseful, .greContainer .annotationContent .useful.addToUseful {
+  background: yellow;
+}
+.copyCell .annotationContent .latexChildCell, .flashCardArea .annotationContent .latexChildCell, .searchResultArea .annotationContent .latexChildCell, .questionContainer .annotationContent .latexChildCell, .greContainer .annotationContent .latexChildCell {
+  margin-top: 10px;
+  min-height: 30px;
+}
+.copyCell .annotationContent .latexChildCell *, .flashCardArea .annotationContent .latexChildCell *, .searchResultArea .annotationContent .latexChildCell *, .questionContainer .annotationContent .latexChildCell *, .greContainer .annotationContent .latexChildCell * {
+  pointer-events: none;
+}
+.copyCell .annotation:focus, .flashCardArea .annotation:focus, .searchResultArea .annotation:focus, .questionContainer .annotation:focus, .greContainer .annotation:focus {
+  background-color: white;
+}
+
+/*# sourceMappingURL=pdfNote.css.map */

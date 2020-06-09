@@ -1,0 +1,16 @@
+img{
+    margin: 10px 0px;
+    width: 70vw;
+}
+
+.contentContainer {
+    display: grid;
+    background: Beige;
+    grid-template-columns: 1fr 3fr;
+
+    .content{
+        margin-left: 10px;
+        height: 100vh;
+        overflow-y: scroll;
+    }
+}

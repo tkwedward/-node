@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+    </head>
+    <body>
+        <a href="{{line}}"> current Note </a> {{baseURL}}
+        <div class="TOC"></div>
+
+    </body>
+</html>
+
+<script src="{% static 'equationList/js/pdfNote/checkMobile.js' %}" charset="utf-8"></script>
+
+<script type="text/javascript">
+
+
+    let pattern = new RegExp("\'")
+    let jsonTOC = JSON.parse("{{toc|safe}}".split("\'").join("\""))
+    let baseURL = "{% url 'homepage' %}"
+    console.log(baseURL);
+
+    tocContatiner = document.querySelector(".TOC")
+    let jsonTOCPairs = Object.entries(jsonTOC)
+
+    jsonTOCPairs.forEach(p=>{
+        let title = p[0]
+        let chapterList = p[1]
+        let bookContainer = document.createElement("div")
+        let titleH3 =  document.createElement("h3")
+        titleH3.classList.add("title")
+        titleH3.innerHTML = title
+        bookContainer.append(titleH3)
+
+        // to append each chapter as a link
+        chapterList.forEach(chapter=>{
+            let chapterLink = document.createElement("a")
+            chapterLink.href = `${baseURL}pdfNote/${title}/${chapter}`
+            chapterLink.style.margin = "10px"
+            chapterLink.innerHTML = chapter
+            bookContainer.append(chapterLink)
+        })
+
+        tocContatiner.append(bookContainer)
+
+
+
+
+    })
+    console.log(jsonTOCPairs)
+</script>

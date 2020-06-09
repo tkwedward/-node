@@ -1,0 +1,8 @@
+.contentWrapper {
+  display: grid;
+  grid-template-columns: 1fr 5fr; }
+  .contentWrapper .solutionContainer {
+    height: 98vh;
+    overflow-y: scroll; }
+
+/*# sourceMappingURL=solutionPage.css.map */

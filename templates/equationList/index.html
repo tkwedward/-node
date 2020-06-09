@@ -1,0 +1,120 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <link rel="stylesheet" href="{% static 'equationList/css/style.css' %}">
+
+    </head>
+    <body>
+        <div class="TOC">
+
+        </div>
+        <div class="contentContainer">
+            <div class="TOCBar">
+                {% for mykey,myvalue in chapterJSON.items %}
+                    <h3>{{mykey}}</h3>
+                {% endfor %}
+            </div>
+
+            <div class="content">
+                {% for mykey,myvalue in chapterJSON.items %}
+                    <h1>{{mykey}}</h1>
+                    {% for value in myvalue %}
+                        <img src="{% static 'equationList/books/Townsend/Chapter 2/' %}{{value}}.jpg"/><br>
+
+                    {% endfor %}
+                {% endfor %}
+            </div>
+
+
+            <!-- {/% for x in items %}
+
+
+            {/% endfor %} -->
+        </div>
+    </body>
+</html>
+
+<script type="text/javascript">
+    var books = {{TOC|safe}}
+    var tocDIV = document.querySelector(".TOC")
+
+
+    let bookSelector = document.createElement("select")
+    bookSelector.classList.add("bookSelector")
+
+    var chapterListSelector = document.createElement("select")
+    chapterListSelector.classList.add("chapterListSelector")
+
+
+    books.forEach(p=>{
+        let option = document.createElement("option")
+        option.innerHTML = p["name"]
+        option.value = p["name"]
+        bookSelector.append(option)
+    })
+    tocDIV.append(bookSelector)
+    tocDIV.append(chapterListSelector)
+
+    console.log(books)
+
+    bookSelector.addEventListener("change", function(){
+        chapterListSelector.innerHTML = ""
+        let bookChosen = event.target.value
+        books.forEach(book=>{
+            if (book.name == bookChosen) {
+                book["chapter"].forEach(chapter=>{
+                    let option = document.createElement("option")
+                    console.log(chapter)
+                    option.value = chapter;
+                    option.innerHTML = chapter;
+                    chapterListSelector.append(option)
+                })// for each
+            }// if
+        })// forEach
+        changeContent()
+    }, false)
+
+    chapterListSelector.addEventListener("change",changeContent, false)
+
+    function changeContent(){
+        let bookname = bookSelector.value
+        let chapter = chapterListSelector.value
+        let content = document.querySelector(".content")
+        let tocBar = document.querySelector(".TOCBar")
+
+        let xhr = new XMLHttpRequest()
+        xhr.open("GET", "{% url 'getJSON' %}" +`?bookName=${bookname}&chapter=${chapter}`, true)
+        xhr.onload = function(){
+            let data = Object.entries(JSON.parse(xhr.response))
+            content.innerHTML=""
+            tocBar.innerHTML=""
+            console.log(data);
+            data.forEach(items=>{
+                let titleH3  =  document.createElement("h3")
+                titleH3.innerHTML = items[0]
+                tocBar.append(titleH3)
+
+
+                let titleH1  =  document.createElement("h1")
+                titleH1.innerHTML = items[0]
+                content.append(titleH1)
+
+
+                let imgArray = items[1]
+                console.log(items);
+                imgArray.forEach(imgNum=>{
+                    let img = new Image()
+                    img.src = "{% static 'equationList/books/' %}" + `${bookname}/Chapter ${chapter}/${imgNum}.jpg`
+                    content.append(img)
+                })
+            })
+
+        }
+        xhr.send()
+    } // changeContent
+
+</script>

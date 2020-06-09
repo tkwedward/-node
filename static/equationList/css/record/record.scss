@@ -1,0 +1,47 @@
+.contentWrapper{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+
+    .inputContainers{
+        .hidden{
+            display: none;
+        }
+        .recordInputContainter {
+            textarea{
+                display: block;
+                font-size: 20px;
+                margin: 10px;
+            }
+        }
+
+        .toDoListContainer{
+
+        }
+    }
+}
+
+
+
+
+
+
+.timeResult{
+        font-size: 20px;
+}
+
+svg {
+	width: 300px;
+	height: 300px;
+    background: wheat;
+}
+
+path.slice{
+	stroke-width:2px;
+}
+
+polyline{
+	opacity: .3;
+	stroke: black;
+	stroke-width: 2px;
+	fill: none;
+}

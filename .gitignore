@@ -1,0 +1,6 @@
+static/equationList/books/
+*.jpeg
+*/viewer
+*.json
+*.json2
+static/equationList/viewer/

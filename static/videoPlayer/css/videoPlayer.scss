@@ -1,0 +1,52 @@
+.wrapper{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+
+    .rightColumn{
+        background: wheat;
+        height: 100vh;
+        width: 50vw;
+        overflow-y: scroll;
+        .noteTitle {
+            padding: 10px;
+            font-size: 25px;
+        }
+        .noteArea{
+            font-size: 25px;
+            padding: 10px;
+
+        }
+
+
+
+    }
+
+    .leftColumn{
+        height: 100vh;
+        width: 50vw;
+        background: navy;
+
+        .loadDataArea{
+            background: white;
+        }
+
+        .bookmarkArea {
+
+            display: grid;
+
+            grid-template-columns: repeat(5, 1fr);
+            .bookmark{
+                width: 100px;
+                padding: 10px;
+                margin: 10px;
+                background: pink;
+            }
+
+        }
+    }
+
+
+}

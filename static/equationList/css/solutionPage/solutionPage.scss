@@ -1,0 +1,13 @@
+
+
+.contentWrapper{
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+    .TOCList{
+
+    }
+    .solutionContainer{
+        height: 98vh;
+        overflow-y: scroll;
+    }
+}
