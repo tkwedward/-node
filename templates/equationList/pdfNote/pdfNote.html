@@ -88,15 +88,6 @@
 
         <div id="pageWrapper">
 
-            <!-- <div class="left noteContainer">
-                <div class="noteInfo">
-                    <h1 class="noteTitle" contenteditable="true">{{title}}</h1>
-                    <h2 class="noteChapter" contenteditable="true">{{chapter}}</h2>
-                    <h2 class="book" contenteditable="true">{{book}}</h2>
-                </div>
-
-            </div> -->
-
             <!-- <div class="noteContainer"></div> -->
 
             <!-- <div class="pdfContainer"> -->
@@ -201,26 +192,21 @@
         let docTitle = "{{title}}"
         let docChapter = "{{chapter}}"
         let LOADACTION = "load state"
-        let staticPath = "{% static 'equationList/books' %}"
-
-
     </script>
     <script type="text/x-mathjax-config">
-
-        //
-        // MathJax.Hub.Config({
-        //     font-size: "1.5em",
-        //     tex2jax: {ignoreClass: "latexMotherCell"}
-        //   CommonHTML: { linebreaks: { automatic: true } },
-        //   "HTML-CSS": { linebreaks: { automatic: true } },
-        //          SVG: { linebreaks: { automatic: true } },
-        //          ignoreHtmlClass: 'mathjax_ignore'
-        //          // ignoreClass: "mathjaxTarget"
-        // });
-        // window.MathJax = {
-        //   loader: {load: ['[tex]/physics']},
-        //   tex: {packages: {'[+]': ['physics']}}
-        // };
+        MathJax.Hub.Config({
+            font-size: "1.5em",
+            tex2jax: {ignoreClass: "latexMotherCell"}
+          CommonHTML: { linebreaks: { automatic: true } },
+          "HTML-CSS": { linebreaks: { automatic: true } },
+                 SVG: { linebreaks: { automatic: true } },
+                 ignoreHtmlClass: 'mathjax_ignore'
+                 // ignoreClass: "mathjaxTarget"
+        });
+        window.MathJax = {
+          loader: {load: ['[tex]/physics']},
+          tex: {packages: {'[+]': ['physics']}}
+        };
     </script>
 
     <!-- <script src="{% static 'equationList/js/pdfNote/initializeFunctions.js' %}" charset="utf-8"></script>
@@ -241,8 +227,9 @@
     <!-- <script src="{ static 'equationList/js/pdfNote/pdf.js' %}" charset="utf-8"></script> -->
     <script src="{% static 'equationList/js/pdfNote/pdf.worker.js' %}" charset="utf-8"></script>
     <!-- <script src="{% static 'equationList/js/pdfNote/controlPDF.js' }" charset="utf-8"></script> -->
-    <script src="{% static 'equationList/js/pdfNote/windowManager.js' %}" charset="utf-8"></script>
     <script src="{% static 'equationList/js/pdfNote/cellManager.js' %}" charset="utf-8"></script>
+    <script src="{% static 'equationList/js/pdfNote/windowManager.js' %}" charset="utf-8"></script>
+
     <script src="{% static 'equationList/js/pdfNote/master.js' %}" charset="utf-8"></script>
 
 

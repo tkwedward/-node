@@ -53,51 +53,60 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
-#pageWrapper .noteContainer, #pageWrapper .copyNoteContainer {
+#pageWrapper .left, #pageWrapper .right {
+  min-height: 100vh;
+}
+#pageWrapper .right {
+  background: aliceblue;
+}
+#pageWrapper .noteContainer {
   background-color: Olive;
   height: 92vh;
   width: 100%;
   overflow-y: scroll;
 }
-#pageWrapper .noteContainer .noteInfo, #pageWrapper .noteContainer .saveButton, #pageWrapper .copyNoteContainer .noteInfo, #pageWrapper .copyNoteContainer .saveButton {
+#pageWrapper .noteContainer .titleField, #pageWrapper .noteContainer .chapterField {
+  margin: 10px;
+}
+#pageWrapper .noteContainer .noteInfo, #pageWrapper .noteContainer .saveButton {
   margin: 8px;
 }
-#pageWrapper .noteContainer img, #pageWrapper .copyNoteContainer img {
+#pageWrapper .noteContainer img {
   margin: 20px 0px;
   width: 100%;
 }
-#pageWrapper .noteContainer .cell.sectionTitle h2, #pageWrapper .copyNoteContainer .cell.sectionTitle h2 {
+#pageWrapper .noteContainer .cell.sectionTitle h2 {
   text-align: center;
   font-size: 35px;
 }
-#pageWrapper .noteContainer .cell.sectionTitle button.sectionTitle, #pageWrapper .copyNoteContainer .cell.sectionTitle button.sectionTitle {
+#pageWrapper .noteContainer .cell.sectionTitle button.sectionTitle {
   background: yellow;
 }
-#pageWrapper .noteContainer .cell, #pageWrapper .noteContainer .selectedCell, #pageWrapper .copyNoteContainer .cell, #pageWrapper .copyNoteContainer .selectedCell {
+#pageWrapper .noteContainer .cell, #pageWrapper .noteContainer .selectedCell {
   width: 95%;
   margin: 40px auto;
   background: BurlyWood;
   padding: 10px;
 }
-#pageWrapper .noteContainer .cell .cellTitle, #pageWrapper .noteContainer .selectedCell .cellTitle, #pageWrapper .copyNoteContainer .cell .cellTitle, #pageWrapper .copyNoteContainer .selectedCell .cellTitle {
+#pageWrapper .noteContainer .cell .cellTitle, #pageWrapper .noteContainer .selectedCell .cellTitle {
   margin: 10px;
 }
-#pageWrapper .noteContainer .cell .annotation, #pageWrapper .noteContainer .selectedCell .annotation, #pageWrapper .copyNoteContainer .cell .annotation, #pageWrapper .copyNoteContainer .selectedCell .annotation {
+#pageWrapper .noteContainer .cell .annotation, #pageWrapper .noteContainer .selectedCell .annotation {
   padding-top: 10px;
 }
-#pageWrapper .noteContainer .cell [data-level=easy], #pageWrapper .noteContainer .selectedCell [data-level=easy], #pageWrapper .copyNoteContainer .cell [data-level=easy], #pageWrapper .copyNoteContainer .selectedCell [data-level=easy] {
+#pageWrapper .noteContainer .cell [data-level=easy], #pageWrapper .noteContainer .selectedCell [data-level=easy] {
   background: #66ff33;
 }
-#pageWrapper .noteContainer .cell [data-level=medium], #pageWrapper .noteContainer .selectedCell [data-level=medium], #pageWrapper .copyNoteContainer .cell [data-level=medium], #pageWrapper .copyNoteContainer .selectedCell [data-level=medium] {
+#pageWrapper .noteContainer .cell [data-level=medium], #pageWrapper .noteContainer .selectedCell [data-level=medium] {
   background: #66ccff;
 }
-#pageWrapper .noteContainer .cell [data-level=difficult], #pageWrapper .noteContainer .selectedCell [data-level=difficult], #pageWrapper .copyNoteContainer .cell [data-level=difficult], #pageWrapper .copyNoteContainer .selectedCell [data-level=difficult] {
+#pageWrapper .noteContainer .cell [data-level=difficult], #pageWrapper .noteContainer .selectedCell [data-level=difficult] {
   background: #b20039;
 }
-#pageWrapper .noteContainer .cell .annotationControlPanel, #pageWrapper .noteContainer .selectedCell .annotationControlPanel, #pageWrapper .copyNoteContainer .cell .annotationControlPanel, #pageWrapper .copyNoteContainer .selectedCell .annotationControlPanel {
+#pageWrapper .noteContainer .cell .annotationControlPanel, #pageWrapper .noteContainer .selectedCell .annotationControlPanel {
   margin: 5px 28px;
 }
-#pageWrapper .noteContainer .cell .annotationContent, #pageWrapper .noteContainer .selectedCell .annotationContent, #pageWrapper .copyNoteContainer .cell .annotationContent, #pageWrapper .copyNoteContainer .selectedCell .annotationContent {
+#pageWrapper .noteContainer .cell .annotationContent, #pageWrapper .noteContainer .selectedCell .annotationContent {
   background-color: wheat;
   min-height: 10vh;
   margin: 10px;
@@ -105,23 +114,23 @@ body {
   width: 90%;
   font-size: 20px;
 }
-#pageWrapper .noteContainer .cell .annotationContent input, #pageWrapper .noteContainer .selectedCell .annotationContent input, #pageWrapper .copyNoteContainer .cell .annotationContent input, #pageWrapper .copyNoteContainer .selectedCell .annotationContent input {
+#pageWrapper .noteContainer .cell .annotationContent input, #pageWrapper .noteContainer .selectedCell .annotationContent input {
   display: block;
 }
-#pageWrapper .noteContainer .cell .annotationContent .useful.addToUseful, #pageWrapper .noteContainer .selectedCell .annotationContent .useful.addToUseful, #pageWrapper .copyNoteContainer .cell .annotationContent .useful.addToUseful, #pageWrapper .copyNoteContainer .selectedCell .annotationContent .useful.addToUseful {
+#pageWrapper .noteContainer .cell .annotationContent .useful.addToUseful, #pageWrapper .noteContainer .selectedCell .annotationContent .useful.addToUseful {
   background: yellow;
 }
-#pageWrapper .noteContainer .cell .annotationContent .latexChildCell, #pageWrapper .noteContainer .selectedCell .annotationContent .latexChildCell, #pageWrapper .copyNoteContainer .cell .annotationContent .latexChildCell, #pageWrapper .copyNoteContainer .selectedCell .annotationContent .latexChildCell {
+#pageWrapper .noteContainer .cell .annotationContent .latexChildCell, #pageWrapper .noteContainer .selectedCell .annotationContent .latexChildCell {
   margin-top: 10px;
   min-height: 30px;
 }
-#pageWrapper .noteContainer .cell .annotationContent .latexChildCell *, #pageWrapper .noteContainer .selectedCell .annotationContent .latexChildCell *, #pageWrapper .copyNoteContainer .cell .annotationContent .latexChildCell *, #pageWrapper .copyNoteContainer .selectedCell .annotationContent .latexChildCell * {
+#pageWrapper .noteContainer .cell .annotationContent .latexChildCell *, #pageWrapper .noteContainer .selectedCell .annotationContent .latexChildCell * {
   pointer-events: none;
 }
-#pageWrapper .noteContainer .cell .annotation:focus, #pageWrapper .noteContainer .selectedCell .annotation:focus, #pageWrapper .copyNoteContainer .cell .annotation:focus, #pageWrapper .copyNoteContainer .selectedCell .annotation:focus {
+#pageWrapper .noteContainer .cell .annotation:focus, #pageWrapper .noteContainer .selectedCell .annotation:focus {
   background-color: white;
 }
-#pageWrapper .noteContainer .selectedCell, #pageWrapper .copyNoteContainer .selectedCell {
+#pageWrapper .noteContainer .selectedCell {
   border: 2px red solid;
 }
 #pageWrapper .cell[titlelevel="-1"] {

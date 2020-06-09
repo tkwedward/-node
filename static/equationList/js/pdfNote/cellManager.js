@@ -10,6 +10,7 @@ class Cell{
         this.create()
     }
 
+    // create new cellNew
     create(){
         this.cell = document.createElement("div")
         this.cell.classList.add(this.className)
@@ -17,8 +18,6 @@ class Cell{
         this.createCellTitle()
         this.createCellControlPanel()
         this.addCellEvents()
-        this.createCellControlPanel()
-
     }
 
     initiate(){
@@ -26,31 +25,37 @@ class Cell{
         this.cell.append(firstAnnotation)
     }
 
+    // create new objects
+
     createCellTitle(){
         let cellTitle = document.createElement("h2")
         cellTitle.classList.add("cellTitle")
         cellTitle.contentEditable = true
-        cellTitle.innerHTML = ""
+        cellTitle.innerHTML = "Cell Title PlaceHolder"
         cellTitle.sectionTitle = "false"
         this.cellTitle = cellTitle
-        this._append(this.cell, this.cellTitle)
+        this.cell.append(cellTitle)
     }
 
     createAnotation(){
         // to create Annotation
+        let annotation = ""
+        return annotation
 
     }
 
-    modifyHTML(div, attribute){
 
+    createCellControlPanel(){
+        let _panel = new CellControlPanel()
+        _panel.create()
+        this.controlPanel = _panel
+        this.cell.append(_panel.cellControlPanel)
     }
 
-    _getAttribute(div, attribute){
 
-    }
+    // copy, save and load
+    copy(){
 
-    _append(parent, child){
-        parent.append(child)
     }
 
 
@@ -82,29 +87,6 @@ class Cell{
         })
 
         return saveObject
-    }
-
-    createCellControlPanel(){
-        let _panel = new CellControlPanel()
-        _panel.create()
-        this.controlPanel = _panel
-        this._append(this.cell, this.controlPanel)
-    }
-
-    addCellTitle(){
-
-    }
-
-    addCellEvents(){
-        this.cell.addEventListener("click", function(){
-            let allCells = document.querySelectorAll(".cell")
-            allCells.forEach(p=>p.classList.remove("selectedCell"))
-            cell.classList.add("selectedCell")
-        })
-    }
-
-    copy(){
-
     }
 
     load(loadData){
@@ -143,9 +125,13 @@ class Cell{
         }
     }// load Data
 
-
-
-
+    addCellEvents(){
+        this.cell.addEventListener("click", function(){
+            let allCells = document.querySelectorAll(".cell")
+            allCells.forEach(p=>p.classList.remove("selectedCell"))
+            cell.classList.add("selectedCell")
+        })
+    }
 }
 
 class CellControlPanel{
@@ -164,7 +150,7 @@ class CellControlPanel{
     }// createButton
 
     create(){
-        let pinButton = createButton("pinButton", function(){
+        let pinButton = this.createButton("pinButton", function(){
             pinButton.innerHTML = pinButton.innerHTML=="keep"? "release": "keep"
         })
         pinButton.innerHTML = "keep"

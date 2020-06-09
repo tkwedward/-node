@@ -58,9 +58,19 @@ $containerHeight: 92vh;
 
     grid-template-columns: 1fr 1fr;
 
+    .left, .right {
+        min-height: 100vh;
+    }
 
+    .right {
+        background: aliceblue
+    }
 
-    .noteContainer, .copyNoteContainer{
+    .noteContainer{
+        .titleField, .chapterField{
+            margin: 10px;
+        }
+
         background-color: Olive;
         height: $containerHeight;
         width: 100%;

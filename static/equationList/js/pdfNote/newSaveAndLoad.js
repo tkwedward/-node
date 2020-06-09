@@ -161,6 +161,7 @@ function loadDataRequest(title="Title", chapter = "Chapter"){
 
 let annotationBlock;
 function fromLoadCreatePage(jsonResult){
+    console.log(jsonReult);
     let title = jsonResult["title"]
     let chapter = jsonResult["chapter"]
     let cellsData = jsonResult["cells"]

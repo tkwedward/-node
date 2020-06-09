@@ -188,9 +188,6 @@ function createNewCell(addCellID=true, className = "cell"){
             }
         }
 
-
-
-
         // cellTitle
         cellTitle.innerHTML = loadData["cellTitle"]  ||""
         loadData.annotation.forEach(p=>{
@@ -199,11 +196,6 @@ function createNewCell(addCellID=true, className = "cell"){
             newAnnotation.load(p)
             cell.insertBefore(newAnnotation, cellControlPanel)
         })
-
-
-
-
-
     }
     return cell
 }
@@ -312,10 +304,6 @@ function createAnnotation(annotationType, addAnnotationID=true){
 
     })
     levelOfDifficultyButton.innerHTML = "level"
-
-    let mergeButton = createButton("mergeButton", function (){
-
-    })
 
     annotationControlPanel.append(questionButton, deleteButton, insertAbove, insertBelow, addToFlashCardButton, levelOfDifficultyButton)
 
