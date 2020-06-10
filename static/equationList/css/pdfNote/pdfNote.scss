@@ -8,37 +8,6 @@ body {
     top: 95%;
 }
 
-.counterContainer{
-    position: fixed;
-    height: 50px;
-    width: 100vw;
-    top: 0;
-    left: 0;
-    background: SteelBlue;
-    padding: 10px;
-    z-index: 100;
-    .counter{
-        display: inline-block;
-        width: 48px;
-        padding: 10px;
-        background: LightBlue;
-        border: 3px solid red;
-        border-radius: 50px;
-        span{
-            pointer-events: none;
-        }
-
-    }
-    .counter.selected{
-        background: yellow;
-    }
-
-    .leftSide.focus, .rightSide.focus{
-        background: yellow
-    }
-
-}
-
 .functionButton{
     display: inline-block;
 
@@ -76,7 +45,15 @@ $containerHeight: 92vh;
         width: 100%;
         overflow-y: scroll;
 
+        .latexMotherCell{
+            padding: 10px
+        }
+        .latexChildCell{
+            font-size: 20px;
+            padding: 10px;
+        }
 
+        
         .noteInfo, .saveButton{
             margin: 8px;
         }
@@ -148,9 +125,6 @@ $containerHeight: 92vh;
                     }
                 }
             }
-
-
-
 
 
             .annotation:focus{

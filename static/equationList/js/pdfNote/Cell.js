@@ -1,19 +1,23 @@
 class Cell{
-    constructor(addCellID=true, className = "cell", annotationID=0, pinned=false, cellID=0){
-        this.addCellID = true
-        this.className = className
+    constructor(upperTab, data = null, annotationID=0, pinned=false, cellID=0){
         this.correct = 0
         this.wrong = 0
         this.cellID = cellID
         this.pinned = pinned
         this.sectionTitleLevel = 0
+        this.annotationArray = []
+        this.upperTab = upperTab
         this.create()
+
+        if (data) {
+            this.load(data)
+        }
     }
 
     // create new cellNew
     create(){
         this.cell = document.createElement("div")
-        this.cell.classList.add(this.className)
+        this.cell.classList.add("cell")
 
         this.createCellTitle()
         this.createCellControlPanel()
@@ -26,32 +30,43 @@ class Cell{
     }
 
     // create new objects
-
     createCellTitle(){
         let cellTitle = document.createElement("h2")
         cellTitle.classList.add("cellTitle")
         cellTitle.contentEditable = true
         cellTitle.innerHTML = "Cell Title PlaceHolder"
         cellTitle.sectionTitle = "false"
+        cellTitle.classList.add(`cellTitle_${this.cellID}`)
+
+        // methods
+        cellTitle.update = function(title){
+            cellTitle.innerHTML = title
+        }
+
+        // put the cellTitle as attribute and append it to the cell
         this.cellTitle = cellTitle
         this.cell.append(cellTitle)
+
     }
 
-    createAnotation(){
+    createAnnotation(data){
         // to create Annotation
-        let annotation = ""
-        return annotation
+        let upperCell = this
+        let _a = new Annotation(upperCell, data)
+        if (data){
+
+        }
+        this.annotationArray.push(_a)
+        this.cell.append(_a.annotation)
+        // return annotation
 
     }
-
 
     createCellControlPanel(){
         let _panel = new CellControlPanel()
-        _panel.create()
         this.controlPanel = _panel
         this.cell.append(_panel.cellControlPanel)
     }
-
 
     // copy, save and load
     copy(){
@@ -91,38 +106,45 @@ class Cell{
 
     load(loadData){
         // load cellID
+        this.cellTitle.update(loadData["cellTitle"])
 
-        if (loadData["cellID"]){
-            this.cellID = loadData["cellID"]
-            cellID -= 1
-            thtis.cell.append("cellID is " + cell.cellID)
-            if (loadData["cellGREScore"] ){
-                this.cell.correct = loadData["cellGREScore"]["correct"]
-                this.cell.wrong = loadData["cellGREScore"]["wrong"]
-            }
-        }
-
-        this.cellControlPanel.pinButton.innerHTML = loadData["pinButton"]
+        let annotationData = loadData["annotation"]
+        annotationData.forEach(a=>{
+            this.createAnnotation(a)
+        })
 
 
-        if (loadData["sectionTitle"]){
-            this.cell.sectionTitle = loadData["sectionTitle"]["title"] || loadData["sectionTitle"]
-            this.cell.sectionTitleLevel = loadData["sectionTitle"]["level"] || 0
-
-            if (this.sectionTitle=="true"){
-                this.cell.classList.add("sectionTitle")
-                let sectionLevel = document.createElement("input")
-                sectionLevel.classList.add("sectionLevelInput")
-                sectionLevel.type = "number"
-                sectionLevel.value = this.sectionTitleLevel;
-                sectionLevel.addEventListener("input", function(){
-                    this.sectionTitleLevel = sectionLevel.value
-                    cell.setAttribute("titleLevel", sectionLevel.value)
-
-                })
-                cell.querySelector(".cellControlPanel").append(sectionLevel)
-            }
-        }
+        // if (loadData["cellID"]){
+        //     this.cellID = loadData["cellID"]
+        //     cellID -= 1
+        //     thtis.cell.append("cellID is " + cell.cellID)
+        //     if (loadData["cellGREScore"] ){
+        //         this.cell.correct = loadData["cellGREScore"]["correct"]
+        //         this.cell.wrong = loadData["cellGREScore"]["wrong"]
+        //     }
+        // }
+        //
+        // this.cellControlPanel.pinButton.innerHTML = loadData["pinButton"]
+        //
+        //
+        // if (loadData["sectionTitle"]){
+        //     this.cell.sectionTitle = loadData["sectionTitle"]["title"] || loadData["sectionTitle"]
+        //     this.cell.sectionTitleLevel = loadData["sectionTitle"]["level"] || 0
+        //
+        //     if (this.sectionTitle=="true"){
+        //         this.cell.classList.add("sectionTitle")
+        //         let sectionLevel = document.createElement("input")
+        //         sectionLevel.classList.add("sectionLevelInput")
+        //         sectionLevel.type = "number"
+        //         sectionLevel.value = this.sectionTitleLevel;
+        //         sectionLevel.addEventListener("input", function(){
+        //             this.sectionTitleLevel = sectionLevel.value
+        //             cell.setAttribute("titleLevel", sectionLevel.value)
+        //
+        //         })
+        //         cell.querySelector(".cellControlPanel").append(sectionLevel)
+        //     }
+        // }
     }// load Data
 
     addCellEvents(){
@@ -158,7 +180,7 @@ class CellControlPanel{
 
 
         let addAnnotationButton = this.createButton("addAnnotationButton", function(){
-            let newAnnotation = createAnnotation("textAnnotation")
+            let newAnnotation = this.createAnnotation("textAnnotation")
             cell.insertBefore(newAnnotation, event.target.parentNode)
         })
 
@@ -201,6 +223,6 @@ class CellControlPanel{
         this.sectionTitleButton = sectionTitleButton
 
         this.cellControlPanel.append(this.pinButton, this.addAnnotationButton, this.sectionTitleButton)
-        console.log(this.cellControlPanel)
+        // console.log(this.cellControlPanel)
     }// create
 }

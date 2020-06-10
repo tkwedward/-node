@@ -12,8 +12,19 @@ class WindowManager {
         this.tabIDList = []
         this.tabID = 0
 
-        this.createNewTab(this.tabID, "left", "Note")
-        this.createNewTab(this.tabID, "right", "Note")
+        // loadData and create initial tabs
+        let promise = new Promise((response, errorj)=>{
+            let loadData = this.loadDataRequest(docTitle, docChapter, response)
+        })
+        promise.then(loadData =>{
+            this.loadData = loadData
+            let loadDataExist = true ? loadData : false
+            console.log(loadDataExist);
+            this.createNewTab(this.tabID, "left", "Note", loadDataExist)
+            this.createNewTab(this.tabID, "right", "Note")
+
+            this.fromLoadCreatePage(loadData)
+        })
     }
 
     // create baseWindow for left or right
@@ -37,26 +48,17 @@ class WindowManager {
             newTab = new NoteTab(this.tabID, position, slaveWindow)
 
             // initialize the cell with an annotation, or fill in it with data
-            if (data){
-
-            } else {
+            if (data==false){
                 newTab.createNewCell()
-                newTab.createNewCell()
-                newTab.createNewCell()
-                newTab.createNewCell()
-                newTab.createNewCell()
-                newTab.createNewCell()
-                newTab.createNewCell()
-                newTab.createNewCell()
-
-                this.loadDataRequest(docTitle, docChapter)
-                // this.createNewCell({"initiate":true})
             }
         }// if tabType == "Note"
 
         // console.log(this.tabArray["left"].push)
         this.tabArray[position].push(newTab)
-        console.log(this.masterWindow[position]);
+        if (this.tabID == 0){
+            this.mainTab = newTab
+        }
+        // add the tabs into the masterWIndow left or right array
         this.masterWindow[position].append(newTab.tabWindow)
         this.renderTab(this.tabID, position)
 
@@ -82,10 +84,9 @@ class WindowManager {
     }
 
     // load data
-    loadDataRequest(title="Title", chapter = "Chapter"){
-        self = this
-        title = document.querySelector(".noteTitle").innerHTML
-        chapter = document.querySelector(".noteChapter").innerHTML
+    loadDataRequest(title="Title", chapter = "Chapter", response){
+        let self = this
+
         let xhr = new XMLHttpRequest();
         xhr.open("POST", url, true);
         xhr.setRequestHeader("X-CSRFToken", csrf_token);
@@ -93,7 +94,8 @@ class WindowManager {
             if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
                 let result = JSON.parse(xhr.response);
                 console.log(result);
-                self.fromLoadCreatePage(result);
+                response(result)
+                // self.fromLoadCreatePage(result);
             }
         }// xhr setRequest
         // console.log(chapter);
@@ -102,99 +104,46 @@ class WindowManager {
 
 
     fromLoadCreatePage(jsonResult){
-        console.log(jsonReult);
-        let title = jsonResult["title"]
-        let chapter = jsonResult["chapter"]
+        this.mainTab.maxAnnotationBlockID = parseInt(jsonResult["maxAnnotationBlockID"]) || 1
+        this.mainTab.maxCellID = parseInt(jsonResult["maxCellID"]) || 1
+
+        console.log(jsonResult["cellArray"]);
+        // let title = jsonResult["title"]
+        // let chapter = jsonResult["chapter"]
         let cellsData = jsonResult["cells"]
-
-        let summaryCellContainerData = jsonResult["summaryCellContainerData"]
-        annotationBlock = jsonResult["annotationBlock"]
-
-        let counter = jsonResult["counter"]
-        let pdfFileList = jsonResult["pdfFileList"]
-        // console.log(jsonResult["maxAnnotationBlockID"]);
-        annotationBlockID = parseInt(jsonResult["maxAnnotationBlockID"]) || 1
-        cellID = parseInt(jsonResult["maxCellID"]) || 1
-
-
-        let bookmarkContainer = document.querySelector(".bookmarkContainer")
-        let bookmarkData = jsonResult["pdfBookmark"]
-        if (bookmarkData){
-            bookmarkContainer.loadBookmark(bookmarkData)
-        }
-
-        let summaryContainer = document.querySelector(".summaryContainer")
-        // console.log(summaryCellContainerData);
-        summaryContainer.load(summaryCellContainerData)
-
-        cellsData.forEach(data=>{
-            // console.log(data);
-
-            let newCell = createNewCell()
-            newCell.load(data)
-
-            noteContainer.append(newCell)
-
-
-            data.annotation.forEach(item=>{
-                let annotation = createAnnotation(item.annotationType, item)
-
-                noteContainer.append(newCell)
-            })
+        // console.log(this.mainTab);
+        cellsData.forEach(_cellData=>{
+            this.mainTab.createNewCell(_cellData)
         })
 
-        setSectionColor()
+        // to create summary page
+        let summaryCellContainerData = jsonResult["summaryCellContainerData"]
+        let annotationBlock = jsonResult["annotationBlock"]
+
+        // let summaryContainer = document.querySelector(".summaryContainer")
+        // console.log(summaryCellContainerData);
+        // summaryContainer.load(summaryCellContainerData)
+
+
+    //     cellsData.forEach(data=>{
+    //         // console.log(data);
+    //
+    //         let newCell = createNewCell()
+    //         newCell.load(data)
+    //
+    //         noteContainer.append(newCell)
+    //
+    //
+    //         data.annotation.forEach(item=>{
+    //             let annotation = createAnnotation(item.annotationType, item)
+    //
+    //             noteContainer.append(newCell)
+    //         })
+    //     })
+    //
+    //     setSectionColor()
     }
 
-}
-
-class Tab{
-    constructor(tabID, position, tabWindow){
-        this.cellArray = []
-        this.tabID = tabID
-        this.position = position
-        this.tabWindow = tabWindow
-    }
-
-    createNewCell(initiate=false){
-        if (initiate == true){
-
-        }
-        let _newCell = new Cell()
-        this.cellArray.push(_newCell)
-        this.tabWindow.append(_newCell.cell)
-    }
-
-    selectByCellID(){
-
-    }
-
-    append(div){
-        console.log(div);
-        this.tabWindow.append(div)
-    }
-}
-
-class NoteTab extends Tab{
-    constructor(tabID, position, baseWindow){
-        super(tabID, position, baseWindow)
-        console.log(this.tabWindow)
-        this.tabWindow.classList.add("noteContainer")
-
-        let titleField = document.createElement("h1")
-        titleField.contentEditable = true
-        titleField.classList.add("titleField")
-        titleField.innerHTML = docTitle
-
-        let chapterField = document.createElement("h2")
-        chapterField.contentEditable = true
-        chapterField.classList.add("chapterField")
-        chapterField.innerHTML = docChapter
-
-        this.tabWindow.append(titleField, chapterField)
-
-
-    }
 }
 
 

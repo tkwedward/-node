@@ -267,13 +267,7 @@ function createAnnotation(annotationType, addAnnotationID=true){
     })
     deleteButton.innerHTML = "delete"
 
-    let insertAbove = createButton("insertAbove", function(){
-        let newAnnotation = createAnnotation("textAnnotation")
-        let targetAnnotation = event.target.parentNode.parentNode
-        let parentNode = targetAnnotation.parentNode
-        parentNode.insertBefore(newAnnotation, targetAnnotation)
-    })
-    insertAbove.innerHTML = "insertAbove"
+
 
     let insertBelow = createButton("insertBelow", function(){
         let newAnnotation = createAnnotation("textAnnotation")
@@ -330,7 +324,6 @@ function createAnnotation(annotationType, addAnnotationID=true){
 
 
             saveObject = {
-
                 latexMotherCell: latexMotherCell.innerHTML
             }
             if (questionButton.questionCreateDate){
@@ -468,10 +461,6 @@ function createImageText(loadData=false){
     return imageText
 }
 
-// let firstCell = createNewCell()
-// document.querySelector(".noteContainer").append(firstCell)
-
-
 
 function imageAnnotationContent(annotationContent, loadData={}){
     let image = new Image()
@@ -516,12 +505,6 @@ function createLatexCell(loadData){
         latexChildCell.innerHTML = ""
     }
 
-    latexMotherCell.addEventListener("focus", function(){
-        let allLatexMotherCell= document.querySelectorAll(".latexMotherCell")
-        allLatexMotherCell.forEach(p=>p.classList.remove("selected"))
-        event.target.classList.add("selected")
-        changeMode("Edit")
-    })
 
     latexMotherCell.addEventListener("DOMSubtreeModified", function(){
         let motherInnerText = latexMotherCell.innerHTML
