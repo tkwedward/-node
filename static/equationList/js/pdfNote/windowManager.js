@@ -1,7 +1,7 @@
 class WindowManager {
     constructor(){
         this.pageWrapper = document.querySelector("#pageWrapper")
-        this.masterWindow = {
+        this.masterWindowHtmlObject = {
             "left": this.createHalfWindow("left"),
             "right": this.createHalfWindow("right")
         }
@@ -9,6 +9,7 @@ class WindowManager {
             "left": [],
             "right": []
         }
+
         this.tabIDList = []
         this.tabID = 0
 
@@ -20,10 +21,11 @@ class WindowManager {
             this.loadData = loadData
             let loadDataExist = true ? loadData : false
             console.log(loadDataExist);
-            this.createNewTab(this.tabID, "left", "Note", loadDataExist)
-            this.createNewTab(this.tabID, "right", "Note")
+            let starterTab1 = this.createNewTab("left", "Note", loadDataExist)
+            let starterTab2 = this.createNewTab("right", "Note", loadDataExist)
 
-            this.fromLoadCreatePage(loadData)
+            this.fromLoadCreatePage(this.mainTab ,loadData)
+            this.fromLoadCreatePage(starterTab2 ,loadData)
         })
     }
 
@@ -32,20 +34,29 @@ class WindowManager {
         let halfWindow = document.createElement("div")
         halfWindow.classList.add(position, "halfWindow")
         this.pageWrapper.append(halfWindow)
+
         return halfWindow
     }
 
-    createNewTab(tabID, position = "left", tabType = "Note", data = false){
+    showTab(position, tabID){
+        this.tabArray[position].forEach(tab=>{
+            if (tab.tabID == tabID){
+                tab.tabWindowHtmlObject.style.display = "block"
+            } else {
+                tab.tabWindowHtmlObject.style.display = "none"
+            }
+        })
+        this.masterWindowHtmlObject["position"]
+    }
+
+    createNewTab(position = "left", tabType = "Note", data = false){
         // newTab = new tab object
         // slaveWindow = the window related to the tab object
-        let newTab;
-        let slaveWindow = document.createElement("div");
-
-        slaveWindow.classList.add("tabWindow", position, `tab_${this.tabID}`)
+        let newTab
 
         if (tabType == "Note"){
             console.log("this is note")
-            newTab = new NoteTab(this.tabID, position, slaveWindow)
+            newTab = new NoteTab(this.tabID, position)
 
             // initialize the cell with an annotation, or fill in it with data
             if (data==false){
@@ -59,21 +70,22 @@ class WindowManager {
             this.mainTab = newTab
         }
         // add the tabs into the masterWIndow left or right array
-        this.masterWindow[position].append(newTab.tabWindow)
+        this.masterWindowHtmlObject[position].append(newTab.tabWindowHtmlObject)
         this.renderTab(this.tabID, position)
 
         // update the overall tabID number
         this.tabID += 1
+        return newTab
     }
 
     renderTab(tabID, position){
         this.tabArray[position].forEach(p=>{
             console.log(p.tabID, tabID);
             if (p.tabID == tabID){
-                p.tabWindow.style.display = "block"
+                p.tabWindowHtmlObject.style.display = "block"
                 // p.tabWindow.style.background = "gold"
             } else {
-                p.tabWindow.style.display = "none"
+                p.tabWindowHtmlObject.style.display = "none"
             }
         })
 
@@ -103,9 +115,10 @@ class WindowManager {
     } // loadDataRequest
 
 
-    fromLoadCreatePage(jsonResult){
-        this.mainTab.maxAnnotationBlockID = parseInt(jsonResult["maxAnnotationBlockID"]) || 1
-        this.mainTab.maxCellID = parseInt(jsonResult["maxCellID"]) || 1
+    fromLoadCreatePage(tab, jsonResult){
+        tab.data = jsonResult
+        tab.maxAnnotationBlockID = parseInt(jsonResult["maxAnnotationBlockID"]) || 1
+        tab.maxCellID = parseInt(jsonResult["maxCellID"]) || 1
 
         console.log(jsonResult["cellArray"]);
         // let title = jsonResult["title"]
@@ -113,7 +126,7 @@ class WindowManager {
         let cellsData = jsonResult["cells"]
         // console.log(this.mainTab);
         cellsData.forEach(_cellData=>{
-            this.mainTab.createNewCell(_cellData)
+            tab.createNewCell(_cellData)
         })
 
         // to create summary page
@@ -145,8 +158,3 @@ class WindowManager {
     }
 
 }
-
-
-let windowManager = new WindowManager()
-
-let _noteContainer = document.querySelector(".noteContainer")

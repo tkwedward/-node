@@ -59,7 +59,7 @@ class Annotation{
             self.renderLatex(latexMotherCell, latexChildCell)
             latexMotherCell.classList.remove("selected")
 
-            changeMode("Command")
+            // changeMode("Command")
 
         })
 

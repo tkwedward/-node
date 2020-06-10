@@ -1,13 +1,5 @@
-class masterController{
-    constructor(name){
-        this.name = name
-    }
-
-}
-
-
-master = new masterController("fast")
-
+let windowManager = new WindowManager()
+let startEvent = new Event(windowManager)
 
 // let masterWindow = document.querySelector(".noteContainer")
 // k = new CellManager(0, masterWindow)

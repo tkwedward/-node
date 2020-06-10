@@ -15,7 +15,6 @@ function createNewCell(addCellID=true, className = "cell"){
     cell.correct = 0
     cell.wrong = 0
 
-
     let cellTitle = document.createElement("h2")
     cellTitle.classList.add("cellTitle")
     cellTitle.contentEditable = true
