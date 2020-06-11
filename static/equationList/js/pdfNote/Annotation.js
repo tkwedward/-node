@@ -4,14 +4,17 @@ class Annotation{
         this.cellID = relatedCell.cellID
 
         if (!data) {
-            this.annotationID = relatedCell.upperTab.maxAnnotationBlockID
-            relatedCell.upperTab.maxAnnotationBlockID += 1
+
         }
 
-        this.annotation = this.create()
+        this.annotationHtmlObject = this.create()
 
         if (data) {
             this.load(data)
+        } else {
+            this.annotationID = relatedCell.upperTab.maxAnnotationBlockID
+            annotationHtmlObject.classList.add("annotation", `annotation_${this.cellID}_${this.annoannotationID}`)
+            relatedCell.upperTab.maxAnnotationBlockID += 1
         }
 
     }
@@ -19,7 +22,7 @@ class Annotation{
     // create new cellNew
     create(){
         let annotation = document.createElement("div")
-        annotation.classList.add("annotation", `annotation_${this.cellID}_${this.annoannotationID}`)
+
 
         let annotationContent = this.createLatexCells()
 
@@ -27,16 +30,20 @@ class Annotation{
 
         annotation.append(annotationContent, panel.htmlObject)
 
-        this.htmlObject = annotation
         this.annotationContent = annotationContent
 
-
+        console.log(this.annotationContent);
         return annotation
 
         // this.createAnnotationControlPanel()
         // this.addCellEvents()
     }
 
+    addChangeEvent(dom){
+        dom.addEventListener("DOMSubtreeModified", function(){
+            console.log(dom);
+        })
+    }
 
     createLatexCells(){
         let self = this
@@ -52,6 +59,7 @@ class Annotation{
         latexMotherCell.style.minHeight = "40px"
         latexMotherCell.style.fontSize = "20px"
         latexMotherCell.style.border = "2px green solid"
+        this.addChangeEvent(latexMotherCell)
 
         // to run render when the content of the latexMotherCell is changed. latexMotherCell
         latexMotherCell.addEventListener("DOMSubtreeModified", function(){
@@ -202,6 +210,9 @@ class Annotation{
             "levelOfDifficulty": [],
             "questionStatus": []
         }
+
+        // to add the data of latexMotherCell Data to the dom element
+        // each this["property"] equal to an html Object
         this.annotationContent.mother.innerHTML = this["latexMotherCell"]
 
     }
@@ -213,6 +224,10 @@ class Annotation{
             let value = p[1]
             this[key] = value
         })
+
+        this.annotationID = loadData["annotationID"]
+        this.annotationHtmlObject.classList.add("annotation", `annotation_${this.cellID}_${this.annotationID}`)
+        console.log(this.annotationID);
         this.update()
     }// load Data
 
@@ -265,7 +280,6 @@ class AnnotationControlPanel{
         deleteButton.innerHTML = "delete"
         this.deleteButton = deleteButton
         // 3. insertAbove
-        console.log(this.upperAnnotation.upperCell);
         let insertAbove = this.createButton("insertAbove", function(){
             // upperLeve1 1 = annotation
             // upperLevel 2 = cell

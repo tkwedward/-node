@@ -3,10 +3,35 @@ class Tab{
         this.cellArray = []
         this.tabID = tabID
         this.position = position
+        this.focusedCell = null
 
 
 
         this.tabWindowHtmlObject = this.create()
+        // this.mutationObserver = this.createMutationObserver()
+
+
+    }
+    createMutationObserver(){
+        let self = this
+        var mutationObserver = new MutationObserver(function(mutations) {
+            for (let i=0; i < mutations.length; i++){
+                if (self.focusedCell.cellHtmlObject==mutations[i].target){
+                    console.log(self.focusedCell, new Date());
+                    break
+                }
+            }
+        });
+
+        mutationObserver.observe(this.tabWindowHtmlObject, {
+          attributes: true,
+          characterData: true,
+          childList: true
+          // subtree: true,
+          // attributeOldValue: true
+        });
+
+        return mutationObserver
     }
 
     create(){
@@ -20,7 +45,7 @@ class Tab{
     createNewCell(cellData){
         let _newCell = new Cell(this, cellData)
         this.cellArray.push(_newCell)
-        this.tabWindowHtmlObject.append(_newCell.cell)
+        this.tabWindowHtmlObject.append(_newCell.cellHtmlObject)
     }
 
     selectByCellID(){

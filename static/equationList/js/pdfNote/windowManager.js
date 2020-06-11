@@ -20,7 +20,6 @@ class WindowManager {
         promise.then(loadData =>{
             this.loadData = loadData
             let loadDataExist = true ? loadData : false
-            console.log(loadDataExist);
             let starterTab1 = this.createNewTab("left", "Note", loadDataExist)
             let starterTab2 = this.createNewTab("right", "Note", loadDataExist)
 
@@ -55,7 +54,6 @@ class WindowManager {
         let newTab
 
         if (tabType == "Note"){
-            console.log("this is note")
             newTab = new NoteTab(this.tabID, position)
 
             // initialize the cell with an annotation, or fill in it with data
@@ -80,7 +78,6 @@ class WindowManager {
 
     renderTab(tabID, position){
         this.tabArray[position].forEach(p=>{
-            console.log(p.tabID, tabID);
             if (p.tabID == tabID){
                 p.tabWindowHtmlObject.style.display = "block"
                 // p.tabWindow.style.background = "gold"
@@ -105,7 +102,6 @@ class WindowManager {
         xhr.onreadystatechange =  function() {
             if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
                 let result = JSON.parse(xhr.response);
-                console.log(result);
                 response(result)
                 // self.fromLoadCreatePage(result);
             }
@@ -120,9 +116,6 @@ class WindowManager {
         tab.maxAnnotationBlockID = parseInt(jsonResult["maxAnnotationBlockID"]) || 1
         tab.maxCellID = parseInt(jsonResult["maxCellID"]) || 1
 
-        console.log(jsonResult["cellArray"]);
-        // let title = jsonResult["title"]
-        // let chapter = jsonResult["chapter"]
         let cellsData = jsonResult["cells"]
         // console.log(this.mainTab);
         cellsData.forEach(_cellData=>{

@@ -1,24 +1,26 @@
 class Cell{
-    constructor(upperTab, data = null, annotationID=0, pinned=false, cellID=0){
+    constructor(upperTab, data = null, annotationID=0, pinned=false){
         this.correct = 0
         this.wrong = 0
-        this.cellID = cellID
+        this.cellID = upperTab.maxCellID
         this.pinned = pinned
         this.sectionTitleLevel = 0
         this.annotationArray = []
         this.upperTab = upperTab
-        this.create()
+        this.cellHtmlObject = document.createElement("div")
 
+        this.create()
         if (data) {
             this.load(data)
+        } else {
+            this.cellHtmlObject.classList.add("cell", `cell_${this.cellID}`)
+            this.upperTab.maxCellID += 1
         }
+
     }
 
     // create new cellNew
     create(){
-        this.cell = document.createElement("div")
-        this.cell.classList.add("cell")
-
         this.createCellTitle()
         this.createCellControlPanel()
         this.addCellEvents()
@@ -26,7 +28,7 @@ class Cell{
 
     initiate(){
         let firstAnnotation = createAnnotation("textAnnotation")
-        this.cell.append(firstAnnotation)
+        this.cellHtmlObject.append(firstAnnotation)
     }
 
     // create new objects
@@ -45,7 +47,7 @@ class Cell{
 
         // put the cellTitle as attribute and append it to the cell
         this.cellTitle = cellTitle
-        this.cell.append(cellTitle)
+        this.cellHtmlObject.append(cellTitle)
 
     }
 
@@ -57,7 +59,7 @@ class Cell{
 
         }
         this.annotationArray.push(_a)
-        this.cell.append(_a.annotation)
+        this.cellHtmlObject.append(_a.annotationHtmlObject)
         // return annotation
 
     }
@@ -65,7 +67,7 @@ class Cell{
     createCellControlPanel(){
         let _panel = new CellControlPanel()
         this.controlPanel = _panel
-        this.cell.append(_panel.cellControlPanel)
+        this.cellHtmlObject.append(_panel.cellControlPanel)
     }
 
     // copy, save and load
@@ -104,10 +106,11 @@ class Cell{
         return saveObject
     }
 
+
     load(loadData){
         // load cellID
         this.cellTitle.update(loadData["cellTitle"])
-
+        this.cellHtmlObject.classList.add("cell", `cell_${loadData["cellID"]}`)
         let annotationData = loadData["annotation"]
         annotationData.forEach(a=>{
             this.createAnnotation(a)
@@ -119,8 +122,8 @@ class Cell{
         //     cellID -= 1
         //     thtis.cell.append("cellID is " + cell.cellID)
         //     if (loadData["cellGREScore"] ){
-        //         this.cell.correct = loadData["cellGREScore"]["correct"]
-        //         this.cell.wrong = loadData["cellGREScore"]["wrong"]
+        //         this.cellHtmlObject.correct = loadData["cellGREScore"]["correct"]
+        //         this.cellHtmlObject.wrong = loadData["cellGREScore"]["wrong"]
         //     }
         // }
         //
@@ -128,11 +131,11 @@ class Cell{
         //
         //
         // if (loadData["sectionTitle"]){
-        //     this.cell.sectionTitle = loadData["sectionTitle"]["title"] || loadData["sectionTitle"]
-        //     this.cell.sectionTitleLevel = loadData["sectionTitle"]["level"] || 0
+        //     this.cellHtmlObject.sectionTitle = loadData["sectionTitle"]["title"] || loadData["sectionTitle"]
+        //     this.cellHtmlObject.sectionTitleLevel = loadData["sectionTitle"]["level"] || 0
         //
         //     if (this.sectionTitle=="true"){
-        //         this.cell.classList.add("sectionTitle")
+        //         this.cellHtmlObject.classList.add("sectionTitle")
         //         let sectionLevel = document.createElement("input")
         //         sectionLevel.classList.add("sectionLevelInput")
         //         sectionLevel.type = "number"
@@ -148,11 +151,15 @@ class Cell{
     }// load Data
 
     addCellEvents(){
-        this.cell.addEventListener("click", function(){
+        // focus cell
+        let self = this
+        this.upperTab.focusedCell = this
+        this.cellHtmlObject.addEventListener("click", function(){
             let allCells = document.querySelectorAll(".cell")
             allCells.forEach(p=>p.classList.remove("selectedCell"))
-            cell.classList.add("selectedCell")
+            self.cellHtmlObject.classList.add("selectedCell")
         })
+
     }
 }
 

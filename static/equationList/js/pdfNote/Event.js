@@ -2,6 +2,7 @@ class Event{
     constructor(windowManager){
         this.eventList = {}
         this.createCopyMainTabEvent()
+        this.createGetFocusCellEvent()
         this.windowManager = windowManager
 
         Object.entries(this.eventList).forEach(p=>{
@@ -9,6 +10,19 @@ class Event{
             let eventFunction = p[1]
             document.addEventListener(eventName, eventFunction)
         })
+    }
+
+    createGetFocusCellEvent(){
+        let type = "click"
+        let effect = function(){
+            let target = event.target
+            let isCell = event.target.classList.has("cell")
+            if (isCell){
+                console.log(event.target);
+            }
+
+
+        }
     }
 
     createCopyMainTabEvent(){
