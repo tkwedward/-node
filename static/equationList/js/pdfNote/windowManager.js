@@ -23,8 +23,10 @@ class WindowManager {
             let starterTab1 = this.createNewTab("left", "Note", loadDataExist)
             let starterTab2 = this.createNewTab("right", "Note", loadDataExist)
 
-            this.fromLoadCreatePage(this.mainTab ,loadData)
-            this.fromLoadCreatePage(starterTab2 ,loadData)
+            console.log(docTitle, docChapter);
+
+            this.mainTab.fromLoadCreatePage(loadData)
+            starterTab2.fromLoadCreatePage( loadData)
         })
     }
 
@@ -92,6 +94,37 @@ class WindowManager {
 
     }
 
+    // saveData
+    save(){
+        let saveObject = this.mainTab.save()
+        this.ajaxSendJson(url, saveObject, "save state", "success to save", function(){
+            console.log("after sent ajax");
+        })
+    }
+
+    ajaxSendJson(url, data, todo, msg, callback){
+        console.log(data);
+        var xhr = new XMLHttpRequest();
+        data["todo"] = todo
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("X-CSRFToken", csrf_token);
+        xhr.onreadystatechange =  async function() { // Call a function when the state changes.
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                console.log("..........*******");
+                console.log(msg);
+                // console.log(xhr.response);
+                let result = await xhr.response
+
+                if (callback){
+                    callback(result)
+                }
+                return  result
+            }
+        }// xhr.onreadystatechange
+        xhr.send(JSON.stringify(data));
+    }
+
+
     // load data
     loadDataRequest(title="Title", chapter = "Chapter", response){
         let self = this
@@ -111,43 +144,6 @@ class WindowManager {
     } // loadDataRequest
 
 
-    fromLoadCreatePage(tab, jsonResult){
-        tab.data = jsonResult
-        tab.maxAnnotationBlockID = parseInt(jsonResult["maxAnnotationBlockID"]) || 1
-        tab.maxCellID = parseInt(jsonResult["maxCellID"]) || 1
 
-        let cellsData = jsonResult["cells"]
-        // console.log(this.mainTab);
-        cellsData.forEach(_cellData=>{
-            tab.createNewCell(_cellData)
-        })
-
-        // to create summary page
-        let summaryCellContainerData = jsonResult["summaryCellContainerData"]
-        let annotationBlock = jsonResult["annotationBlock"]
-
-        // let summaryContainer = document.querySelector(".summaryContainer")
-        // console.log(summaryCellContainerData);
-        // summaryContainer.load(summaryCellContainerData)
-
-
-    //     cellsData.forEach(data=>{
-    //         // console.log(data);
-    //
-    //         let newCell = createNewCell()
-    //         newCell.load(data)
-    //
-    //         noteContainer.append(newCell)
-    //
-    //
-    //         data.annotation.forEach(item=>{
-    //             let annotation = createAnnotation(item.annotationType, item)
-    //
-    //             noteContainer.append(newCell)
-    //         })
-    //     })
-    //
-    //     setSectionColor()
-    }
 
 }

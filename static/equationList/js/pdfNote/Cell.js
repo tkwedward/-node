@@ -3,6 +3,7 @@ class Cell{
         this.correct = 0
         this.wrong = 0
         this.cellID = upperTab.maxCellID
+        this.maxAnnotationID = 0
         this.pinned = pinned
         this.sectionTitleLevel = 0
         this.annotationArray = []
@@ -17,6 +18,10 @@ class Cell{
             this.upperTab.maxCellID += 1
         }
 
+        let cellIDObject = document.createElement("div")
+        cellIDObject.innerHTML = this.cellID
+        this.cellHtmlObject.append(cellIDObject)
+
     }
 
     // create new cellNew
@@ -27,7 +32,7 @@ class Cell{
     }
 
     initiate(){
-        let firstAnnotation = createAnnotation("textAnnotation")
+        let firstAnnotation = createAnnotation(this.cellID, this.maxAnnotationID)
         this.cellHtmlObject.append(firstAnnotation)
     }
 
@@ -51,10 +56,22 @@ class Cell{
 
     }
 
+    getNextAnnotationID(data){
+        let nextAnnotationID = this.maxAnnotationID
+
+        if (!data){
+            this.maxAnnotationID += 1
+        }
+
+        return nextAnnotationID
+    }
+
     createAnnotation(data){
         // to create Annotation
         let upperCell = this
-        let _a = new Annotation(upperCell, data)
+        let nextAnnotationID = this.getNextAnnotationID(data)
+        console.log(this.cellID);
+        let _a = new Annotation(this.cellID, nextAnnotationID, upperCell, data)
         if (data){
 
         }
@@ -75,28 +92,19 @@ class Cell{
 
     }
 
-
     save(){
-        saveObject = {
+
+
+        let saveObject = {
             cellID: this.cellID,
-            cellGREScore: {
-                "correct": this.correct, "wrong":this.wrong
-            },
+            maxAnnotationID: this.maxAnnotationID,
             cellTitle: this.cellTitle.innerHTML,
             sectionTitle: {
                 "title": this.sectionTitle,
                 "level": this.sectionTitleLevel
             },
             pinButton: this.controlPanel.innerHTML,
-
             annotation: []
-        }
-
-        let goToPageButton = this.goToPageButton
-        if (goToPageButton){
-            saveObject["goToPageButton"] = goToPageButton.innerHTML
-        } else {
-            saveObject["goToPageButton"] = null
         }
 
         this.annotationArray.forEach(p=>{
@@ -106,48 +114,19 @@ class Cell{
         return saveObject
     }
 
-
     load(loadData){
         // load cellID
         this.cellTitle.update(loadData["cellTitle"])
         this.cellHtmlObject.classList.add("cell", `cell_${loadData["cellID"]}`)
+        this.cellID = loadData["cellID"]
+        if (loadData["maxAnnotationID"]){
+            this.maxAnnotationID = loadData["maxAnnotationID"]
+        }
+
         let annotationData = loadData["annotation"]
-        annotationData.forEach(a=>{
-            this.createAnnotation(a)
+        annotationData.forEach(a_data=>{
+            this.createAnnotation(a_data)
         })
-
-
-        // if (loadData["cellID"]){
-        //     this.cellID = loadData["cellID"]
-        //     cellID -= 1
-        //     thtis.cell.append("cellID is " + cell.cellID)
-        //     if (loadData["cellGREScore"] ){
-        //         this.cellHtmlObject.correct = loadData["cellGREScore"]["correct"]
-        //         this.cellHtmlObject.wrong = loadData["cellGREScore"]["wrong"]
-        //     }
-        // }
-        //
-        // this.cellControlPanel.pinButton.innerHTML = loadData["pinButton"]
-        //
-        //
-        // if (loadData["sectionTitle"]){
-        //     this.cellHtmlObject.sectionTitle = loadData["sectionTitle"]["title"] || loadData["sectionTitle"]
-        //     this.cellHtmlObject.sectionTitleLevel = loadData["sectionTitle"]["level"] || 0
-        //
-        //     if (this.sectionTitle=="true"){
-        //         this.cellHtmlObject.classList.add("sectionTitle")
-        //         let sectionLevel = document.createElement("input")
-        //         sectionLevel.classList.add("sectionLevelInput")
-        //         sectionLevel.type = "number"
-        //         sectionLevel.value = this.sectionTitleLevel;
-        //         sectionLevel.addEventListener("input", function(){
-        //             this.sectionTitleLevel = sectionLevel.value
-        //             cell.setAttribute("titleLevel", sectionLevel.value)
-        //
-        //         })
-        //         cell.querySelector(".cellControlPanel").append(sectionLevel)
-        //     }
-        // }
     }// load Data
 
     addCellEvents(){

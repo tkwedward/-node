@@ -1,7 +1,10 @@
 class Annotation{
-    constructor(relatedCell, data = null, addCellID=true, className = "cell", annotationID=0, pinned=false){
+    constructor(cellID, annotationID, relatedCell, data = null, addCellID=true, pinned=false){
         this.upperCell = relatedCell
-        this.cellID = relatedCell.cellID
+        console.log(cellID);
+        this.cellID = cellID
+        this.annotationID = annotationID
+
 
         if (!data) {
 
@@ -9,40 +12,39 @@ class Annotation{
 
         this.annotationHtmlObject = this.create()
 
-        if (data) {
-            this.load(data)
-        } else {
-            this.annotationID = relatedCell.upperTab.maxAnnotationBlockID
-            annotationHtmlObject.classList.add("annotation", `annotation_${this.cellID}_${this.annoannotationID}`)
-            relatedCell.upperTab.maxAnnotationBlockID += 1
-        }
-
+        let loadPromise = new Promise((res, err)=>{
+            if (data) {
+                this.load(data)
+            } else {
+                annotationHtmlObject.classList.add("annotation", `annotation_${this.cellID}_${this.annotationID}`)
+            }
+            res("finish loading")
+        })
+        .then((res, err)=>{
+            this.mother.classList.add(`latexMotherCell_${this.cellID}_${this.annotationID}`)
+            // this.addChangeEvent(this.mother)
+        })
     }
 
     // create new cellNew
     create(){
         let annotation = document.createElement("div")
-
-
         let annotationContent = this.createLatexCells()
-
         let panel = new AnnotationControlPanel(this)
 
-        annotation.append(annotationContent, panel.htmlObject)
-
+        annotation.append(annotationContent, panel.AnnotationControlPanelHtmlObject)
+        this.annotationType = "textAnnotation"
         this.annotationContent = annotationContent
-
-        console.log(this.annotationContent);
+        this.panel = panel
         return annotation
-
-        // this.createAnnotationControlPanel()
-        // this.addCellEvents()
     }
 
     addChangeEvent(dom){
-        dom.addEventListener("DOMSubtreeModified", function(){
-            console.log(dom);
+        let other = document.querySelectorAll(`.latexMotherCell_${this.cellID}_${this.annotationID}`);
+        let observer = new MutationObserver(function(mutations){
+            // console.log(mutations);
         })
+        observer.observe(dom, {"attributes": true})
     }
 
     createLatexCells(){
@@ -54,11 +56,14 @@ class Annotation{
 
         // latexMotherCell
         let latexMotherCell = document.createElement("div")
+        this.mother = latexMotherCell
+        this.latexMotherCell = latexMotherCell
         latexMotherCell.classList.add("latexMotherCell")
         latexMotherCell.contentEditable = true;
         latexMotherCell.style.minHeight = "40px"
         latexMotherCell.style.fontSize = "20px"
         latexMotherCell.style.border = "2px green solid"
+
         this.addChangeEvent(latexMotherCell)
 
         // to run render when the content of the latexMotherCell is changed. latexMotherCell
@@ -93,6 +98,7 @@ class Annotation{
 
         // latexChildCell
         let latexChildCell = document.createElement("div")
+        this.child = latexChildCell
         latexChildCell.classList.add("latexChildCell")
         latexChildCell.contentEditable = false;
 
@@ -103,8 +109,8 @@ class Annotation{
             latexMotherCell.style.display = "block"
         })
 
-
         let compileButton = document.createElement("button")
+        this.compileButton = compileButton
         compileButton.innerHTML = "compile"
         compileButton.style.position = "relative"
         compileButton.style.left = "90%"
@@ -120,7 +126,6 @@ class Annotation{
         annotationContent.compileButton = compileButton
 
         annotationContent.append(latexMotherCell, latexChildCell, compileButton)
-
 
         return annotationContent
     }
@@ -161,6 +166,28 @@ class Annotation{
 
     }// renderLatex
 
+    createImageAnnotation(){
+        let image = new Image()
+        image.src = ""
+
+        let fileNameInput = document.createElement("input")
+        fileNameInput.classList.add("fileNameInput")
+
+        let imageTextButton = document.createElement("button")
+        imageTextButton.addEventListener("click", function(){
+            let imageText = document.createElement("div")
+            imageText.contentEditable = true
+            imageText.classList.add("imageText")
+            imageText.style.background = "MistyRose"
+            imageText.innerHTML = "imageText"
+            annotationContent.append(imageText)
+        })
+        imageTextButton.innerHTML = "add text"
+
+        // add in the image part and hide the latex mother cell
+        return [image, fileNameInput, imageTextButton]
+    }
+
     createAnnotationControlPanel(){
         let _panel = new AnnotationControlPanel()
         _panel.create()
@@ -175,31 +202,27 @@ class Annotation{
     }
 
     save(){
-        saveObject = {
-            cellID: this.cellID,
-            cellGREScore: {
-                "correct": this.correct, "wrong":this.wrong
-            },
-            cellTitle: this.cellTitle.innerHTML,
-            sectionTitle: {
-                "title": this.sectionTitle,
-                "level": this.sectionTitleLevel
-            },
-            pinButton: this.controlPanel.innerHTML,
+        let _panel = this.panel.AnnotationControlPanelHtmlObject
 
-            annotation: []
+
+        let questionButton = _panel.querySelector(".questionButton").innerHTML
+        let levelOfDifficultyButton = _panel.querySelector(".levelOfDifficultyButton").innerHTML
+
+        let saveObject = {
+            "cellID": this.cellID,
+            "annotationID": this.annotationID,
+            "questionButton": questionButton,
+            "levelOfDifficultyButton": levelOfDifficultyButton,
+            "annotationType": this.annotationType
         }
 
-        let goToPageButton = this.goToPageButton
-        if (goToPageButton){
-            saveObject["goToPageButton"] = goToPageButton.innerHTML
+        if (this.annotationType == "textAnnotation"){
+            saveObject["latexMotherCellInnerHTML"] = this.mother.innerHTML
         } else {
-            saveObject["goToPageButton"] = null
+            saveObject["imageText"] = this.imageText
+            saveObject["fileName"] = this.fileName
+            saveObject["src"] = this.src
         }
-
-        this.annotationArray.forEach(p=>{
-            saveObject["annotation"].push(p.save())
-        })
 
         return saveObject
     }
@@ -211,23 +234,46 @@ class Annotation{
             "questionStatus": []
         }
 
-        // to add the data of latexMotherCell Data to the dom element
-        // each this["property"] equal to an html Object
-        this.annotationContent.mother.innerHTML = this["latexMotherCell"]
+        if (this.annotationType == "textAnnotation"){
+            // to add the data of latexMotherCell Data to the dom element
+            // each this["property"] equal to an html Object
+            this.annotationContent.mother.innerHTML = this["latexMotherCell"]
+        } else if (this.annotationType == "imageAnnotation"){
+            let imageCluster = this.createImageAnnotation()
+            console.log(imageCluster);
 
+            // console.log(this.createImageAnnotation());
+            let [image, fileNameInput, imageTextButton] = this.createImageAnnotation()
+            image.src = this.src
+            this.annotationContent.append(image, fileNameInput, imageTextButton)
+
+            // hide the latex mother cell
+            this.mother.style.display = "none"
+            this.child.style.display = "none"
+            this.compileButton.style.display = "none"
+        }
     }
 
     load(loadData){
         // load cellID
-        Object.entries(loadData).forEach(p=>{
-            let key = p[0]
-            let value = p[1]
-            this[key] = value
-        })
 
+        this.latexMotherCell = loadData["latexMotherCell"]
+        this.questionStatus = loadData["questionStatus"]
+        this.annotationType = loadData["annotationType"]
         this.annotationID = loadData["annotationID"]
+        this.levelOfDifficulty = loadData["levelOfDifficulty"]
+        this.src = loadData["src"]
+        this.fileName = loadData["fileName"]
+        this.imageText = loadData["imageText"]
+
+        // add annotation ID
+        // this.annotationID = loadData["annotationID"]
         this.annotationHtmlObject.classList.add("annotation", `annotation_${this.cellID}_${this.annotationID}`)
-        console.log(this.annotationID);
+        let idHTMLObject = document.createElement("div")
+        idHTMLObject.innerHTML = `annotation_${this.cellID}_${this.annotationID}`
+        this.annotationHtmlObject.append(idHTMLObject)
+
+        // the above part is only for loading data, this part is for filling in the html object
         this.update()
     }// load Data
 
@@ -242,8 +288,8 @@ class Annotation{
 
 class AnnotationControlPanel{
     constructor(annotationObject){
-        this.htmlObject = document.createElement("div")
-        this.htmlObject.classList.add("cellControlPanel")
+        this.AnnotationControlPanelHtmlObject = document.createElement("div")
+        this.AnnotationControlPanelHtmlObject.classList.add("cellControlPanel")
         this.upperAnnotation = annotationObject
         this.create()
     }
@@ -328,7 +374,7 @@ class AnnotationControlPanel{
         this.levelOfDifficultyButton = levelOfDifficultyButton
         levelOfDifficultyButton.innerHTML = "level"
 
-        this.htmlObject.append(questionButton,  deleteButton, insertAbove, insertBelow, addToFlashCardButton, levelOfDifficultyButton)
+        this.AnnotationControlPanelHtmlObject.append(questionButton,  deleteButton, insertAbove, insertBelow, addToFlashCardButton, levelOfDifficultyButton)
         // console.log(this.cellControlPanel)
     }// create
 }

@@ -4,34 +4,8 @@ class Tab{
         this.tabID = tabID
         this.position = position
         this.focusedCell = null
-
-
-
         this.tabWindowHtmlObject = this.create()
-        // this.mutationObserver = this.createMutationObserver()
-
-
-    }
-    createMutationObserver(){
-        let self = this
-        var mutationObserver = new MutationObserver(function(mutations) {
-            for (let i=0; i < mutations.length; i++){
-                if (self.focusedCell.cellHtmlObject==mutations[i].target){
-                    console.log(self.focusedCell, new Date());
-                    break
-                }
-            }
-        });
-
-        mutationObserver.observe(this.tabWindowHtmlObject, {
-          attributes: true,
-          characterData: true,
-          childList: true
-          // subtree: true,
-          // attributeOldValue: true
-        });
-
-        return mutationObserver
+        this.maxCellID = 0
     }
 
     create(){
@@ -50,6 +24,37 @@ class Tab{
 
     selectByCellID(){
 
+    }
+
+    save(){
+        let saveObject = {
+            "title": docTitle,
+            "chapter": docChapter,
+            "cells": []
+        }
+        this.cellArray.forEach(p=>{
+            saveObject["cells"].push(p.save())
+        })
+
+
+        return saveObject
+    }
+
+    fromLoadCreatePage(jsonResult){
+        this.data = jsonResult
+        this.maxAnnotationBlockID = parseInt(jsonResult["maxAnnotationBlockID"]) || 1
+        // this.maxCellID = 0
+        this.maxCellID = parseInt(jsonResult["maxCellID"]) || 1
+
+        let cellsData = jsonResult["cells"]
+        // console.log(this.mainTab);
+        cellsData.forEach(_cellData=>{
+            this.createNewCell(_cellData)
+        })
+
+        // to create summary page
+        let summaryCellContainerData = jsonResult["summaryCellContainerData"]
+        let annotationBlock = jsonResult["annotationBlock"]
     }
 
 }

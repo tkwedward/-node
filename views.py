@@ -275,10 +275,7 @@ def processAjaxRequest(request):
             # save the data inside the book folder
             # save the information of this information in the TOC file
             # #############
-            print("*"*10)
-            print("at line 127")
-            print(dictResponse["cells"])
-            print("*"*10)
+            # print(dictResponse["cells"])
 
 
             with open(os.path.join(base_path, "currentLink.txt"), "w") as f:
@@ -286,16 +283,9 @@ def processAjaxRequest(request):
 
             for cell in dictResponse["cells"]:
                 for annotation in cell["annotation"]:
-                    print("*"*20)
-                    # print("Here is a cell")
-                    # print(annotation)
-
                     if annotation["annotationType"]=="imageAnnotation":
                         reducedSavePath = convertDataURLToLink(annotation["src"], bookTitle, chapter, annotation["fileName"].strip())
                         annotation["src"] = reducedSavePath
-                        print(annotation["src"][0:100])
-                        print(reducedSavePath)
-                    print("*"*20)
 
             with open(os.path.join(base_path, "TOC.json")) as f:
                 jsonTOC = json.load(f)
@@ -311,13 +301,8 @@ def processAjaxRequest(request):
                 #
                 with open(os.path.join(base_path, "TOC.json"), "w") as _f:
                     json.dump(jsonTOC, _f)
-                    # print("*"*20)
-                    # print("updated the TOC")
-                    # print("*"*20)
-
 
             toc_path = os.path.join(base_path, "TOC")
-
 
             # to save the saveState of the file
             book_path = os.path.join(base_path, bookTitle)
@@ -326,10 +311,11 @@ def processAjaxRequest(request):
             chapter_path = os.path.join(book_path, chapter)
             if not os.path.exists(chapter_path):
                 os.mkdir(chapter_path)
+            print("*"*20)
 
-            with open(os.path.join(chapter_path, "saveState.json"), "w+") as f:
-                # print(dictResponse)
+            with open(os.path.join(chapter_path, "saveState.json"), "w") as f:
                 json.dump(dictResponse, f)
+
             return HttpResponse("the data is saved")
 
         #############
@@ -345,21 +331,6 @@ def processAjaxRequest(request):
                 # print("$"*20)
                 return JsonResponse(noteSaveData)
 
-        if todo == "addToQuestionBank":
-            questionBankPath = os.path.join(base_path, "_QuestionBank", "QuestionBankQueue.json")
-            with open(questionBankPath) as f:
-                questionBankJSON = json.load(f)
-                questionBankJSON["queue"].append(dictResponse)
-
-                with open(questionBankPath, "w") as _f:
-                    print(dictResponse)
-                    json.dump(questionBankJSON, _f, indent=2)
-
-
-                # print("$"*20)
-                return JsonResponse(questionBankJSON)
-        #############
-        # save image
 
 def convertDataURLToLink(img_dataURL, bookTitle, chapter, fileName, folderName=None):
 

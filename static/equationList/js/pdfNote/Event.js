@@ -3,6 +3,7 @@ class Event{
         this.eventList = {}
         this.createCopyMainTabEvent()
         this.createGetFocusCellEvent()
+        this.createKeyboardEvent()
         this.windowManager = windowManager
 
         Object.entries(this.eventList).forEach(p=>{
@@ -11,6 +12,14 @@ class Event{
             document.addEventListener(eventName, eventFunction)
         })
     }
+
+    createKeyboardEvent(keyCode, effect){
+        document.addEventListener("keydown", function(){
+            if (event.keyCode==83 && event.ctrlKey){
+                windowManager.save()
+            }
+        })
+    } // createKeyboardEvent
 
     createGetFocusCellEvent(){
         let type = "click"
