@@ -275,7 +275,7 @@ def processAjaxRequest(request):
             # save the data inside the book folder
             # save the information of this information in the TOC file
             # #############
-            # print(dictResponse["cells"])
+            print(dictResponse["cells"])
 
 
             with open(os.path.join(base_path, "currentLink.txt"), "w") as f:

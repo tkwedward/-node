@@ -4,6 +4,7 @@ class Event{
         this.createCopyMainTabEvent()
         this.createGetFocusCellEvent()
         this.createKeyboardEvent()
+        this.createPasteImageEvent()
         this.windowManager = windowManager
 
         Object.entries(this.eventList).forEach(p=>{
@@ -13,11 +14,87 @@ class Event{
         })
     }
 
-    createKeyboardEvent(keyCode, effect){
+    createPasteImageEvent(){
+        document.onpaste = function(event){
+          /* Paste event to create an image */
+            let targetAnnotation = document.querySelector(".latexMotherCell.selected").soul;
+
+            let items = (event.clipboardData || event.originalEvent.clipboardData).items;
+            for (let index in items) {
+                var item = items[index];
+                if (item.kind === 'file') {
+                    var blob = item.getAsFile();
+                    var reader = new FileReader();
+                    reader.onload = function(event){
+                         if (event.target.result.startsWith("data:image")){
+                         /*
+                            send ajax request to the server and save the image to the hard disk
+                         */
+                            console.log(targetAnnotation);
+
+                            targetAnnotation.pasteImage(event.target.result)
+
+                        } // if it is an image
+                    }; // reader onload
+                    reader.readAsDataURL(blob);
+                }// if
+            }// for items
+        } // copy and paste function for image
+    }
+
+    createKeyboardEvent(){
         document.addEventListener("keydown", function(){
+            // save function, 83 = s
             if (event.keyCode==83 && event.ctrlKey){
                 windowManager.save()
             }
+
+
+            // new Cell Above, 65 = a
+            if (event.keyCode==65 && event.ctrlKey){
+
+                let selectedCell = document.querySelector(".selectedCell")
+
+                selectedCell.soul.insertCell("above")
+
+
+            }
+
+            // new Cell below, 66 = b
+            if (event.keyCode==66 && event.ctrlKey){
+                let selectedCell = document.querySelector(".selectedCell")
+
+                selectedCell.soul.insertCell("below")
+
+            }// new Cell Below
+
+            // deleteCell, 68 = d
+            if (event.keyCode==68 && event.ctrlKey){// to delete the cell
+
+                let selectedCell = document.querySelector(".selectedCell")
+
+                let nextCell = selectedCell.soul.nextCell
+                let previousCell = selectedCell.soul.previousCell
+
+                if (nextCell){
+                    nextCell.cellHtmlObject.classList.add("selectedCell")
+                } else {
+                    previousCell.cellHtmlObject.classList.add("selectedCell")
+                }
+
+                let actionFunction = function(ele){
+                    ele.remove()
+                    delete ele.soul
+                }
+
+
+
+                windowManager.symmetryAction(selectedCell, actionFunction)
+
+
+
+            }// insert after the cell
+
         })
     } // createKeyboardEvent
 
@@ -29,8 +106,6 @@ class Event{
             if (isCell){
                 console.log(event.target);
             }
-
-
         }
     }
 

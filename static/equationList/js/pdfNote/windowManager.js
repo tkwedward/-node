@@ -20,13 +20,24 @@ class WindowManager {
         promise.then(loadData =>{
             this.loadData = loadData
             let loadDataExist = true ? loadData : false
-            let starterTab1 = this.createNewTab("left", "Note", loadDataExist)
-            let starterTab2 = this.createNewTab("right", "Note", loadDataExist)
+            let starterTab1 = this.createNewTab("left", "Note", loadDataExist, "mainTab")
+            this.mainTab = starterTab1
+            let starterTab2 = this.createNewTab("right", "Note", loadDataExist, "mirrorTab")
+            this.mirrorTab = starterTab2
 
-            console.log(docTitle, docChapter);
+            let bookmarkTab = this.createNewTab("right", "Section", loadDataExist, "sectionTab")
+            this.bookmarkTab = bookmarkTab
 
             this.mainTab.fromLoadCreatePage(loadData)
             starterTab2.fromLoadCreatePage( loadData)
+
+        }).then(()=>{
+            let cellChain = this.mainTab.getCellChain()
+            console.log("sectionTab management");
+            // console.log(cellChain);
+            this.bookmarkTab.fromCellsDataCreatePage(cellChain)
+            this.bookmarkTab.createSectionTree()
+
         })
     }
 
@@ -50,25 +61,26 @@ class WindowManager {
         this.masterWindowHtmlObject["position"]
     }
 
-    createNewTab(position = "left", tabType = "Note", data = false){
+    createNewTab(position = "left", tabType = "Note", data = false, name){
         // newTab = new tab object
         // slaveWindow = the window related to the tab object
         let newTab
 
         if (tabType == "Note"){
-            newTab = new NoteTab(this.tabID, position)
+            newTab = new NoteTab(this.tabID, position, name)
 
             // initialize the cell with an annotation, or fill in it with data
             if (data==false){
                 newTab.createNewCell()
             }
-        }// if tabType == "Note"
+        } // if tabType == "Note"
+        else if  (tabType == "Section")
+        {
+            newTab = new SectionTab(this.tabID, position, name)
+        }
 
         // console.log(this.tabArray["left"].push)
         this.tabArray[position].push(newTab)
-        if (this.tabID == 0){
-            this.mainTab = newTab
-        }
         // add the tabs into the masterWIndow left or right array
         this.masterWindowHtmlObject[position].append(newTab.tabWindowHtmlObject)
         this.renderTab(this.tabID, position)
@@ -94,12 +106,46 @@ class WindowManager {
 
     }
 
+    // findMirrorElement
+    symmetryAction(sourceElement, actionFunction, parentTab=false, sourceAction = true){
+        let tabType = ["mainTab", "mirrorTab"]
+
+        let sourceClass = sourceElement.classList[1]
+        console.log(sourceElement);
+
+        if (!parentTab){
+            parentTab = sourceElement.soul.parentTab
+        }
+
+        let targetTab = parentTab == "mainTab"? "mirrorTab" : "mainTab"
+        targetTab = windowManager[targetTab].tabWindowHtmlObject
+
+        let targetElement = targetTab.querySelector(`.${sourceClass}`)
+        console.log(targetElement, sourceClass);
+
+        actionFunction(targetElement)
+        if (sourceAction){
+            actionFunction(sourceElement)
+        }
+    } // symmetryAction
+
     // saveData
-    save(){
+    save(action=true){
         let saveObject = this.mainTab.save()
-        this.ajaxSendJson(url, saveObject, "save state", "success to save", function(){
-            console.log("after sent ajax");
-        })
+        console.log(saveObject);
+        if (action){
+            this.ajaxSendJson(url, saveObject, "save state", "success to save", function(){
+                console.log("after sent ajax");
+            })
+        } else {
+            return saveObject
+        }
+    }
+
+    summary(){
+        let cellChain = this.mainTab.getCellChain()
+        console.log(cellChain);
+        return cellChain
     }
 
     ajaxSendJson(url, data, todo, msg, callback){

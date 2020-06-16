@@ -1,27 +1,29 @@
 body {
     height:98vh;
 }
-.mode {
-    position: fixed;
-    background: white;
-    left: 95%;
-    top: 95%;
+.latexCommand{
+    display: none;
+
 }
 
-.functionButton{
-    display: inline-block;
+.navBar{
+    background: green;
+    height: 80px;
+    .functionButton{
+        display: block;
+        padding: 10px 10px;
 
-    .functionSecondLine{
-        position: relative;
-        top: 10px;
+        .functionFirstLine, .functionSecondLine{
+            padding: 5px 0px;
+        }
     }
-}
+}// .navBar
 
 $containerHeight: 92vh;
 #pageWrapper{
     position: relative;
     overflow-y: hidden;
-    top: 44px;
+    top: 0px;
     left: 0;
     display: grid;
 
@@ -53,7 +55,7 @@ $containerHeight: 92vh;
             padding: 10px;
         }
 
-        
+
         .noteInfo, .saveButton{
             margin: 8px;
         }
@@ -75,13 +77,24 @@ $containerHeight: 92vh;
             }
         }
 
+
+
         .cell, .selectedCell{
             width: 95%;
             margin: 40px auto;
             background: BurlyWood;
             padding: 10px;
+
+
+
             .cellTitle {
                 margin: 10px
+            }
+
+            .cellControlPanel{
+                .cellSectionInput{
+                    width: 30px;
+                }
             }
 
             .annotation{
@@ -126,7 +139,6 @@ $containerHeight: 92vh;
                 }
             }
 
-
             .annotation:focus{
                 background-color: white;
             }
@@ -137,8 +149,17 @@ $containerHeight: 92vh;
         }
     }
 
-    .cell[titlelevel="-1"]{
-        background: blue;
+    .cell[sectionlevel="0"]{
+        .cellTitle{
+            font-size: 30px;
+            text-align:center;
+        }
+    }
+
+    .cell[sectionLevel="1"]{
+        .cellTitle{
+            font-size: 25px;
+        }
     }
 
 
@@ -171,293 +192,21 @@ $containerHeight: 92vh;
 
     }
 
-    .pdfContainer{
-        $containerHeight2: 91vh;
-        $scrollable: scroll;
-        $absolutePosition: absolute;
-        $top: 5px;
-        $left: 0px;
-
-        background-color: RosyBrown;
-        max-height: $containerHeight;
-        width: 100%;
-        // overflow-y: scroll;
-        position: relative;
 
 
-        #pdfIframe{
-            top: $top;
-            left: $left;
-            height: $containerHeight2;
-            position: $absolutePosition;
-            // display: none;
-            overflow-y: scroll;
+    .sectionContainer{
+        background: PaleGreen;
+        height: $containerHeight;
+        overflow-y: scroll;
 
-            .canvasContainer{
-                width: 50vw;
-                background: grey;
-            }
-            .head{
-                // background: red;
-                position: relative;
-                height: 20px;
-
-            }
-            .tail{
-                // background: red;
-                position: relative;
-                height: 20px;
-
-            }
-
-            #pdf-page{
-                margin-left: 10px;
-                width: 30px;
-            }
-
-            .scaleInput{
-                width: 30px;
-            }
-
-
-            .pdfContent{
-                // position: relative;
-                min-height: 92vh;
-                width: 50vw;
-
-                .controlPannel{
-                    position: fixed;
-                    top: 100px;
-                    z-index: 1;
-                }
-            }
-
-            .canvasBottomLine{
-                width: 100%;
-                min-height: 5px;
-                background: red;
-            }
-
-            .canvasDIV{
-                // max-height: $containerHeight;
-                width: 100%;
-                canvas{
-                    width: 100%;
-                    display: block;
-                    margin-bottom: 10px;
-                }
-
-
-                .textLayer {
-                   position: absolute;
-                    left: 0;
-                    top: 0;
-                    right: 0;
-                    bottom: 0;
-                    overflow: hidden;
-                    /* opacity: 0.1; */
-                    line-height: 1.0;
-                    /* background: rgba(1, 1, 1, 0.2) */
-                }
-
-                .textLayer > div {
-                    color: transparent;
-                    position: absolute;
-                    white-space: pre;
-                    cursor: text;
-
-                    transform-origin: 0% 0%;
-                }
-
-            }
-
-        }
-
-
-
-        .copyNoteContainer{
-            // display: none;
-            top: $top;
-            left: $left;
-            height: $containerHeight2;
-            overflow-y: $scrollable;
-            z-index: 100;
-            background: CadetBlue;
-            position: $absolutePosition;
-            border-left: 10px CadetBlue solid;
-            // top: 0px;
-            width: 100%;
-            img {
-                width: 100%;
-            }
-        }
-
-        .questionContainer{
-            // display: none;
-            top: $top;
-            left: $left;
-            height: $containerHeight2;
-            overflow-y: $scrollable;
-            z-index: 100;
-            background: Lavender ;
-            position: $absolutePosition;
-            // top: 0px;
-            width: 100%;
-
-            .annotationControlPanel{
-                margin: 5px 28px;
-            }
-            .annotationContent{
-                background-color: wheat;
-                min-height: 10vh;
-                margin: 10px auto;
-                padding: 8px;
-                width: 90%;
-                font-size: 20px;
-                input {
-                    display: block;
-                }
-
-                .useful.addToUseful{
-                    background: yellow;
-                }
-
-                .latexChildCell{
-                    margin-top: 10px;
-                    min-height: 30px;
-                    * {
-                        pointer-events: none;
-
-                    }
-                }
-            }
-
-            .annotation:focus{
-                background-color: white;
-            }
-        }
-
-        .flashCardContainer{
-            // display: none;
-            top: $top;
-            left: $left;
-            height: $containerHeight2;
-            position: $absolutePosition;
-            width: 100%;
-            background: Goldenrod;
-        }
-
-        .greContainer{
-            // display: none;
-            top: $top;
-            left: $left;
-            height: $containerHeight2;
-            position: $absolutePosition;
-            width: 100%;
-            background: Aquamarine;
-            margin-top: 5px;
-            img {
-                height: 200px;
-            }
-        }
-
-        .noteCardContainer{
-            // display: none;
-            top: $top;
-            left: $left;
-            position: $absolutePosition;
-            height: $containerHeight2;
-            overflow-y: $scrollable;
-            width: 100%;
-            background: PaleGreen;
-
-            .sectionLabel{
-                padding: 10px;
+        .sectionWrapper{
+            .level_0{
                 font-size: 25px;
-                cursor: pointer;
+                margin: 5px;
             }
 
-            .subTitleLabel{
-                display: block;
-                margin-left: 30px;
-                font-size: 20px;
-            }
+            // width: 100%;
+
         }
-
-        .summaryContainer{
-            // display: none
-            top: $top;
-            left: $left;
-            width: 100%;
-            position: $absolutePosition;
-            height: $containerHeight2;
-            overflow-y: $scrollable;
-            background: Cornsilk;
-            z-index: 1000;
-
-            img {
-                width: 95%;
-            }
-            .latexMotherCell{
-                padding: 10px
-            }
-            .latexChildCell{
-                font-size: 20px;
-                padding: 10px;
-            }
-        }
-    }
-
-
-}
-
-
-.copyCell, .flashCardArea, .searchResultArea, .questionContainer, .greContainer{
-    width: 95%;
-    margin: 40px auto;
-    // background: BurlyWood;
-    padding: 10px;
-
-    .cellTitle {
-        margin: 10px
-    }
-
-    .cell{
-        margin-top: 20px;
-        background: BurlyWood;
-    }
-
-
-
-    .annotationControlPanel{
-        margin: 5px 28px;
-    }
-    .annotationContent{
-        background-color: wheat;
-        min-height: 10vh;
-        margin: 10px auto;
-        padding: 8px;
-        width: 90%;
-        font-size: 20px;
-        input {
-            display: block;
-        }
-
-        .useful.addToUseful{
-            background: yellow;
-        }
-
-        .latexChildCell{
-            margin-top: 10px;
-            min-height: 30px;
-            * {
-                pointer-events: none;
-
-            }
-        }
-    }
-
-    .annotation:focus{
-        background-color: white;
     }
 }

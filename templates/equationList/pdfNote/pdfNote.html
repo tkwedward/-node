@@ -42,15 +42,13 @@
 
     </head>
     <body>
-        \(\require{physics}\)
-        \(\usepackage{gensymb}\)
+        <div class="latexCommand">
+            \(\require{physics}\)
+            \(\usepackage{gensymb}\)
+        </div>
 
-        <div class="mode">Command</div>
-        <!-- <div class="screenSwitch">hide</div> -->
-        <div class="counterContainer">
-
+        <div class="navBar">
             <div class="functionButton">
-
                 <div class="functionFirstLine">
                     <button class="newPageButton">create New Note</button>
                     <button class="saveButton">save Butotn</button>
@@ -77,112 +75,10 @@
 
                     <a href="{% url 'tocPage' %}">to TOC</a>
                 </div><!-- functionSecondLine -->
-
-
-
-
-
             </div><!-- functionButton -->
-        </div>
+        </div> <!-- navBar -->
 
-
-        <div id="pageWrapper">
-
-            <!-- <div class="noteContainer"></div> -->
-
-            <!-- <div class="pdfContainer"> -->
-
-                <!-- <div class="pdfImageContainer pdfContainerDirectChild"></div> -->
-                <!-- <div class="summaryContainer pdfContainerDirectChild">
-                    <div class="summaryDIV" contenteditable="">summary column</div>
-                </div>
-
-                <div class="noteCardContainer pdfContainerDirectChild">
-                    <div class="sectionColumn"></div>
-                </div>
-
-
-
-
-
-                <div class="right copyNoteContainer pdfContainerDirectChild"></div>
-
-                <div class="questionContainer pdfContainerDirectChild" ></div>
-
-                <div class="greContainer pdfContainerDirectChild" >
-                    <div class="vocabArea"></div>
-                    <div class="hintsArea"></div>
-                    <div class="answerArea"></div>
-                    <div class="cellIDArea"></div>
-                    <div class="cellCorrectArea"></div>
-                    <div class="cellWrongArea"></div>
-
-                    <button class="next">next</button>
-                    <button class="correct">correct</button>
-                    <button class="wrong">wrong</button>
-                </div> -->
-
-                <!-- <div class="flashCardContainer pdfContainerDirectChild"> -->
-                    <!-- Searched Result -->
-                    <!-- <div class="searchResultArea"></div>
-
-                    Flash Card
-                    <div class="flashCardControlPannel">
-                        <div class="progessFlashCard"></div>
-                        <button type="button"  class="previousFlashCard">Last</button>
-                        <button type="button"  class="nextFlashCard">Next</button>
-                        <button type="button"  class="goToAnswer">goToAnswer</button>
-
-                        <span class="number">
-
-                        </span>
-                    </div>
-                    <div class="flashCardArea"></div> -->
-                <!-- </div>  -->
-                <!-- flashcard container -->
-
-                <!-- <div id="pdfIframe" class="pdfContainerDirectChild">
-                    <div class="pdfContent">
-                        <div class="controlPannel">
-                            <input id="pdf-page" type="text"></input>
-                            /<span id="totalPage"></span>
-                            <input class="scaleInput" type="text"></input>
-                            <button class="pdfBookmark">pdf-bookmark</button>
-                        </div>
-
-                        <div class="canvasContainer">
-                            <div class="head monitorLine"></div>
-                            <div class="tail monitorLine"></div>
-                        </div>
-                    </div> -->
-                <!-- </div> -->
-                <!-- iframe container -->
-            <!-- </div>  -->
-            <!-- pdfContainer -->
-
-            <!-- <div class="bookmarkContainer">
-                <div class="bookmarkInput">
-                    <input type="text" class="bookmarkTitleInput">
-                    <button class="addBookmarkButton"> add Bookamrk </button>
-                    <button class="bookmarkPanelClose"> < </button>
-                </div>
-                <div class="bookmarkController">
-                    <button class="bookmark_raiseLevel">raise</button>
-                    <button class="bookmark_lowerLevel">lower</button>
-                    <button class="bookmark_delete">delete</button>
-                </div>
-                <div class="bookmarkPanel">
-
-                </div> -->
-                 <!-- bookmarkPanel -->
-
-            <!-- </div> -->
-            <!-- bookmarkContainer -->
-<!--
-            <iframe id="pdfIframe" src="/static/equationList/books/Introduction_to_Electrodynamics/Introduction to Electrodynamics 4th Edition.pdf" style="border: none;"></iframe> -->
-
-
-        </div>
+        <div id="pageWrapper"></div>
 
     </body>
     <script type="text/javascript">
@@ -210,7 +106,7 @@
         };
     </script>
 
-    <!-- <script src="{% static 'equationList/js/pdfNote/initializeFunctions.js' %}" charset="utf-8"></script>
+    <!--
     <script src="{% static 'equationList/js/pdfNote/globalVariables.js' %}" charset="utf-8"></script>
 
     <script src="{% static 'equationList/js/pdfNote/pasteEvent.js' %}" charset="utf-8"></script>
@@ -229,6 +125,7 @@
 
     <!-- <script src="{% static 'equationList/js/pdfNote/controlPDF.js' }" charset="utf-8"></script> -->
     <script src="{% static 'equationList/js/pdfNote/Event.js' %}" charset="utf-8"></script>
+    <script src="{% static 'equationList/js/pdfNote/Section.js' %}" charset="utf-8"></script>
 
     <script src="{% static 'equationList/js/pdfNote/Annotation.js' %}" charset="utf-8"></script>
 
