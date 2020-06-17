@@ -63,7 +63,7 @@ class Event{
             // new Cell below, 66 = b
             if (event.keyCode==66 && event.ctrlKey){
                 let selectedCell = document.querySelector(".selectedCell")
-
+                
                 selectedCell.soul.insertCell("below")
 
             }// new Cell Below

@@ -1,0 +1,94 @@
+.referenceTabContainer {
+  background: LightSteelBlue;
+  overflow-y: scroll;
+}
+.referenceTabContainer h1 {
+  margin: 0;
+  padding: 10px 10px 37px 10px;
+}
+.referenceTabContainer .latexMotherCell {
+  padding: 10px;
+}
+.referenceTabContainer .latexChildCell {
+  font-size: 20px;
+  padding: 10px;
+}
+.referenceTabContainer .noteInfo, .referenceTabContainer .saveButton {
+  margin: 8px;
+}
+.referenceTabContainer img {
+  margin: 20px 0px;
+  width: 100%;
+}
+.referenceTabContainer .cell.sectionTitle h2 {
+  text-align: center;
+  font-size: 35px;
+}
+.referenceTabContainer .cell.sectionTitle button.sectionTitle {
+  background: yellow;
+}
+.referenceTabContainer .cell, .referenceTabContainer .selectedCell {
+  width: 95%;
+  margin: 40px auto;
+  background: BurlyWood;
+  padding: 10px;
+}
+.referenceTabContainer .cell .cellTitle, .referenceTabContainer .selectedCell .cellTitle {
+  margin: 10px;
+}
+.referenceTabContainer .cell .cellControlPanel .cellSectionInput, .referenceTabContainer .selectedCell .cellControlPanel .cellSectionInput {
+  width: 30px;
+}
+.referenceTabContainer .cell .annotation, .referenceTabContainer .selectedCell .annotation {
+  padding-top: 10px;
+}
+.referenceTabContainer .cell [data-level=easy], .referenceTabContainer .selectedCell [data-level=easy] {
+  background: #66ff33;
+}
+.referenceTabContainer .cell [data-level=medium], .referenceTabContainer .selectedCell [data-level=medium] {
+  background: #66ccff;
+}
+.referenceTabContainer .cell [data-level=difficult], .referenceTabContainer .selectedCell [data-level=difficult] {
+  background: #b20039;
+}
+.referenceTabContainer .cell .annotationControlPanel, .referenceTabContainer .selectedCell .annotationControlPanel {
+  margin: 5px 28px;
+}
+.referenceTabContainer .cell .annotationContent, .referenceTabContainer .selectedCell .annotationContent {
+  background-color: wheat;
+  min-height: 10vh;
+  margin: 10px;
+  padding: 8px;
+  width: 90%;
+  font-size: 20px;
+}
+.referenceTabContainer .cell .annotationContent input, .referenceTabContainer .selectedCell .annotationContent input {
+  display: block;
+}
+.referenceTabContainer .cell .annotationContent .useful.addToUseful, .referenceTabContainer .selectedCell .annotationContent .useful.addToUseful {
+  background: yellow;
+}
+.referenceTabContainer .cell .annotationContent .latexChildCell, .referenceTabContainer .selectedCell .annotationContent .latexChildCell {
+  margin-top: 10px;
+  min-height: 30px;
+}
+.referenceTabContainer .cell .annotationContent .latexChildCell *, .referenceTabContainer .selectedCell .annotationContent .latexChildCell * {
+  pointer-events: none;
+}
+.referenceTabContainer .cell .annotation:focus, .referenceTabContainer .selectedCell .annotation:focus {
+  background-color: white;
+}
+.referenceTabContainer .selectedCell {
+  border: 2px red solid;
+}
+
+.cell[sectionlevel="0"] .cellTitle {
+  font-size: 30px;
+  text-align: center;
+}
+
+.cell[sectionLevel="1"] .cellTitle {
+  font-size: 25px;
+}
+
+/*# sourceMappingURL=referenceTab.css.map */

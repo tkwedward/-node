@@ -1,5 +1,5 @@
 class Tab{
-    constructor(tabID, position, name){
+    constructor(tabID, position, name, cellType){
         this.cellArray = []
         this.tabID = tabID
         this.position = position
@@ -9,6 +9,7 @@ class Tab{
         this.name = name
         this.cellHead = null
         this.cellTail = null
+        this.cellType = cellType
     }
 
     create(){
@@ -20,7 +21,7 @@ class Tab{
     }
 
     createNewCell(cellData){
-        let _newCell = new Cell(this, cellData)
+        let _newCell = new this.cellType(this, cellData)
         this.cellArray.push(_newCell)
         this.tabWindowHtmlObject.append(_newCell.cellHtmlObject)
         return _newCell
@@ -63,6 +64,7 @@ class Tab{
     }
 
     fromLoadCreatePage(jsonResult){
+        console.log(jsonResult);
         this.data = jsonResult
         this.maxAnnotationBlockID = parseInt(jsonResult["maxAnnotationBlockID"]) || 1
 
@@ -92,7 +94,6 @@ class Tab{
                 this.cellTail = newCell
             }
         })
-        console.log(jsonResult);
         // to create summary page
         let summaryCellContainerData = jsonResult["summaryCellContainerData"]
         let annotationBlock = jsonResult["annotationBlock"]
@@ -101,10 +102,9 @@ class Tab{
 }
 
 class NoteTab extends Tab{
-    constructor(tabID, position, name){
-        super(tabID, position, name)
+    constructor(tabID, position, name, cellType){
+        super(tabID, position, name, cellType)
         this.tabWindowHtmlObject.classList.add("noteContainer")
-
         let titleField = document.createElement("h1")
         titleField.contentEditable = true
         titleField.classList.add("titleField")
@@ -117,6 +117,9 @@ class NoteTab extends Tab{
 
         this.tabWindowHtmlObject.append(titleField, chapterField)
     }
+
+
+
 
     setSectionColor(){
         let allCells = this.getCellChain()
@@ -164,16 +167,17 @@ class NoteTab extends Tab{
                 sectionLabel.append(subTitleLink)
             })
             sectionColumn.append(sectionLabel)
-
-
-
         })
+    }
+
+    takeAction(ele, actionFunction){
+        windowManager.symmetryAction(ele, actionFunction)
     }
 }
 
 class SectionTab extends Tab{
-    constructor(tabID, position, name){
-        super(tabID, position, name)
+    constructor(tabID, position, name, cellType){
+        super(tabID, position, name, cellType)
         this.tabWindowHtmlObject.classList.add("sectionContainer")
         this.wrapper = this.createSectionWrapper()
         this.sectionArray = []
@@ -187,70 +191,28 @@ class SectionTab extends Tab{
     }
 
     createSectionTree(){
-        let root = new Section("root", -1)
-        //
-        //
-        // let s1 = new Section("s1", 0)
-        // let s1_1 = new Section("s1_1", 1)
-        // let s1_2 = new Section("s1_2", 1)
-        //
-        // let s2 = new Section("s2", 0)
-        // let s2_1 = new Section("s2_1", 1)
-        // let s2_2 = new Section("s2_2", 1)
-        // let s2_3 = new Section("s2_3", 1)
-        //
-        // let s3 = new Section("s3", 0)
-        // let s3_1 = new Section("s3_1", 1)
-        //
-        // let s4 = new Section("s4", 0)
-        // let s4_1 = new Section("s4_1", 1)
-        // let s4_2 = new Section("s4_2", 1)
-        // let s4_3 = new Section("s4_3", 1)
-        // let s4_4 = new Section("s4_4", 1)
-        //
-        //
-        // let all_nodes = [s1, s1_1, s1_2, s2, s2_1, s2_2, s2_3, s3, s3_1, s4, s4_1, s4_2, s4_3, s4_4]
+        let root = new Section("root")
 
         let tree = new SectionTree(root)
-        let secionArray = windowManager.mainTab.getCellChain()
+
+        this.tree = tree
+
+        tree.generateTreeFromNodeList(this.sectionArray)
+    }
+
+    beautifyTree(){
+        let color = ["red", "orange", "yellow", "green", "Lightgreen", "blue", "purple"]
+        let level0_list = this.tree.root.childrenList.listNode()
+        console.log(level0_list);
+        level0_list.forEach((p, i)=>{
+            let mod = i % color.length
+            p.color = color[mod]
+            p.cell.cellHtmlObject.style.borderLeft = `20px solid ${color[mod]}`
+        })
 
 
-        console.log(windowManager.mainTab.getCellChain());
-        // tree.generateTreeFromNodeList(this.sectionArrays)
 
         windowManager.bookmarkTab.wrapper.innerHTML = ""
-
-        // tree.printTree()
-        //
-        //
-        // let level1_linkList = new SectionLinkList(this.root, 0)
-        // level1_linkList.addNode(s1)
-        // level1_linkList.addNode(s2)
-        // level1_linkList.addNode(s3)
-        // level1_linkList.addNode(s4)
-        //
-        // let s1_childLinkList = new SectionLinkList(s1, 1)
-        // s1_childLinkList.addNode(s1_1)
-        // s1_childLinkList.addNode(s1_2)
-        //
-        // let s2_childLinkList = new SectionLinkList(s2, 1)
-        // s2_childLinkList.addNode(s2_1)
-        // s2_childLinkList.addNode(s2_2)
-        // s2_childLinkList.addNode(s2_3)
-        //
-        // let s3_childLinkList = new SectionLinkList(s3, 1)
-        // s3_childLinkList.addNode(s3_1)
-        //
-        // let s4_childLinkList = new SectionLinkList(s4, 1)
-        // s4_childLinkList.addNode(s4_1)
-        // s4_childLinkList.addNode(s4_2)
-        // s4_childLinkList.addNode(s4_3)
-        // s4_childLinkList.addNode(s4_4)
-        //
-        // console.log(level1_linkList.listNode());
-        // console.log(s2_childLinkList.listNode());
-        // console.log(s2);
-
     }
 
     returnExtremeChild(node, d){
@@ -263,11 +225,12 @@ class SectionTab extends Tab{
 
     fromCellsDataCreatePage(cellChain){
         // use a cell chain to create section array
-        this.sectionArray = cellChain.map((p,i) => new Section(`node_${i}`, 0, p))
+        this.sectionArray = cellChain.map((p,i) => new Section(`cell_${p.cellID}`, p))
 
         // use the array to append the section html object to the tab
         this.sectionArray.forEach(p=>{
-            this.wrapper.append(p.sectionHtmlObject)
+            // console.log(p);
+            // this.wrapper.append(p.sectionHtmlObject)
         })
     }// fromCellsDataCreatePage
 
@@ -291,4 +254,58 @@ class SectionTab extends Tab{
 
         return htmlObject
     }
+} // Section Tab
+
+
+class ReferenceTab extends Tab{
+    constructor(tabID, position, name, cellType){
+        super(tabID, position, name, cellType)
+        this.tabWindowHtmlObject.classList.add("referenceTabContainer")
+        this.wrapper = this.createReferenceTabWrapper()
+        this.functionBar = null
+        this.searchInput = null
+
+        this.createFunctionBar()
+    }
+
+
+    createReferenceTabWrapper(){
+        let wrapper = document.createElement("div")
+        return wrapper
+    }
+
+    createFunctionBar(){
+        let functionBar = document.createElement("div")
+        functionBar.classList.add("functionBar")
+        this.functionBar = functionBar
+
+        this.searchInput = this.createSearch()
+
+        functionBar.append(this.searchInput)
+
+        this.tabWindowHtmlObject.append(functionBar)
+
+
+    }
+
+    createSearch(){
+        let searchInput = document.createElement("input")
+        searchInput.classList.add("searchInput")
+        searchInput.addEventListener("input", function(){
+            console.log(event.target.value);
+        })
+
+        this.tabWindowHtmlObject.append(searchInput)
+
+        return searchInput
+
+
+
+    }
+
+    takeAction(ele, actionFunction){
+        actionFunction(ele)
+    }
+
+
 }

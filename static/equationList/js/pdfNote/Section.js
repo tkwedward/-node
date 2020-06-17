@@ -1,25 +1,36 @@
 class SectionTree{
     constructor(root){
         this.root = root
+        this.totalNumberOfNode = 0
+        this.placeholderArray = []
     }
 
     recursionCheck(lastNode, currentNode){
-        console.log(lastNode, currentNode);
-        let difference = currentNode.level - lastNode.level
+        // console.log(lastNode, currentNode);
+        let difference;
+        if (currentNode && lastNode){
+            difference = currentNode.level - lastNode.level
+            if (difference == 1){
+                // create a sectionLinkList if there are no list
+                if (!lastNode.childrenList){
+                    lastNode.childrenList = new SectionLinkList(lastNode, currentNode.level)
+                }
 
-        if (difference == 1){
-            // create a sectionLinkList if there are no list
-            if (!lastNode.childrenList){
-                lastNode.childrenList = new SectionLinkList(lastNode, currentNode.level)
+                lastNode.childrenList.addNode(currentNode)
+                this.totalNumberOfNode += 1
+
+                return currentNode
+
+            } else if (difference <= 0){
+                lastNode = lastNode.parent
+                return this.recursionCheck(lastNode, currentNode)
             }
+        } else {
 
-            lastNode.childrenList.addNode(currentNode)
-            return currentNode
-
-        } else if (difference <= 0){
-            lastNode = lastNode.parent
-            return this.recursionCheck(lastNode, currentNode)
         }
+
+
+
     }
 
     generateTreeFromNodeList(nodeList){
@@ -29,26 +40,74 @@ class SectionTree{
             let currentNode = p
             lastNode = this.recursionCheck(lastNode, currentNode)
         })
-
-        console.log(this.root);
     }
 
     generateNodeHtmlObject(node){
-        let n = document.createElement("div")
-        n.innerHTML = node.name
-        n.classList.add(`level_${node.level}`)
-        windowManager.bookmarkTab.wrapper.append(n)
+        if (node.level!=-1){
+            let htmlObject = document.createElement("div")
+            htmlObject.classList.add("section", `section_${node.cell.cellID}`, `level_${node.cell.sectionDataNew["level"]}`)
+            htmlObject.innerHTML = node.title
+
+            htmlObject.addEventListener("click", function(){
+                let data = node.cell.cellHtmlObject.offsetTop
+                windowManager.mainTab.tabWindowHtmlObject.scrollTop = data - 20
+            })
+
+            windowManager.bookmarkTab.wrapper.append(htmlObject)
+        }
     }
 
-    printTree(currentNode = this.root){
+    getSubtree(node){
+
+    }
+
+    transverseTree(currentNode = this.root, counter=0){
         this.generateNodeHtmlObject(currentNode)
+        this.placeholderArray.push(currentNode)
+        counter+=1
+        currentNode.printed = true
 
-
+        if (this.totalNumberOfNode < counter){
+            this.placeholderArray.forEach(p=>{
+                p.printed = false
+            })
+            return false
+        }
+        else if (this.getLeftMostChild(currentNode))
+        {
+            currentNode = this.getLeftMostChild(currentNode)
+        }
+        else if (currentNode.nextNode){
+            currentNode = currentNode.nextNode
+        }
+        else if (currentNode.parent.nextNode)
+        {
+            currentNode = currentNode.parent.nextNode
+        }
+        else if (currentNode.printed && !currentNode.parent.nextNode){
+            currentNode = currentNode.parent.parent.nextNode
+        }
+        this.transverseTree(currentNode, counter)
 
     }
 
-    recursionPrintTree(){
+    getLeftMostChild(node){
 
+        if (node.childrenList){
+            let leftMostChild = node.childrenList.getLeftMostNode()
+            return leftMostChild
+        } else {
+            return null
+        }
+    }
+
+    getRightMostChild(node){
+        if (node.childrenList){
+            let leftMostChild = node.childrenList.getRightMostNode()
+            return leftMostChild
+        } else {
+            return null
+        }
     }
 }
 
@@ -84,6 +143,14 @@ class SectionLinkList{
         }
         return nodeChain
     }
+
+    getLeftMostNode(){
+        return this.head
+    }
+
+    getRightMostNode(){
+        return this.tail
+    }
 }
 
 class Section{
@@ -98,8 +165,7 @@ class Section{
         if (cellData){
             this.title = cellData.cellTitle.innerHTML
             this.sectionDataNew = cellData.sectionDataNew
-            this.level = this.sectionDataNew.level
-            // this.sectionHtmlObject = this.createSectionHtmlObject()
+            // this.level = parseInt(this.sectionDataNew.level)
         }
     }
 

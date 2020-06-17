@@ -1,6 +1,10 @@
 class WindowManager {
     constructor(){
         this.pageWrapper = document.querySelector("#pageWrapper")
+        this.tabBar = {
+            "left": this.createTabBar("left"),
+            "right":this.createTabBar("right")
+        }
         this.masterWindowHtmlObject = {
             "left": this.createHalfWindow("left"),
             "right": this.createHalfWindow("right")
@@ -9,6 +13,7 @@ class WindowManager {
             "left": [],
             "right": []
         }
+
 
         this.tabIDList = []
         this.tabID = 0
@@ -20,16 +25,20 @@ class WindowManager {
         promise.then(loadData =>{
             this.loadData = loadData
             let loadDataExist = true ? loadData : false
-            let starterTab1 = this.createNewTab("left", "Note", loadDataExist, "mainTab")
+            let starterTab1 = this.createNewTab("left", "Note", loadDataExist, "mainTab", NoteTabCell)
             this.mainTab = starterTab1
-            let starterTab2 = this.createNewTab("right", "Note", loadDataExist, "mirrorTab")
+            let starterTab2 = this.createNewTab("right", "Note", loadDataExist, "mirrorTab", NoteTabCell)
             this.mirrorTab = starterTab2
 
-            let bookmarkTab = this.createNewTab("right", "Section", loadDataExist, "sectionTab")
+            let bookmarkTab = this.createNewTab("right", "Section", loadDataExist, "sectionTab", NoteTabCell)
             this.bookmarkTab = bookmarkTab
 
             this.mainTab.fromLoadCreatePage(loadData)
             starterTab2.fromLoadCreatePage( loadData)
+
+            let referenceTab = this.createNewTab("right", "Reference", loadDataExist, "referenceTab", ReferenceTabCell)
+            this.referenceTab = referenceTab
+            // referenceTab.fromLoadCreatePage(loadData["referenceTab"])
 
         }).then(()=>{
             let cellChain = this.mainTab.getCellChain()
@@ -37,7 +46,11 @@ class WindowManager {
             // console.log(cellChain);
             this.bookmarkTab.fromCellsDataCreatePage(cellChain)
             this.bookmarkTab.createSectionTree()
+            // this.bookmarkTab.beautifyTree()
+            this.bookmarkTab.tree.transverseTree()
 
+        }).then(()=>{
+            this.fillTabBarWithTabButton()
         })
     }
 
@@ -50,6 +63,65 @@ class WindowManager {
         return halfWindow
     }
 
+    createTabBar(position){
+        let tabBar = document.createElement("div")
+        tabBar.classList.add("tabBar", `tabBar_${position}`)
+        this.pageWrapper.append(tabBar)
+        return tabBar
+    }
+
+    createTabButton(tab, position, selected = true){
+        let self = this
+        let tabButton = document.createElement("span")
+        tabButton.classList.add("tabButton", `tabButton_${tab.tabID}`)
+        tabButton.setAttribute("tabid", tab.tabID)
+        tabButton.setAttribute("tabposition", position)
+        tabButton.innerHTML = tab.name
+        tabButton.position = position
+        tabButton.relatedWindow = this.tabBar[position]
+        tab.tabButton = tabButton
+
+        if (selected){
+            tabButton.classList.add("selectedTabButton")
+        }
+
+        tabButton.addEventListener("click", function(){
+            let targetTabID = tabButton.getAttribute("tabid");
+            let targetTabPosition = tabButton.getAttribute("tabposition");
+            self.tabArray[targetTabPosition].forEach(p=>{
+
+                console.log(p.tabID, targetTabID);
+                p.tabButton.classList.remove("selectedTabButton")
+                if (p.tabID == parseInt(targetTabID)){
+                    p.tabButton.classList.add("selectedTabButton")
+                    p.tabWindowHtmlObject.style.display = "block"
+                } else {
+                    p.tabWindowHtmlObject.style.display = "none"
+                }
+            })
+        })
+        this.tabBar[position].append(tabButton)
+    }
+
+
+    fillTabBarWithTabButton(){
+        this.tabArray["left"].forEach((p, i)=>{
+            let selected = false
+            if (i==0) {
+                selected = true
+            }
+            this.createTabButton(p, "left", selected)
+        })
+
+        this.tabArray["right"].forEach((p, i)=>{
+            let selected = false
+            if (i==0) {
+                selected = true
+            }
+            this.createTabButton(p, "right", selected)
+        })
+    }
+
     showTab(position, tabID){
         this.tabArray[position].forEach(tab=>{
             if (tab.tabID == tabID){
@@ -58,16 +130,15 @@ class WindowManager {
                 tab.tabWindowHtmlObject.style.display = "none"
             }
         })
-        this.masterWindowHtmlObject["position"]
     }
 
-    createNewTab(position = "left", tabType = "Note", data = false, name){
+    createNewTab(position = "left", tabType = "Note", data = false, name, cellType){
         // newTab = new tab object
         // slaveWindow = the window related to the tab object
         let newTab
 
         if (tabType == "Note"){
-            newTab = new NoteTab(this.tabID, position, name)
+            newTab = new NoteTab(this.tabID, position, name, cellType)
 
             // initialize the cell with an annotation, or fill in it with data
             if (data==false){
@@ -76,12 +147,17 @@ class WindowManager {
         } // if tabType == "Note"
         else if  (tabType == "Section")
         {
-            newTab = new SectionTab(this.tabID, position, name)
+            newTab = new SectionTab(this.tabID, position, name, cellType)
+        }
+        else if  (tabType == "Reference")
+        {
+            newTab = new ReferenceTab(this.tabID, "right", name, cellType)
         }
 
         // console.log(this.tabArray["left"].push)
         this.tabArray[position].push(newTab)
         // add the tabs into the masterWIndow left or right array
+        console.log();
         this.masterWindowHtmlObject[position].append(newTab.tabWindowHtmlObject)
         this.renderTab(this.tabID, position)
 
@@ -131,14 +207,17 @@ class WindowManager {
 
     // saveData
     save(action=true){
-        let saveObject = this.mainTab.save()
-        console.log(saveObject);
+        let mainTabSaveObject = this.mainTab.save()
+        let referenceTabSaveObject = this.referenceTab.save()
+
+        mainTabSaveObject["referenceTab"] = referenceTabSaveObject
+
         if (action){
-            this.ajaxSendJson(url, saveObject, "save state", "success to save", function(){
+            this.ajaxSendJson(url, mainTabSaveObject, "save state", "success to save", function(){
                 console.log("after sent ajax");
             })
         } else {
-            return saveObject
+            return mainTabSaveObject
         }
     }
 

@@ -1,5 +1,5 @@
 class Cell{
-    constructor(upperTab, data = null, annotationID=0, pinned=false){
+    constructor(upperTab, data = null, annotationID=0, pinned=false, tabAnnotationType= null){
         this.correct = 0
         this.wrong = 0
         this.cellID = upperTab.maxCellID
@@ -9,7 +9,7 @@ class Cell{
         this.upperTab = upperTab
         this.parentTab = upperTab.name
         this.cellHtmlObject = document.createElement("div")
-
+        this.tabAnnotationType = tabAnnotationType
 
         this.create()
         if (data) {
@@ -23,29 +23,18 @@ class Cell{
         cellIDObject.innerHTML = this.cellID
         this.cellHtmlObject.append(cellIDObject)
 
-        this.monitor()
+
     }
 
-    monitor(){
-        let self = this
-        let observer = new MutationObserver(function(mutations){
-            let notTriggerList = ["latexChildCell"]
-            let sourceElement = mutations[0].target
 
-            if (mutations[0].type=="characterData"){
-                console.log(mutations[0]);
-                sourceElement = sourceElement.parentElement
-                let actionFunction = function(ele){
-                    ele.innerHTML = sourceElement.innerHTML
-                }
+    getCellLevel(){
+        let level = this.controlPanel.sectionInput.value
+        return level
+    }
 
-                windowManager.symmetryAction(sourceElement, actionFunction, this.parentTab, false)
-            }// mutations[0]=="characterData"
-        })
-
-        observer.observe(this.cellHtmlObject, {"characterData":true, "subtree": true, "childList": true})
-
-
+    getCellTitle(){
+        let title = this.cellTitle.innerHTML
+        return title
     }
 
     // create new cellNew
@@ -97,7 +86,7 @@ class Cell{
         // to create Annotation
         let upperCell = this
         let nextAnnotationID = this.getNextAnnotationID(data)
-        let _a = new Annotation(this.cellID, nextAnnotationID, upperCell, data)
+        let _a = new this.tabAnnotationType(this.cellID, nextAnnotationID, upperCell, data)
 
         this.annotationArray.push(_a)
         this.cellHtmlObject.append(_a.annotationHtmlObject)
@@ -117,6 +106,7 @@ class Cell{
         let self = this
         let actionFunction = function(ele){
             // ele is the html
+            console.log(ele);
 
             let upperTab = ele.soul.upperTab
             let newCell = upperTab.createNewCell()
@@ -145,16 +135,9 @@ class Cell{
 
                 ele.soul.prevousCell = newCell
             }
-
-
-
-            console.log(ele.soul.nextCell);
-            console.log(ele.soul.previousCell);
         }
 
-        windowManager.symmetryAction(this.cellHtmlObject, actionFunction)
-
-        console.log(this.upperTab.getCellChain());
+        self.upperTab.takeAction(self.cellHtmlObject,actionFunction)
     }
 
     insertAbove(){
@@ -166,13 +149,17 @@ class Cell{
     }
 
     save(){
+        console.log(this);
         let saveObject = {
             cellID: this.cellID,
             maxAnnotationID: this.maxAnnotationID,
+            sectionData: {"level" : this.getCellLevel()},
+            sectionTitle: {"title" : this.getCellTitle()},
+            sectionDataNew: {
+                "level" : this.getCellLevel(),
+                "title" : this.getCellTitle()
+            },
             cellTitle: this.cellTitle.innerHTML,
-            sectionData: {"level": this.sectionDataNew.level },
-            sectionTitle: {"title": this.sectionDataNew.title },
-            sectionDataNew: this.sectionDataNew,
             pinButton: this.controlPanel.innerHTML,
             annotation: []
         }
@@ -208,14 +195,14 @@ class Cell{
         this.sectionData = loadData["sectionData"]
 
         this.sectionTitle = loadData["sectionTitle"]
-
         if (this.sectionDataNew){
             this.sectionDataNew  = loadData["sectionDataNew"]
             this.cellHtmlObject.setAttribute("sectionLevel", this.sectionDataNew.level)
+
         } else {
             this.sectionDataNew = {
-                "title": loadData["sectionDataNew"].title,
-                "level":loadData["sectionDataNew"].level
+                "title": loadData["cellTitle"],
+                "level":loadData["sectionTitle"].level
             }
             this.cellHtmlObject.setAttribute("sectionLevel", this.sectionDataNew.level)
         }
@@ -283,10 +270,6 @@ class CellControlPanel{
         this.sectionInput = sectionInput
         sectionInput.addEventListener("change", function(event){
             let newValue = event.target.value
-            // this.sectionData["level"] = event.target.value
-            // this.sectionDataNew["level"] = event.target.value
-            self.sectionData.level = newValue
-            self.sectionDataNew.level = newValue
 
             self.cellHtmlObject.setAttribute("sectionLevel", newValue)
         })
@@ -367,4 +350,42 @@ class CellControlPanel{
 
         return sectionLevelValueCellPairMap
     }// separateByLevel
+}
+
+class NoteTabCell extends Cell{
+    constructor(upperTab, data, annotationID, pinned, tabAnnotationType=NoteTabAnnotation){
+        super(upperTab, data, annotationID=0, pinned=false, tabAnnotationType)
+        this.monitor()
+    }
+
+    monitor(){
+        let self = this
+        let observer = new MutationObserver(function(mutations){
+            let notTriggerList = ["latexChildCell"]
+            let sourceElement = mutations[0].target
+
+            if (mutations[0].type=="characterData"){
+                console.log(mutations[0]);
+                sourceElement = sourceElement.parentElement
+                let actionFunction = function(ele){
+                    ele.innerHTML = sourceElement.innerHTML
+                }
+
+                windowManager.symmetryAction(sourceElement, actionFunction, this.parentTab, false)
+            }// mutations[0]=="characterData"
+        })
+
+        observer.observe(this.cellHtmlObject, {"characterData":true, "subtree": true, "childList": true})
+    }
+
+}
+
+class ReferenceTabCell extends Cell{
+    constructor(upperTab, data = null, annotationID=0, pinned=false, tabAnnotationType=ReferenceTabAnnotation){
+        super(upperTab, data, annotationID, pinned, tabAnnotationType)
+    }
+
+    kick(){
+        console.log("i am reference tab cell");
+    }
 }

@@ -1,0 +1,123 @@
+.referenceTabContainer{
+    background: LightSteelBlue;
+    overflow-y: scroll;
+
+    h1{
+        margin: 0;
+        padding: 10px 10px 37px 10px;
+    }
+
+    .latexMotherCell{
+        padding: 10px
+    }
+    .latexChildCell{
+        font-size: 20px;
+        padding: 10px;
+    }
+
+
+    .noteInfo, .saveButton{
+        margin: 8px;
+    }
+
+
+    img{
+        margin: 20px 0px;
+        width: 100%;
+    }
+
+    .cell.sectionTitle  {
+        h2 {
+            text-align: center;
+            font-size: 35px;
+        }
+
+        button.sectionTitle {
+            background: yellow;
+        }
+    }
+
+
+
+    .cell, .selectedCell{
+        width: 95%;
+        margin: 40px auto;
+        background: BurlyWood;
+        padding: 10px;
+
+
+
+        .cellTitle {
+            margin: 10px
+        }
+
+        .cellControlPanel{
+            .cellSectionInput{
+                width: 30px;
+            }
+        }
+
+        .annotation{
+            padding-top: 10px;
+
+        }
+        [data-level="easy"]{
+            background: rgb(102, 255, 51)
+        }
+        [data-level="medium"]{
+            background: rgb(102, 204, 255)
+        }
+        [data-level="difficult"]{
+            background: rgba(178, 0, 57, 1)
+        }
+
+        .annotationControlPanel{
+            margin: 5px 28px;
+        }
+        .annotationContent{
+            background-color: wheat;
+            min-height: 10vh;
+            margin: 10px;
+            padding: 8px;
+            width: 90%;
+            font-size: 20px;
+            input {
+                display: block;
+            }
+
+            .useful.addToUseful{
+                background: yellow;
+            }
+
+            .latexChildCell{
+                margin-top: 10px;
+                min-height: 30px;
+                * {
+                    pointer-events: none;
+
+                }
+            }
+        }
+
+        .annotation:focus{
+            background-color: white;
+        }
+    }
+
+        .selectedCell{
+            border: 2px red solid;
+        }
+    }
+
+    .cell[sectionlevel="0"]{
+        .cellTitle{
+            font-size: 30px;
+            text-align:center;
+        }
+    }
+
+    .cell[sectionLevel="1"]{
+        .cellTitle{
+            font-size: 25px;
+        }
+}

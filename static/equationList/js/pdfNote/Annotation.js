@@ -6,6 +6,7 @@ class Annotation{
         this.annotationID = annotationID || 0
         this.annotationHtmlObject = this.create()
         this.panel = this.createAnnotationPanel()
+        this.imageTextArray = []
 
         if (!data) {
             this.appendIDHtmlObject()
@@ -169,6 +170,7 @@ class Annotation{
     }// renderLatex
 
     createImageAnnotation(){
+        let self = this
         let image = new Image()
         image.src = ""
 
@@ -182,7 +184,8 @@ class Annotation{
             imageText.classList.add("imageText")
             imageText.style.background = "MistyRose"
             imageText.innerHTML = "imageText"
-            annotationContent.append(imageText)
+            self.annotationContent.append(imageText)
+            self.imageTextArray.push(imageText)
         })
         imageTextButton.innerHTML = "add text"
 
@@ -203,6 +206,10 @@ class Annotation{
 
     }
 
+    getImageTextArray(){
+        return this.imageTextArray.map(p=>p.innerText)
+    }
+
     save(){
         let _panel = this.panel.AnnotationControlPanelHtmlObject
 
@@ -219,7 +226,7 @@ class Annotation{
         if (this.annotationType == "textAnnotation"){
             saveObject["latexMotherCellInnerHTML"] = this.mother.innerHTML
         } else {
-            saveObject["imageText"] = this.imageText
+            saveObject["imageText"] = this.getImageTextArray()
             saveObject["fileName"] = this.fileName
             saveObject["src"] = this.src
         }
@@ -275,7 +282,7 @@ class Annotation{
 
         this.src = loadData["src"]
         this.fileName = loadData["fileName"]
-        this.imageText = loadData["imageText"]
+        this.imageTextArray = loadData["imageText"]
 
         // add annotation ID
         // this.annotationID = loadData["annotationID"]
@@ -305,6 +312,7 @@ class Annotation{
         let createdDate =  new Date().toLocaleString().split("/").join("-") + " "
 
         let actionFunction = function(ele){
+
             let [image, fileNameInput, imageTextButton] = self.createImageAnnotation()
 
             ele.soul.annotationType = "imageAnnotation"
@@ -324,8 +332,28 @@ class Annotation{
             ele.soul.compileButton.style.display = "none"
         }
 
-        windowManager.symmetryAction(this.annotationHtmlObject, actionFunction)
+        this.takeActions(this.annotationHtmlObject, actionFunction)
+    }
+}
 
+
+class NoteTabAnnotation extends Annotation{
+    constructor(cellID, annotationID, relatedCell, data = null, addCellID=true, pinned=false){
+        super(cellID, annotationID, relatedCell, data, addCellID, pinned)
+    }
+
+    takeActions(sourceElement, actionFunction){
+        windowManager.symmetryAction(sourceElement, actionFunction)
+    }
+}
+
+class ReferenceTabAnnotation extends Annotation{
+    constructor(cellID, annotationID, relatedCell, data = null, addCellID=true, pinned=false){
+        super(cellID, annotationID, relatedCell, data, addCellID, pinned)
+    }
+
+    takeActions(sourceElement, actionFunction){
+        actionFunction(sourceElement)
     }
 }
 
@@ -384,7 +412,7 @@ class AnnotationControlPanel{
                 ele.remove()
             }
 
-            windowManager.symmetryAction(sourceElement, actionFunction)
+            self.upperAnnotation.takeActions(sourceElement, actionFunction)
         })
         deleteButton.innerHTML = "delete"
         this.deleteButton = deleteButton
@@ -397,7 +425,7 @@ class AnnotationControlPanel{
                 parentNode.insertBefore(newAnnotation, ele)
             }
 
-            windowManager.symmetryAction(sourceElement, actionFunction)
+            self.upperAnnotation.takeActions(sourceElement, actionFunction)
         })
         insertAbove.innerHTML = "insertAbove"
         this.insertAbove = insertAbove
@@ -412,7 +440,9 @@ class AnnotationControlPanel{
                 parentNode.insertBefore(ele, newAnnotation)
             }
 
-            windowManager.symmetryAction(sourceElement, actionFunction)
+            // actionFunction(sourceElement)
+            console.log(self.upperAnnotation);
+            self.upperAnnotation.takeActions(sourceElement, actionFunction)
 
         })
         insertBelow.innerHTML = "insertBelow"
@@ -449,9 +479,5 @@ class AnnotationControlPanel{
 
         this.AnnotationControlPanelHtmlObject.append(questionButton,  deleteButton, insertAbove, insertBelow, addToFlashCardButton, levelOfDifficultyButton)
     }// create new annotation
-
-
-
-
 
 }
