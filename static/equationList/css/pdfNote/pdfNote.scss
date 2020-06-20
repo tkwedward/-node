@@ -9,6 +9,7 @@ body {
 
 }
 
+
 .tabBar{
     min-height: 40px;
     width:50vw;
@@ -29,6 +30,10 @@ body {
     background: Gainsboro;
 }
 
+.tabWindow{
+    overflow-x: hidden;
+}
+
 .navBar{
     background: green;
     height: 80px;
@@ -41,6 +46,29 @@ body {
         }
     }
 }// .navBar
+
+
+.popUpBox{
+    background: yellow;
+
+    .popUpBoxQuestionText{
+        padding: 30px;
+    }
+
+    .popUpBoxAnswerPart{
+        width: 80%;
+        text-align: center;
+
+        .popUpBoxChoice{
+            display: "inline-block";
+            width: "40%";
+            margin: "auto";
+            text-align: "center";
+        }
+
+    }
+}
+
 
 $containerHeight: 92vh;
 #pageWrapper{
@@ -55,6 +83,11 @@ $containerHeight: 92vh;
     .left, .right {
         height: 100vh;
     }
+    .right{
+        width: 49vw;
+    }
+
+
 
     .noteContainer{
         .titleField, .chapterField{
@@ -63,7 +96,7 @@ $containerHeight: 92vh;
 
         background-color: Olive;
         height: 100vh;
-        width: 100%;
+        // width: 50vw;
         overflow-y: scroll;
 
         .latexMotherCell{
@@ -118,6 +151,28 @@ $containerHeight: 92vh;
 
             .annotation{
                 padding-top: 10px;
+                position: relative;
+                width: 100%;
+                .annotationSelectBox{
+                    width: 25px;
+                    height:25px;
+                    position: absolute;
+                    bottom: 9%;
+                    right: 6%;
+
+                    [data-selected="false"]{
+                        background-color: white
+                    }
+                }
+
+                .annotationSelectBox[data-selected="true"]{
+                    background-color: red
+                }
+                .annotationSelectBox[data-selected="false"]{
+                    background-color: white
+                }
+
+
 
             }
             [data-level="easy"]{
@@ -210,19 +265,33 @@ $containerHeight: 92vh;
 
 
     }
-
-
-
+    $baseMargin: 30px;
     .sectionContainer{
         background: PaleGreen;
-        height: $containerHeight;
+        height: 100vh;
         overflow-y: scroll;
 
+
         .sectionWrapper{
-            .level_0{
-                font-size: 25px;
-                margin: 5px;
+            .section{
+                cursor: pointer;
             }
+
+            .level_0{
+                font-size: 30px;
+                margin: 5px $baseMargin;
+            }
+
+            .level_1{
+                font-size: 25px;
+                margin: 5px $baseMargin * 2;
+            }
+
+            .level_2{
+                font-size: 25px;
+                margin: 5px $baseMargin *3;
+            }
+
 
             // width: 100%;
 

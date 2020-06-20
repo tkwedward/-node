@@ -29,6 +29,10 @@ body {
   background: Gainsboro;
 }
 
+.tabWindow {
+  overflow-x: hidden;
+}
+
 .navBar {
   background: green;
   height: 80px;
@@ -39,6 +43,23 @@ body {
 }
 .navBar .functionButton .functionFirstLine, .navBar .functionButton .functionSecondLine {
   padding: 5px 0px;
+}
+
+.popUpBox {
+  background: yellow;
+}
+.popUpBox .popUpBoxQuestionText {
+  padding: 30px;
+}
+.popUpBox .popUpBoxAnswerPart {
+  width: 80%;
+  text-align: center;
+}
+.popUpBox .popUpBoxAnswerPart .popUpBoxChoice {
+  display: "inline-block";
+  width: "40%";
+  margin: "auto";
+  text-align: "center";
 }
 
 #pageWrapper {
@@ -52,10 +73,12 @@ body {
 #pageWrapper .left, #pageWrapper .right {
   height: 100vh;
 }
+#pageWrapper .right {
+  width: 49vw;
+}
 #pageWrapper .noteContainer {
   background-color: Olive;
   height: 100vh;
-  width: 100%;
   overflow-y: scroll;
 }
 #pageWrapper .noteContainer .titleField, #pageWrapper .noteContainer .chapterField {
@@ -96,6 +119,24 @@ body {
 }
 #pageWrapper .noteContainer .cell .annotation, #pageWrapper .noteContainer .selectedCell .annotation {
   padding-top: 10px;
+  position: relative;
+  width: 100%;
+}
+#pageWrapper .noteContainer .cell .annotation .annotationSelectBox, #pageWrapper .noteContainer .selectedCell .annotation .annotationSelectBox {
+  width: 25px;
+  height: 25px;
+  position: absolute;
+  bottom: 9%;
+  right: 6%;
+}
+#pageWrapper .noteContainer .cell .annotation .annotationSelectBox [data-selected=false], #pageWrapper .noteContainer .selectedCell .annotation .annotationSelectBox [data-selected=false] {
+  background-color: white;
+}
+#pageWrapper .noteContainer .cell .annotation .annotationSelectBox[data-selected=true], #pageWrapper .noteContainer .selectedCell .annotation .annotationSelectBox[data-selected=true] {
+  background-color: red;
+}
+#pageWrapper .noteContainer .cell .annotation .annotationSelectBox[data-selected=false], #pageWrapper .noteContainer .selectedCell .annotation .annotationSelectBox[data-selected=false] {
+  background-color: white;
 }
 #pageWrapper .noteContainer .cell [data-level=easy], #pageWrapper .noteContainer .selectedCell [data-level=easy] {
   background: #66ff33;
@@ -168,12 +209,23 @@ body {
 }
 #pageWrapper .sectionContainer {
   background: PaleGreen;
-  height: 92vh;
+  height: 100vh;
   overflow-y: scroll;
 }
+#pageWrapper .sectionContainer .sectionWrapper .section {
+  cursor: pointer;
+}
 #pageWrapper .sectionContainer .sectionWrapper .level_0 {
+  font-size: 30px;
+  margin: 5px 30px;
+}
+#pageWrapper .sectionContainer .sectionWrapper .level_1 {
   font-size: 25px;
-  margin: 5px;
+  margin: 5px 60px;
+}
+#pageWrapper .sectionContainer .sectionWrapper .level_2 {
+  font-size: 25px;
+  margin: 5px 90px;
 }
 
 /*# sourceMappingURL=pdfNote.css.map */

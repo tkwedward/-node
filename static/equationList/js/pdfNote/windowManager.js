@@ -1,6 +1,8 @@
 class WindowManager {
     constructor(){
         this.pageWrapper = document.querySelector("#pageWrapper")
+
+
         this.tabBar = {
             "left": this.createTabBar("left"),
             "right":this.createTabBar("right")
@@ -14,7 +16,7 @@ class WindowManager {
             "right": []
         }
 
-
+        this.popUpBoxHtmlObject = null
         this.tabIDList = []
         this.tabID = 0
 
@@ -30,11 +32,12 @@ class WindowManager {
             let starterTab2 = this.createNewTab("right", "Note", loadDataExist, "mirrorTab", NoteTabCell)
             this.mirrorTab = starterTab2
 
-            let bookmarkTab = this.createNewTab("right", "Section", loadDataExist, "sectionTab", NoteTabCell)
-            this.bookmarkTab = bookmarkTab
+            let sectionTab = this.createNewTab("right", "Section", loadDataExist, "sectionTab", NoteTabCell)
+            this.sectionTab = sectionTab
 
             this.mainTab.fromLoadCreatePage(loadData)
             starterTab2.fromLoadCreatePage( loadData)
+
 
             let referenceTab = this.createNewTab("right", "Reference", loadDataExist, "referenceTab", ReferenceTabCell)
             this.referenceTab = referenceTab
@@ -44,13 +47,19 @@ class WindowManager {
             let cellChain = this.mainTab.getCellChain()
             console.log("sectionTab management");
             // console.log(cellChain);
-            this.bookmarkTab.fromCellsDataCreatePage(cellChain)
-            this.bookmarkTab.createSectionTree()
+            this.sectionTab.fromCellsDataCreatePage(cellChain)
+            this.sectionTab.createSectionTree(cellChain)
+            console.log(this.sectionTab);
+
+            this.sectionTab.tree.printAllChild(this.sectionTab.wrapperHtmlObject)
+
             // this.bookmarkTab.beautifyTree()
-            this.bookmarkTab.tree.transverseTree()
+            // this.sectionTab.tree.transverseTree()
 
         }).then(()=>{
             this.fillTabBarWithTabButton()
+        }).then(()=>{
+            this.createPopUpBox()
         })
     }
 
@@ -68,6 +77,76 @@ class WindowManager {
         tabBar.classList.add("tabBar", `tabBar_${position}`)
         this.pageWrapper.append(tabBar)
         return tabBar
+    }
+
+    createPopUpBox(){
+        let _width = 20
+        let _height = _width + 1.5
+        let _top = (100 - _height) / 2
+        let _left = (100 - _width) / 2
+        let popUpBoxDiv = document.createElement("div")
+        popUpBoxDiv.className = "popUpBox"
+
+        popUpBoxDiv.style.width = _width + "vw"
+        popUpBoxDiv.style.height = _width + "vh"
+
+        popUpBoxDiv.style.position = "absolute"
+        popUpBoxDiv.style.left = _left + "vw"
+        popUpBoxDiv.style.top = _top + "vh"
+
+        popUpBoxDiv.style.display = "none"
+        popUpBoxDiv.style.alignItems = "center"
+        popUpBoxDiv.style.justifyItems = "center"
+        popUpBoxDiv.style.flexDirection = "column"
+        popUpBoxDiv.style.flexWrap = "nowrap"
+        // popUpBoxDiv.style.background = "blue"
+
+
+        let questionTextDiv = document.createElement("div")
+        questionTextDiv.className = "popUpBoxQuestionText"
+        questionTextDiv.innerHTML = "questionText"
+        // question.innerHTML = questionText
+
+        let answerPartDiv = document.createElement("div")
+        answerPartDiv.className = "popUpBoxAnswerPart"
+
+        popUpBoxDiv.append(questionTextDiv, answerPartDiv)
+        this.pageWrapper.append(popUpBoxDiv)
+
+        popUpBoxDiv.questionTextHtmlObject = questionTextDiv
+        popUpBoxDiv.answerPartHtmlObject = answerPartDiv
+        this.popUpBoxHtmlObject = popUpBoxDiv
+    }
+
+    fillInPopUpBox(questionText, choices, target, _f){
+        // _f is the function that want to rrun
+        let popUpBoxDiv = this.popUpBoxHtmlObject
+        popUpBoxDiv.style.display = "flex"
+        let questionTextDiv = this.popUpBoxHtmlObject.questionTextHtmlObject
+        let answerPartDiv = this.popUpBoxHtmlObject.answerPartHtmlObject
+
+
+        questionTextDiv.innerText = questionText
+
+        choices.forEach(p=>{
+            let answerBoxSpan = document.createElement("span")
+            answerBoxSpan.className = "popUpBoxChoice"
+            answerBoxSpan.innerText = p
+            answerBoxSpan.style.display = "inline-block"
+            answerBoxSpan.style.width = "40%"
+            answerBoxSpan.style.margin = "auto"
+            answerBoxSpan.style.textAlign = "center"
+
+            answerBoxSpan.addEventListener("click", function(){
+
+                _f(target, answerBoxSpan.innerText)
+                answerPartDiv.innerHTML = ""
+                popUpBoxDiv.style.display = "none"
+
+            })
+
+            answerPartDiv.append(answerBoxSpan)
+        })
     }
 
     createTabButton(tab, position, selected = true){

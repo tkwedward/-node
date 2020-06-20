@@ -207,7 +207,7 @@ class Annotation{
     }
 
     getImageTextArray(){
-        return this.imageTextArray.map(p=>p.innerText)
+        // return this.imageTextArray.map(p=>p.innerText)
     }
 
     save(){

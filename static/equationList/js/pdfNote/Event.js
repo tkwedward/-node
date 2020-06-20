@@ -63,9 +63,34 @@ class Event{
             // new Cell below, 66 = b
             if (event.keyCode==66 && event.ctrlKey){
                 let selectedCell = document.querySelector(".selectedCell")
-                
+
                 selectedCell.soul.insertCell("below")
 
+            }// new Cell Below
+
+            // copy current Cell, 67 = c, 88 = x
+            if ((event.keyCode==67 || event.keyCode==88) && event.ctrlKey){
+                let selectedCells = Array.from(document.querySelectorAll(".selectedCell"))
+
+                windowManager.cellEditData = selectedCells
+            }// new Cell Below
+
+
+            // copy current Cell, 78 = n
+            if ((event.keyCode==78) && event.ctrlKey){
+                 let selectedCell = document.querySelector(".selectedCell")
+
+                 selectedCell.soul.selectAnnotationMode()
+                 // Array.from(document.querySelectorAll(".selectedCell"))
+
+                // windowManager.cellEditData = selectedCells
+            }// new Cell Below
+
+            // paste current Cell, 86 = v
+            if ((event.keyCode==86) && event.ctrlKey){
+                // the cell that is a reference
+                let selectedCell = document.querySelector(".selectedCell")
+                windowManager.fillInPopUpBox("questionText", ["up", "down"], selectedCell,  selectedCell.soul.upperTab.pasteCellEvent);
             }// new Cell Below
 
             // deleteCell, 68 = d

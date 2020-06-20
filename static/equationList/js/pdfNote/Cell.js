@@ -140,16 +140,31 @@ class Cell{
         self.upperTab.takeAction(self.cellHtmlObject,actionFunction)
     }
 
-    insertAbove(){
+    selectAnnotationMode(){
+        console.log(this.annotationArray);
+        this.annotationArray.forEach(p=>{
+            let selectBox = document.createElement("div")
+            selectBox.setAttribute("data-selected", "false")
+            selectBox.classList.add("annotationSelectBox", `annotationSelectBox_${p.cellID}_${p.annotationID}`)
+            p.annotationHtmlObject.append(selectBox)
+
+            selectBox.addEventListener("click", function(){
+                let status = selectBox.getAttribute("data-selected")
+
+                let new_status = status=="true" ? "false" : "true"
+                selectBox.setAttribute("data-selected", new_status)
+
+            })
+
+        })
 
     }
 
-    copy(){
-
+    pasteAnnotationEvent(target, direction){
+        console.log(target, direction);
     }
 
     save(){
-        console.log(this);
         let saveObject = {
             cellID: this.cellID,
             maxAnnotationID: this.maxAnnotationID,
@@ -192,7 +207,9 @@ class Cell{
     }
 
     loadInSectionData(loadData){
+        console.log(loadData);
         this.sectionData = loadData["sectionData"]
+        this.controlPanel.sectionInput.value = 0
 
         this.sectionTitle = loadData["sectionTitle"]
         if (this.sectionDataNew){
@@ -207,7 +224,11 @@ class Cell{
             this.cellHtmlObject.setAttribute("sectionLevel", this.sectionDataNew.level)
         }
 
-        this.controlPanel.sectionInput.value = this.sectionDataNew.level
+        console.log(this.sectionData);
+        if (this.sectionData){
+            this.controlPanel.sectionInput.value = this.sectionData.level || 0
+        }
+
     }
 
     loadInAnnotationData(loadData){

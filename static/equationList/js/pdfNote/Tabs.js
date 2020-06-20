@@ -42,6 +42,35 @@ class Tab{
         return cellChain
     }
 
+    selectCells(){
+
+    }
+
+    pasteCellEvent(target, direction){
+        let self = target.soul.upperTab
+        let firstCell = windowManager.cellEditData[0]
+
+        let referenceCell = target
+        console.log(referenceCell);
+
+        for (let i = 0; i <= windowManager.cellEditData.length - 1; i++){
+            let target = windowManager.cellEditData[i]
+            referenceCell.parentNode.insertBefore(target, referenceCell)
+            if (direction=="down"){
+                referenceCell.parentNode.insertBefore(referenceCell, target)
+            }
+            referenceCell = target
+        }
+
+
+        console.log(target, direction, firstCell , windowManager.cellEditData, self);
+        // windowManager.cellEditData.map(p=>p.soul.save())
+        // windowManager.cellEditData
+        // console.log(newCell);
+
+
+    }
+
     save(){
         let title = document.querySelector(".titleField").innerHTML
         let chapter = document.querySelector(".chapterField").innerHTML
@@ -179,7 +208,7 @@ class SectionTab extends Tab{
     constructor(tabID, position, name, cellType){
         super(tabID, position, name, cellType)
         this.tabWindowHtmlObject.classList.add("sectionContainer")
-        this.wrapper = this.createSectionWrapper()
+        this.wrapperHtmlObject = this.createSectionWrapper()
         this.sectionArray = []
     }// constructor
 
@@ -225,16 +254,15 @@ class SectionTab extends Tab{
 
     fromCellsDataCreatePage(cellChain){
         // use a cell chain to create section array
+
         this.sectionArray = cellChain.map((p,i) => new Section(`cell_${p.cellID}`, p))
+        console.log(this.sectionArray);
 
         // use the array to append the section html object to the tab
-        this.sectionArray.forEach(p=>{
-            // console.log(p);
-            // this.wrapper.append(p.sectionHtmlObject)
-        })
     }// fromCellsDataCreatePage
 
-    createSection(){
+    updateSection(){
+
     }
 
     createSectionHtmlObject(){
