@@ -7,6 +7,7 @@ class Annotation{
         this.annotationHtmlObject = this.create()
         this.panel = this.createAnnotationPanel()
         this.imageTextArray = []
+        this.selectionBoxHtmlObject = this.createSelectionBox()
 
         if (!data) {
             this.appendIDHtmlObject()
@@ -50,6 +51,24 @@ class Annotation{
         let panel = new AnnotationControlPanel(this)
         this.annotationHtmlObject.append(panel.AnnotationControlPanelHtmlObject)
         return panel
+    }
+
+    createSelectionBox(){
+        let selectionBox = document.createElement("div")
+        selectionBox.setAttribute("data-selected", "false")
+        selectionBox.classList.add("annotationSelectBox", `annotationSelectBox_${this.cellID}_${this.annotationID}`)
+        selectionBox.style.display = "none"
+        this.annotationHtmlObject.append(selectionBox)
+
+        selectionBox.addEventListener("click", function(){
+            let status = selectionBox.getAttribute("data-selected")
+
+            let new_status = status=="true" ? "false" : "true"
+            selectionBox.setAttribute("data-selected", new_status)
+
+        })
+
+        return selectionBox
     }
 
     createLatexCells(){
@@ -221,8 +240,6 @@ class Annotation{
             "annotationType": this.annotationType
         }
 
-        console.log(this.questionStatus);
-
         if (this.annotationType == "textAnnotation"){
             saveObject["latexMotherCellInnerHTML"] = this.mother.innerHTML
         } else {
@@ -272,7 +289,14 @@ class Annotation{
 
     load(loadData){
         // load cellID
-        this.latexMotherCellInnerHTML = loadData["latexMotherCellInnerHTML"]
+        if (loadData["latexMotherCellInnerHTML"]){
+            this.latexMotherCellInnerHTML = loadData["latexMotherCellInnerHTML"]
+        } else {
+            this.latexMotherCellInnerHTML = loadData["latexMotherCell"]
+        }
+
+
+
         this.questionStatus = loadData["questionStatus"]
         this.annotationType = loadData["annotationType"]
         this.annotationID = loadData["annotationID"]
@@ -308,6 +332,8 @@ class Annotation{
     }
 
     pasteImage(imgSrc){
+
+        console.log(imgSrc);
         let self = this
         let createdDate =  new Date().toLocaleString().split("/").join("-") + " "
 

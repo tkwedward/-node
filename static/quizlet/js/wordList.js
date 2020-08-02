@@ -118,18 +118,4 @@ function WordList(){
     } // createWordCard
 
 
-
-    function filterByID(array){
-        let filteredArray = []
-        array.forEach(id=>{
-            wordListArray.forEach(word=>{
-                if (word.wordId == id) {
-                    filteredArray.push(word)
-                }
-            })
-        })
-        return filteredArray
-    }
-
-
 }

@@ -15,8 +15,9 @@ class WindowManager {
             "left": [],
             "right": []
         }
-
         this.popUpBoxHtmlObject = null
+        this.copiedData = null
+
         this.tabIDList = []
         this.tabID = 0
 
@@ -32,35 +33,68 @@ class WindowManager {
             let starterTab2 = this.createNewTab("right", "Note", loadDataExist, "mirrorTab", NoteTabCell)
             this.mirrorTab = starterTab2
 
-            let sectionTab = this.createNewTab("right", "Section", loadDataExist, "sectionTab", NoteTabCell)
+            this.mainTab.fromLoadCreatePage(loadData)
+            this.mirrorTab.fromLoadCreatePage(loadData)
+
+
+            // create section tab
+            let sectionTab = this.createNewTab("right", "Section", loadDataExist, "sectionTab", NoteTabCell, this.mainTab)
             this.sectionTab = sectionTab
 
-            this.mainTab.fromLoadCreatePage(loadData)
-            starterTab2.fromLoadCreatePage( loadData)
+            let mirrorSectionTab = this.createNewTab("left", "Section", loadDataExist, "sectionTab", NoteTabCell, this.mirrorTab)
+            this.mirrorSectionTab = mirrorSectionTab
 
 
             let referenceTab = this.createNewTab("right", "Reference", loadDataExist, "referenceTab", ReferenceTabCell)
             this.referenceTab = referenceTab
-            // referenceTab.fromLoadCreatePage(loadData["referenceTab"])
 
-        }).then(()=>{
-            let cellChain = this.mainTab.getCellChain()
-            console.log("sectionTab management");
-            // console.log(cellChain);
-            this.sectionTab.fromCellsDataCreatePage(cellChain)
-            this.sectionTab.createSectionTree(cellChain)
-            console.log(this.sectionTab);
+            let referenceTabSectionTab = this.createNewTab("left", "Section", loadDataExist, "referenceSectionTab", NoteTabCell, this.referenceTab)
+            this.referenceTabSectionTab = referenceTabSectionTab
 
-            this.sectionTab.tree.printAllChild(this.sectionTab.wrapperHtmlObject)
+            console.log(loadData["referenceTab"]);
+            if (loadData["referenceTab"]){
+                referenceTab.fromLoadCreatePage(loadData["referenceTab"])
+            } else {
+                referenceTab.createNewCell()
+            }
 
-            // this.bookmarkTab.beautifyTree()
-            // this.sectionTab.tree.transverseTree()
 
-        }).then(()=>{
+        }).then(()=>{// processSection Tab
+            this.createSectionTabContent(this.mainTab, this.sectionTab)
+            this.createSectionTabContent(this.mirrorTab, this.mirrorSectionTab)
+            this.createSectionTabContent(this.referenceTab, this.referenceTabSectionTab)
+        }).then(()=>{ // process Tab Bar
             this.fillTabBarWithTabButton()
-        }).then(()=>{
+        }).then(()=>{ // process Popup Bos
+
             this.createPopUpBox()
+            this.tabArray["left"].forEach(t=>t.createToolBox())
+            this.tabArray["right"].forEach(t=>t.createToolBox())
+        }).then(()=>{
+            this.showTab("left", 0)
+        }).then(()=>{ // load the position
+            let tabScrollTopData = this.loadData["scrollTopData"]
+            if (tabScrollTopData){
+                console.log(tabScrollTopData);
+                this.loadTabPositions(tabScrollTopData)
+            } else {
+                console.log("no position data yet");
+            }
         })
+    }
+
+    loadTabPositions(data){
+        let leftData = data["leftTabData"]
+        let rightData = data["rightTabData"]
+
+        leftData.forEach(p=>{
+            let tab = this.getTabFromID("left", p.tabID)
+            tab.tabWindowHtmlObject.scrollTop = p.scrollTop
+        })
+    }
+
+    getTabFromID(position, id){
+        return this.tabArray[position].filter(p=> p.tabID==id)[0]
     }
 
     // create baseWindow for left or right
@@ -72,12 +106,142 @@ class WindowManager {
         return halfWindow
     }
 
+    createSectionTabContent(source, sectionTab){
+        console.log(source, sectionTab);
+        let cellChain = source.getCellChain()
+        console.log(cellChain);
+
+        sectionTab.fromCellsDataCreatePage(cellChain)
+        sectionTab.createSectionTree()
+        console.log(sectionTab.tree);
+        sectionTab.tree.printAllChild(sectionTab.wrapperHtmlObject)
+    }
+
+    /*
+        tabBar start
+    */
     createTabBar(position){
         let tabBar = document.createElement("div")
         tabBar.classList.add("tabBar", `tabBar_${position}`)
-        this.pageWrapper.append(tabBar)
+        this.pageWrapper.parentNode.insertBefore(tabBar, this.pageWrapper)
         return tabBar
     }
+
+
+        createTabButton(tab, position, selected = true){
+            let self = this
+            let tabButton = document.createElement("span")
+            tabButton.classList.add("tabButton", `tabButton_${tab.tabID}`)
+            tabButton.setAttribute("tabid", tab.tabID)
+            tabButton.setAttribute("tabposition", position)
+            tabButton.innerHTML = tab.name
+            tabButton.position = position
+            tabButton.relatedWindow = this.tabBar[position]
+            tab.tabButton = tabButton
+
+            if (selected){
+                tabButton.classList.add("selectedTabButton")
+            }
+
+            tabButton.addEventListener("click", function(){
+                let targetTabID = tabButton.getAttribute("tabid");
+                let targetTabPosition = tabButton.getAttribute("tabposition");
+                self.tabArray[targetTabPosition].forEach(p=>{
+
+                    console.log(p.tabID, targetTabID);
+                    p.tabButton.classList.remove("selectedTabButton")
+                    if (p.tabID == parseInt(targetTabID)){
+                        p.tabButton.classList.add("selectedTabButton")
+                        p.tabWindowHtmlObject.style.display = "block"
+                    } else {
+                        p.tabWindowHtmlObject.style.display = "none"
+                    }
+                })
+            })
+            this.tabBar[position].append(tabButton)
+        }
+
+
+        fillTabBarWithTabButton(){
+            this.tabArray["left"].forEach((p, i)=>{
+                let selected = false
+                if (i==0) {
+                    selected = true
+                }
+                this.createTabButton(p, "left", selected)
+            })
+
+            this.tabArray["right"].forEach((p, i)=>{
+                let selected = false
+                if (i==0) {
+                    selected = true
+                }
+                this.createTabButton(p, "right", selected)
+            })
+        }
+
+        showTab(position, tabID){
+            this.tabArray[position].forEach(tab=>{
+                if (tab.tabID == tabID){
+                    tab.tabWindowHtmlObject.style.display = "block"
+                } else {
+                    tab.tabWindowHtmlObject.style.display = "none"
+                }
+            })
+        }
+
+        createNewTab(position = "left", tabType = "Note", data = false, name, cellType, relatedTab){
+            // newTab = new tab object
+            // slaveWindow = the window related to the tab object
+            let newTab
+
+            if (tabType == "Note"){
+                newTab = new NoteTab(this.tabID, position, name, cellType)
+
+                // initialize the cell with an annotation, or fill in it with data
+                if (data==false){
+                    newTab.createNewCell()
+                }
+            } // if tabType == "Note"
+            else if  (tabType == "Section")
+            {
+                newTab = new SectionTab(this.tabID, position, name, cellType, relatedTab)
+            }
+            else if  (tabType == "Reference")
+            {
+                newTab = new ReferenceTab(this.tabID, "right", name, cellType)
+            }
+
+            // console.log(this.tabArray["left"].push)
+            this.tabArray[position].push(newTab)
+            // add the tabs into the masterWIndow left or right array
+            console.log();
+            this.masterWindowHtmlObject[position].append(newTab.tabWindowHtmlObject)
+            this.renderTab(this.tabID, position)
+
+            // update the overall tabID number
+            this.tabID += 1
+            return newTab
+        }
+
+        renderTab(tabID, position){
+            this.tabArray[position].forEach(p=>{
+                if (p.tabID == tabID){
+                    p.tabWindowHtmlObject.style.display = "block"
+                    // p.tabWindow.style.background = "gold"
+                } else {
+                    p.tabWindowHtmlObject.style.display = "none"
+                }
+            })
+
+        }
+
+        removeTab(id){
+
+        }
+    /*
+        tabBar end
+    */
 
     createPopUpBox(){
         let _width = 20
@@ -118,7 +282,12 @@ class WindowManager {
         this.popUpBoxHtmlObject = popUpBoxDiv
     }
 
-    fillInPopUpBox(questionText, choices, target, _f){
+    fillInPopUpBox(questionText, choices, target, _f, res){
+        // questionTex: the question shown in the text box
+        // choices [array] : an array contains all the possible choice
+        // target [htmlObject]: an object that is put into the function
+        // _f(target, resultText) [function]: the function that want to be run
+
         // _f is the function that want to rrun
         let popUpBoxDiv = this.popUpBoxHtmlObject
         popUpBoxDiv.style.display = "flex"
@@ -149,118 +318,6 @@ class WindowManager {
         })
     }
 
-    createTabButton(tab, position, selected = true){
-        let self = this
-        let tabButton = document.createElement("span")
-        tabButton.classList.add("tabButton", `tabButton_${tab.tabID}`)
-        tabButton.setAttribute("tabid", tab.tabID)
-        tabButton.setAttribute("tabposition", position)
-        tabButton.innerHTML = tab.name
-        tabButton.position = position
-        tabButton.relatedWindow = this.tabBar[position]
-        tab.tabButton = tabButton
-
-        if (selected){
-            tabButton.classList.add("selectedTabButton")
-        }
-
-        tabButton.addEventListener("click", function(){
-            let targetTabID = tabButton.getAttribute("tabid");
-            let targetTabPosition = tabButton.getAttribute("tabposition");
-            self.tabArray[targetTabPosition].forEach(p=>{
-
-                console.log(p.tabID, targetTabID);
-                p.tabButton.classList.remove("selectedTabButton")
-                if (p.tabID == parseInt(targetTabID)){
-                    p.tabButton.classList.add("selectedTabButton")
-                    p.tabWindowHtmlObject.style.display = "block"
-                } else {
-                    p.tabWindowHtmlObject.style.display = "none"
-                }
-            })
-        })
-        this.tabBar[position].append(tabButton)
-    }
-
-
-    fillTabBarWithTabButton(){
-        this.tabArray["left"].forEach((p, i)=>{
-            let selected = false
-            if (i==0) {
-                selected = true
-            }
-            this.createTabButton(p, "left", selected)
-        })
-
-        this.tabArray["right"].forEach((p, i)=>{
-            let selected = false
-            if (i==0) {
-                selected = true
-            }
-            this.createTabButton(p, "right", selected)
-        })
-    }
-
-    showTab(position, tabID){
-        this.tabArray[position].forEach(tab=>{
-            if (tab.tabID == tabID){
-                tab.tabWindowHtmlObject.style.display = "block"
-            } else {
-                tab.tabWindowHtmlObject.style.display = "none"
-            }
-        })
-    }
-
-    createNewTab(position = "left", tabType = "Note", data = false, name, cellType){
-        // newTab = new tab object
-        // slaveWindow = the window related to the tab object
-        let newTab
-
-        if (tabType == "Note"){
-            newTab = new NoteTab(this.tabID, position, name, cellType)
-
-            // initialize the cell with an annotation, or fill in it with data
-            if (data==false){
-                newTab.createNewCell()
-            }
-        } // if tabType == "Note"
-        else if  (tabType == "Section")
-        {
-            newTab = new SectionTab(this.tabID, position, name, cellType)
-        }
-        else if  (tabType == "Reference")
-        {
-            newTab = new ReferenceTab(this.tabID, "right", name, cellType)
-        }
-
-        // console.log(this.tabArray["left"].push)
-        this.tabArray[position].push(newTab)
-        // add the tabs into the masterWIndow left or right array
-        console.log();
-        this.masterWindowHtmlObject[position].append(newTab.tabWindowHtmlObject)
-        this.renderTab(this.tabID, position)
-
-        // update the overall tabID number
-        this.tabID += 1
-        return newTab
-    }
-
-    renderTab(tabID, position){
-        this.tabArray[position].forEach(p=>{
-            if (p.tabID == tabID){
-                p.tabWindowHtmlObject.style.display = "block"
-                // p.tabWindow.style.background = "gold"
-            } else {
-                p.tabWindowHtmlObject.style.display = "none"
-            }
-        })
-
-    }
-
-    removeTab(id){
-
-    }
-
     // findMirrorElement
     symmetryAction(sourceElement, actionFunction, parentTab=false, sourceAction = true){
         let tabType = ["mainTab", "mirrorTab"]
@@ -284,12 +341,38 @@ class WindowManager {
         }
     } // symmetryAction
 
+    getScrollTopOfTabs(){
+        let leftData = windowManager.tabArray["left"].map(p=>{
+            return {
+                tabID: p.tabID,
+                scrollTop: p.tabWindowHtmlObject.scrollTop
+            }
+        })
+        let rightData = windowManager.tabArray["left"].map(p=>{
+            return {
+                tabID: p.tabID,
+                scrollTop: p.tabWindowHtmlObject.scrollTop
+            }
+        })
+        return {
+            leftTabData: leftData,
+            rightTabData: rightData
+
+        }
+    }
+
     // saveData
     save(action=true){
         let mainTabSaveObject = this.mainTab.save()
         let referenceTabSaveObject = this.referenceTab.save()
 
+        let scrollTopSaveObject = this.getScrollTopOfTabs()
+
+
+
         mainTabSaveObject["referenceTab"] = referenceTabSaveObject
+
+        mainTabSaveObject["scrollTopData"] = scrollTopSaveObject
 
         if (action){
             this.ajaxSendJson(url, mainTabSaveObject, "save state", "success to save", function(){
@@ -347,7 +430,13 @@ class WindowManager {
         xhr.send(JSON.stringify({"title": title, "chapter":chapter, "todo": "load state"}));
     } // loadDataRequest
 
-
+    djangoParseJSON(data){
+        data = data.split("&#39;").join("\"")
+        data = data.split("&quot;").join("\"")
+        data = data.split("&lt;").join("<")
+        data = data.split("&gt;").join(">")
+        return data
+    }
 
 
 }

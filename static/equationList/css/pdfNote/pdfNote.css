@@ -11,7 +11,10 @@ body {
 
 .tabBar {
   min-height: 40px;
-  width: 50vw;
+  width: 49.5vw;
+  padding: 0;
+  margin: 0;
+  display: inline-block;
 }
 .tabBar .tabButton {
   padding: 10px;
@@ -30,6 +33,7 @@ body {
 }
 
 .tabWindow {
+  width: 50vw;
   overflow-x: hidden;
 }
 
@@ -69,88 +73,104 @@ body {
   left: 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
-}
-#pageWrapper .left, #pageWrapper .right {
-  height: 100vh;
-}
-#pageWrapper .right {
-  width: 49vw;
-}
-#pageWrapper .noteContainer {
   background-color: Olive;
   height: 100vh;
   overflow-y: scroll;
 }
-#pageWrapper .noteContainer .titleField, #pageWrapper .noteContainer .chapterField {
+#pageWrapper .left, #pageWrapper .right {
+  height: 100vh;
+  position: relative;
+}
+#pageWrapper .left .toolBox, #pageWrapper .right .toolBox {
+  background: aliceblue;
+  position: absolute;
+  right: -60px;
+  top: 20px;
+  z-index: 100;
+}
+#pageWrapper .left .toolBox .toolBoxButton, #pageWrapper .right .toolBox .toolBoxButton {
+  width: 90%;
+  margin: 10px auto;
+  text-align: center;
+}
+#pageWrapper .right {
+  width: 49vw;
+}
+#pageWrapper .right .toolBox {
+  background: grey;
+  left: -60px;
+  z-index: 100;
+}
+#pageWrapper .titleField, #pageWrapper .chapterField {
   margin: 10px;
 }
-#pageWrapper .noteContainer .latexMotherCell {
+#pageWrapper .latexMotherCell {
   padding: 10px;
 }
-#pageWrapper .noteContainer .latexChildCell {
+#pageWrapper .latexChildCell {
   font-size: 20px;
   padding: 10px;
 }
-#pageWrapper .noteContainer .noteInfo, #pageWrapper .noteContainer .saveButton {
+#pageWrapper .noteInfo, #pageWrapper .saveButton {
   margin: 8px;
 }
-#pageWrapper .noteContainer img {
+#pageWrapper img {
   margin: 20px 0px;
   width: 100%;
 }
-#pageWrapper .noteContainer .cell.sectionTitle h2 {
+#pageWrapper .cell.sectionTitle h2 {
   text-align: center;
   font-size: 35px;
 }
-#pageWrapper .noteContainer .cell.sectionTitle button.sectionTitle {
+#pageWrapper .cell.sectionTitle button.sectionTitle {
   background: yellow;
 }
-#pageWrapper .noteContainer .cell, #pageWrapper .noteContainer .selectedCell {
+#pageWrapper .cell, #pageWrapper .selectedCell {
   width: 95%;
   margin: 40px auto;
   background: BurlyWood;
   padding: 10px;
 }
-#pageWrapper .noteContainer .cell .cellTitle, #pageWrapper .noteContainer .selectedCell .cellTitle {
+#pageWrapper .cell .cellTitle, #pageWrapper .selectedCell .cellTitle {
   margin: 10px;
 }
-#pageWrapper .noteContainer .cell .cellControlPanel .cellSectionInput, #pageWrapper .noteContainer .selectedCell .cellControlPanel .cellSectionInput {
+#pageWrapper .cell .cellControlPanel .cellSectionInput, #pageWrapper .selectedCell .cellControlPanel .cellSectionInput {
   width: 30px;
 }
-#pageWrapper .noteContainer .cell .annotation, #pageWrapper .noteContainer .selectedCell .annotation {
+#pageWrapper .cell .annotation, #pageWrapper .selectedCell .annotation {
   padding-top: 10px;
   position: relative;
   width: 100%;
 }
-#pageWrapper .noteContainer .cell .annotation .annotationSelectBox, #pageWrapper .noteContainer .selectedCell .annotation .annotationSelectBox {
+#pageWrapper .cell .annotation .annotationSelectBox, #pageWrapper .selectedCell .annotation .annotationSelectBox {
   width: 25px;
   height: 25px;
   position: absolute;
   bottom: 9%;
   right: 6%;
 }
-#pageWrapper .noteContainer .cell .annotation .annotationSelectBox [data-selected=false], #pageWrapper .noteContainer .selectedCell .annotation .annotationSelectBox [data-selected=false] {
+#pageWrapper .cell .annotation .annotationSelectBox [data-selected=false], #pageWrapper .selectedCell .annotation .annotationSelectBox [data-selected=false] {
   background-color: white;
 }
-#pageWrapper .noteContainer .cell .annotation .annotationSelectBox[data-selected=true], #pageWrapper .noteContainer .selectedCell .annotation .annotationSelectBox[data-selected=true] {
+#pageWrapper .cell .annotation .annotationSelectBox[data-selected=true], #pageWrapper .selectedCell .annotation .annotationSelectBox[data-selected=true] {
   background-color: red;
 }
-#pageWrapper .noteContainer .cell .annotation .annotationSelectBox[data-selected=false], #pageWrapper .noteContainer .selectedCell .annotation .annotationSelectBox[data-selected=false] {
+#pageWrapper .cell .annotation .annotationSelectBox[data-selected=false], #pageWrapper .selectedCell .annotation .annotationSelectBox[data-selected=false] {
   background-color: white;
 }
-#pageWrapper .noteContainer .cell [data-level=easy], #pageWrapper .noteContainer .selectedCell [data-level=easy] {
+#pageWrapper .cell [data-level=easy], #pageWrapper .selectedCell [data-level=easy] {
   background: #66ff33;
 }
-#pageWrapper .noteContainer .cell [data-level=medium], #pageWrapper .noteContainer .selectedCell [data-level=medium] {
+#pageWrapper .cell [data-level=medium], #pageWrapper .selectedCell [data-level=medium] {
   background: #66ccff;
 }
-#pageWrapper .noteContainer .cell [data-level=difficult], #pageWrapper .noteContainer .selectedCell [data-level=difficult] {
+#pageWrapper .cell [data-level=difficult], #pageWrapper .selectedCell [data-level=difficult] {
   background: #b20039;
 }
-#pageWrapper .noteContainer .cell .annotationControlPanel, #pageWrapper .noteContainer .selectedCell .annotationControlPanel {
+#pageWrapper .cell .annotationControlPanel, #pageWrapper .selectedCell .annotationControlPanel {
   margin: 5px 28px;
 }
-#pageWrapper .noteContainer .cell .annotationContent, #pageWrapper .noteContainer .selectedCell .annotationContent {
+#pageWrapper .cell .annotationContent, #pageWrapper .selectedCell .annotationContent {
   background-color: wheat;
   min-height: 10vh;
   margin: 10px;
@@ -158,23 +178,23 @@ body {
   width: 90%;
   font-size: 20px;
 }
-#pageWrapper .noteContainer .cell .annotationContent input, #pageWrapper .noteContainer .selectedCell .annotationContent input {
+#pageWrapper .cell .annotationContent input, #pageWrapper .selectedCell .annotationContent input {
   display: block;
 }
-#pageWrapper .noteContainer .cell .annotationContent .useful.addToUseful, #pageWrapper .noteContainer .selectedCell .annotationContent .useful.addToUseful {
+#pageWrapper .cell .annotationContent .useful.addToUseful, #pageWrapper .selectedCell .annotationContent .useful.addToUseful {
   background: yellow;
 }
-#pageWrapper .noteContainer .cell .annotationContent .latexChildCell, #pageWrapper .noteContainer .selectedCell .annotationContent .latexChildCell {
+#pageWrapper .cell .annotationContent .latexChildCell, #pageWrapper .selectedCell .annotationContent .latexChildCell {
   margin-top: 10px;
   min-height: 30px;
 }
-#pageWrapper .noteContainer .cell .annotationContent .latexChildCell *, #pageWrapper .noteContainer .selectedCell .annotationContent .latexChildCell * {
+#pageWrapper .cell .annotationContent .latexChildCell *, #pageWrapper .selectedCell .annotationContent .latexChildCell * {
   pointer-events: none;
 }
-#pageWrapper .noteContainer .cell .annotation:focus, #pageWrapper .noteContainer .selectedCell .annotation:focus {
+#pageWrapper .cell .annotation:focus, #pageWrapper .selectedCell .annotation:focus {
   background-color: white;
 }
-#pageWrapper .noteContainer .selectedCell {
+#pageWrapper .selectedCell {
   border: 2px red solid;
 }
 #pageWrapper .cell[sectionlevel="0"] .cellTitle {
@@ -183,29 +203,6 @@ body {
 }
 #pageWrapper .cell[sectionLevel="1"] .cellTitle {
   font-size: 25px;
-}
-#pageWrapper .bookmarkContainer {
-  display: none;
-  width: 25%;
-  height: 90%;
-  position: fixed;
-  top: 75px;
-  left: 25%;
-  background: pink;
-  z-index: 100;
-}
-#pageWrapper .bookmarkContainer .bookmarkPanel {
-  background: gold;
-  width: 20vw;
-  height: 75vh;
-  position: relative;
-  left: 6%;
-  top: 10%;
-  overflow-y: scroll;
-  padding: 15px;
-}
-#pageWrapper .bookmarkContainer .bookmarkPanel .bookmarkTitle {
-  margin-bottom: 10px;
 }
 #pageWrapper .sectionContainer {
   background: PaleGreen;

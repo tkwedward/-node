@@ -1,5 +1,6 @@
 class SectionTree{
-    constructor(root){
+    constructor(root, tab){
+        this.tab = tab
         this.root = root
         this.root.level = -1
         this.totalNumberOfNode = 0
@@ -9,10 +10,9 @@ class SectionTree{
     recursionCheck(lastNode, currentNode){
         // console.log(lastNode, currentNode);
         let difference;
-        console.log(lastNode, currentNode);
         if (currentNode && lastNode){
             difference = currentNode.level - lastNode.level
-            console.log(difference);
+
             if (difference == 1){
                 // create a sectionLinkList if there are no list
 
@@ -38,22 +38,20 @@ class SectionTree{
 
         nodeList.forEach(p=>{
             let currentNode = p
-            console.log(p);
             lastNode = this.recursionCheck(lastNode, currentNode)
         })
-        console.log(this.root);
     }
 
     generateNodeHtmlObject(node){
+        let self = this
         if (node.level!=-1){
             let htmlObject = document.createElement("div")
             htmlObject.classList.add("section", `section_${node.cell.cellID}`, `level_${node.level}`)
             htmlObject.innerHTML = node.title
 
             htmlObject.addEventListener("click", function(){
-
                 let data = node.cell.cellHtmlObject.offsetTop
-                windowManager.mainTab.tabWindowHtmlObject.scrollTop = data - 100
+                self.tab.relatedTab.tabWindowHtmlObject.scrollTop = data - 100
             })
 
             return htmlObject
@@ -111,22 +109,18 @@ class SectionTree{
 
     printAllChild(container, node=this.root){
         // to print section object in the section tab and also beautify the cells in the note tab
-        console.log(container);
         if (node.childrenList){
             let childrenList = node.childrenList.listNode()
 
             childrenList.forEach(p=>{
                 let sectionHtmlObject = this.generateNodeHtmlObject(p)
-
                 container.append(sectionHtmlObject)
-
                 this.printAllChild(container, p)
-
             })
 
-            windowManager.sectionTab.tabWindowHtmlObject.append(container)
+            this.tab.tabWindowHtmlObject.append(container)
         } else {
-            console.log("no children");
+
         }
     }
 
@@ -190,12 +184,6 @@ class Section{
             if (this.cell.sectionData){
                 this.level = this.cell.sectionData.level
             }
-            // if (this.sectionDataNew.level){
-            //     this.level = parseInt(this.sectionData.level)
-            //     console.log(this.level);
-            // } else {
-            //     this.level = 0
-            // }
         }
     }
 

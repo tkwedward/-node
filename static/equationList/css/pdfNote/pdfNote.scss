@@ -12,7 +12,11 @@ body {
 
 .tabBar{
     min-height: 40px;
-    width:50vw;
+    width:49.5vw;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+
 
     .tabButton{
         padding: 10px;
@@ -27,10 +31,13 @@ body {
     background: Azure;
 }
 .tabBar_right {
+    // float: right;
     background: Gainsboro;
+    // clear: right;
 }
 
 .tabWindow{
+    width: 50vw;
     overflow-x: hidden;
 }
 
@@ -82,145 +89,160 @@ $containerHeight: 92vh;
 
     .left, .right {
         height: 100vh;
+        position: relative;
+        .toolBox{
+            background: aliceblue;
+            position: absolute;
+            right: -60px;
+            top: 20px;
+            z-index: 100;
+            .toolBoxButton{
+                width: 90%;
+                margin: 10px auto;
+                text-align: center;
+            }
+        }
     }
+
     .right{
         width: 49vw;
+        .toolBox{
+            background: grey;
+            left: -60px;
+            z-index: 100;
+        }
+    }
+
+    .titleField, .chapterField{
+        margin: 10px;
+    }
+
+    background-color: Olive;
+    height: 100vh;
+    // width: 50vw;
+    overflow-y: scroll;
+
+    .latexMotherCell{
+        padding: 10px
+    }
+    .latexChildCell{
+        font-size: 20px;
+        padding: 10px;
+    }
+
+
+    .noteInfo, .saveButton{
+        margin: 8px;
+    }
+
+
+    img{
+        margin: 20px 0px;
+        width: 100%;
+    }
+
+    .cell.sectionTitle  {
+        h2 {
+            text-align: center;
+            font-size: 35px;
+        }
+
+        button.sectionTitle {
+            background: yellow;
+        }
     }
 
 
 
-    .noteContainer{
-        .titleField, .chapterField{
-            margin: 10px;
+    .cell, .selectedCell{
+        width: 95%;
+        margin: 40px auto;
+        background: BurlyWood;
+        padding: 10px;
+
+
+
+        .cellTitle {
+            margin: 10px
         }
 
-        background-color: Olive;
-        height: 100vh;
-        // width: 50vw;
-        overflow-y: scroll;
-
-        .latexMotherCell{
-            padding: 10px
-        }
-        .latexChildCell{
-            font-size: 20px;
-            padding: 10px;
+        .cellControlPanel{
+            .cellSectionInput{
+                width: 30px;
+            }
         }
 
-
-        .noteInfo, .saveButton{
-            margin: 8px;
-        }
-
-
-        img{
-            margin: 20px 0px;
+        .annotation{
+            padding-top: 10px;
+            position: relative;
             width: 100%;
-        }
+            .annotationSelectBox{
+                width: 25px;
+                height:25px;
+                position: absolute;
+                bottom: 9%;
+                right: 6%;
 
-        .cell.sectionTitle  {
-            h2 {
-                text-align: center;
-                font-size: 35px;
-            }
-
-            button.sectionTitle {
-                background: yellow;
-            }
-        }
-
-
-
-        .cell, .selectedCell{
-            width: 95%;
-            margin: 40px auto;
-            background: BurlyWood;
-            padding: 10px;
-
-
-
-            .cellTitle {
-                margin: 10px
-            }
-
-            .cellControlPanel{
-                .cellSectionInput{
-                    width: 30px;
-                }
-            }
-
-            .annotation{
-                padding-top: 10px;
-                position: relative;
-                width: 100%;
-                .annotationSelectBox{
-                    width: 25px;
-                    height:25px;
-                    position: absolute;
-                    bottom: 9%;
-                    right: 6%;
-
-                    [data-selected="false"]{
-                        background-color: white
-                    }
-                }
-
-                .annotationSelectBox[data-selected="true"]{
-                    background-color: red
-                }
-                .annotationSelectBox[data-selected="false"]{
+                [data-selected="false"]{
                     background-color: white
                 }
+            }
+
+            .annotationSelectBox[data-selected="true"]{
+                background-color: red
+            }
+            .annotationSelectBox[data-selected="false"]{
+                background-color: white
+            }
 
 
 
-            }
-            [data-level="easy"]{
-                background: rgb(102, 255, 51)
-            }
-            [data-level="medium"]{
-                background: rgb(102, 204, 255)
-            }
-            [data-level="difficult"]{
-                background: rgba(178, 0, 57, 1)
+        }
+        [data-level="easy"]{
+            background: rgb(102, 255, 51)
+        }
+        [data-level="medium"]{
+            background: rgb(102, 204, 255)
+        }
+        [data-level="difficult"]{
+            background: rgba(178, 0, 57, 1)
+        }
+
+        .annotationControlPanel{
+            margin: 5px 28px;
+        }
+        .annotationContent{
+            background-color: wheat;
+            min-height: 10vh;
+            margin: 10px;
+            padding: 8px;
+            width: 90%;
+            font-size: 20px;
+            input {
+                display: block;
             }
 
-            .annotationControlPanel{
-                margin: 5px 28px;
+            .useful.addToUseful{
+                background: yellow;
             }
-            .annotationContent{
-                background-color: wheat;
-                min-height: 10vh;
-                margin: 10px;
-                padding: 8px;
-                width: 90%;
-                font-size: 20px;
-                input {
-                    display: block;
+
+            .latexChildCell{
+                margin-top: 10px;
+                min-height: 30px;
+                * {
+                    pointer-events: none;
+
                 }
-
-                .useful.addToUseful{
-                    background: yellow;
-                }
-
-                .latexChildCell{
-                    margin-top: 10px;
-                    min-height: 30px;
-                    * {
-                        pointer-events: none;
-
-                    }
-                }
-            }
-
-            .annotation:focus{
-                background-color: white;
             }
         }
 
-        .selectedCell{
-            border: 2px red solid;
+        .annotation:focus{
+            background-color: white;
         }
+    }
+
+    .selectedCell{
+        border: 2px red solid;
     }
 
     .cell[sectionlevel="0"]{
@@ -236,35 +258,6 @@ $containerHeight: 92vh;
         }
     }
 
-
-    .bookmarkContainer{
-        display: none;
-        width: 25%;
-        height: 90%;
-        position: fixed;
-        top: 75px;
-        left: 25%;
-        background: pink;
-        z-index: 100;
-
-        .bookmarkPanel{
-
-            background : gold;
-            width: 20vw;
-            height: 75vh;
-            position: relative;
-            left: 6%;
-            top: 10%;
-            overflow-y: scroll;
-            padding: 15px;
-
-            .bookmarkTitle{
-                margin-bottom: 10px;
-            }
-        }
-
-
-    }
     $baseMargin: 30px;
     .sectionContainer{
         background: PaleGreen;

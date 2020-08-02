@@ -93,8 +93,6 @@ let addNewWordButton = document.querySelector(".addNewWord")
 // nav function
 all.addEventListener("click", function(){
     mode = "all"
-
-
 })
 
 // buttonFunction

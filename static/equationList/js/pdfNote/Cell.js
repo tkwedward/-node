@@ -10,6 +10,7 @@ class Cell{
         this.parentTab = upperTab.name
         this.cellHtmlObject = document.createElement("div")
         this.tabAnnotationType = tabAnnotationType
+        this.selectionBoxHtmlObject = null
 
         this.create()
         if (data) {
@@ -82,14 +83,17 @@ class Cell{
         return nextAnnotationID
     }
 
-    createAnnotation(data){
+    createAnnotation(data, append=true){
         // to create Annotation
         let upperCell = this
         let nextAnnotationID = this.getNextAnnotationID(data)
         let _a = new this.tabAnnotationType(this.cellID, nextAnnotationID, upperCell, data)
 
         this.annotationArray.push(_a)
-        this.cellHtmlObject.append(_a.annotationHtmlObject)
+        if (append){
+            this.cellHtmlObject.append(_a.annotationHtmlObject)
+        }
+
         // return annotation
         return _a.annotationHtmlObject
 
@@ -141,27 +145,45 @@ class Cell{
     }
 
     selectAnnotationMode(){
-        console.log(this.annotationArray);
-        this.annotationArray.forEach(p=>{
-            let selectBox = document.createElement("div")
-            selectBox.setAttribute("data-selected", "false")
-            selectBox.classList.add("annotationSelectBox", `annotationSelectBox_${p.cellID}_${p.annotationID}`)
-            p.annotationHtmlObject.append(selectBox)
-
-            selectBox.addEventListener("click", function(){
-                let status = selectBox.getAttribute("data-selected")
-
-                let new_status = status=="true" ? "false" : "true"
-                selectBox.setAttribute("data-selected", new_status)
-
-            })
-
+        this.annotationArray.forEach(a=>{
+            a.selectionBoxHtmlObject.setAttribute("data-selected", "false")
         })
-
+        this.annotationArray.forEach(a=>{
+            a.selectionBoxHtmlObject.style.display = "block"
+        })
     }
 
-    pasteAnnotationEvent(target, direction){
-        console.log(target, direction);
+    hideSelectionBox(){
+        this.annotationArray.forEach(a=>{
+            a.selectionBoxHtmlObject.style.display = "none"
+        })
+    }
+
+    returnSelectedAnnotation(){
+        let selectedAnnotationArray =
+        this.annotationArray.filter(a=>{
+            let status = a.selectionBoxHtmlObject.getAttribute("data-selected")
+            return status == "true"
+        })
+        this.hideSelectionBox()
+        return selectedAnnotationArray
+    }
+
+    pasteCellEvent(target, direction){
+        let self = target.soul.upperTab
+        let firstCell = windowManager.cellEditData[0]
+
+        let referenceCell = target
+        console.log(referenceCell);
+
+        for (let i = 0; i <= windowManager.cellEditData.length - 1; i++){
+            let target = windowManager.cellEditData[i]
+            referenceCell.parentNode.insertBefore(target, referenceCell)
+            if (direction=="down"){
+                referenceCell.parentNode.insertBefore(referenceCell, target)
+                referenceCell = target
+            }
+        }
     }
 
     save(){
@@ -207,24 +229,31 @@ class Cell{
     }
 
     loadInSectionData(loadData){
-        console.log(loadData);
         this.sectionData = loadData["sectionData"]
         this.controlPanel.sectionInput.value = 0
 
         this.sectionTitle = loadData["sectionTitle"]
+
         if (this.sectionDataNew){
             this.sectionDataNew  = loadData["sectionDataNew"]
             this.cellHtmlObject.setAttribute("sectionLevel", this.sectionDataNew.level)
 
         } else {
-            this.sectionDataNew = {
-                "title": loadData["cellTitle"],
-                "level":loadData["sectionTitle"].level
+            if (loadData["sectionTitle"]){
+                this.sectionDataNew = {
+                    "title": loadData["cellTitle"],
+                    "level":loadData["sectionTitle"].level
+                }
+            } else {
+                this.sectionDataNew = {
+                    "title": loadData["cellTitle"],
+                    "level": 0
+                }
             }
+
             this.cellHtmlObject.setAttribute("sectionLevel", this.sectionDataNew.level)
         }
 
-        console.log(this.sectionData);
         if (this.sectionData){
             this.controlPanel.sectionInput.value = this.sectionData.level || 0
         }
@@ -404,9 +433,11 @@ class NoteTabCell extends Cell{
 class ReferenceTabCell extends Cell{
     constructor(upperTab, data = null, annotationID=0, pinned=false, tabAnnotationType=ReferenceTabAnnotation){
         super(upperTab, data, annotationID, pinned, tabAnnotationType)
+        this.kick()
     }
 
     kick(){
+        console.log(this.upperTab);
         console.log("i am reference tab cell");
     }
 }

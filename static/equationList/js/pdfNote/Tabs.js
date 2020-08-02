@@ -5,6 +5,7 @@ class Tab{
         this.position = position
         this.focusedCell = null
         this.tabWindowHtmlObject = this.create()
+        this.Toolbox = null
         this.maxCellID = 0
         this.name = name
         this.cellHead = null
@@ -20,16 +21,25 @@ class Tab{
         return slaveWindow
     }
 
-    createNewCell(cellData){
+    createNewCell(cellData, append = true){
         let _newCell = new this.cellType(this, cellData)
         this.cellArray.push(_newCell)
-        this.tabWindowHtmlObject.append(_newCell.cellHtmlObject)
+
+        if (append){
+            this.tabWindowHtmlObject.append(_newCell.cellHtmlObject)
+        }
+
         return _newCell
     }
 
 
     selectByCellID(){
 
+    }
+
+    createToolBox(){
+        this.Toolbox = new Toolbox(this)
+        this.tabWindowHtmlObject.parentNode.append(this.Toolbox.toolBoxHtmlObject)
     }
 
     getCellChain(){
@@ -58,17 +68,11 @@ class Tab{
             referenceCell.parentNode.insertBefore(target, referenceCell)
             if (direction=="down"){
                 referenceCell.parentNode.insertBefore(referenceCell, target)
+                referenceCell = target
             }
-            referenceCell = target
         }
 
-
-        console.log(target, direction, firstCell , windowManager.cellEditData, self);
-        // windowManager.cellEditData.map(p=>p.soul.save())
-        // windowManager.cellEditData
-        // console.log(newCell);
-
-
+        console.log(target, direction, firstCell , windowManager.copiedData, self);
     }
 
     save(){
@@ -88,45 +92,58 @@ class Tab{
             saveObject["cells"].push(p.soul.save())
         })
 
-        console.log(saveObject);
         return saveObject
     }
 
     fromLoadCreatePage(jsonResult){
         console.log(jsonResult);
-        this.data = jsonResult
-        this.maxAnnotationBlockID = parseInt(jsonResult["maxAnnotationBlockID"]) || 1
+        if (Object.entries(jsonResult["cells"]).length){ // check whether any data in the jsonResult Dictionary
+            console.log(jsonResult);
+            this.data = jsonResult
+            this.maxAnnotationBlockID = parseInt(jsonResult["maxAnnotationBlockID"]) || 1
 
-        let cellIDArray = jsonResult["cells"].map(p=>p.cellID)
-        this.maxCellID = Math.max(...cellIDArray) + 1 || 1
+            let cellIDArray = jsonResult["cells"].map(p=>p.cellID)
 
-        let cellsData = jsonResult["cells"]
-        // console.log(this.mainTab);
-        cellsData.forEach(_cellData=>{
-            let newCell = this.createNewCell(_cellData)
-
-            if (this.cellHead == null){
-                // to indicate the chain have something
-                this.cellHead = newCell
-                this.cellTail = newCell
-                newCell.previousCell = null
-                newCell.nextCell = null
+            if (cellIDArray.length > 0){
+                this.maxCellID = Math.max(...cellIDArray) + 1 || 1
             } else {
-                // to add new cell to the next cell of tail cell
-                this.cellTail.nextCell = newCell
-
-                // to add the previous cell of new cell to be the original tail cell
-                newCell.previousCell = this.cellTail
-                newCell.nextCell = null
-
-                // update the new tail cell
-                this.cellTail = newCell
+                this.maxCellID = 1
             }
-        })
-        // to create summary page
-        let summaryCellContainerData = jsonResult["summaryCellContainerData"]
-        let annotationBlock = jsonResult["annotationBlock"]
-    }
+
+
+
+            let cellsData = jsonResult["cells"]
+            // console.log(this.mainTab);
+            cellsData.forEach(_cellData=>{
+                let newCell = this.createNewCell(_cellData)
+
+                if (this.cellHead == null){
+                    // to indicate the chain have something
+                    this.cellHead = newCell
+                    this.cellTail = newCell
+                    newCell.previousCell = null
+                    newCell.nextCell = null
+                } else {
+                    // to add new cell to the next cell of tail cell
+                    this.cellTail.nextCell = newCell
+
+                    // to add the previous cell of new cell to be the original tail cell
+                    newCell.previousCell = this.cellTail
+                    newCell.nextCell = null
+
+                    // update the new tail cell
+                    this.cellTail = newCell
+                }
+            })
+            // to create summary page
+            let summaryCellContainerData = jsonResult["summaryCellContainerData"]
+            let annotationBlock = jsonResult["annotationBlock"]
+        } else {
+            console.log("no data in the file");
+            this.createNewCell()
+        }
+
+    }// check if
 
 }
 
@@ -205,10 +222,11 @@ class NoteTab extends Tab{
 }
 
 class SectionTab extends Tab{
-    constructor(tabID, position, name, cellType){
+    constructor(tabID, position, name, cellType, relatedTab){
         super(tabID, position, name, cellType)
         this.tabWindowHtmlObject.classList.add("sectionContainer")
         this.wrapperHtmlObject = this.createSectionWrapper()
+        this.relatedTab = relatedTab
         this.sectionArray = []
     }// constructor
 
@@ -222,7 +240,7 @@ class SectionTab extends Tab{
     createSectionTree(){
         let root = new Section("root")
 
-        let tree = new SectionTree(root)
+        let tree = new SectionTree(root, this)
 
         this.tree = tree
 
@@ -250,15 +268,9 @@ class SectionTab extends Tab{
         return node.children[0].returnExtremNode(d)
     }
 
-
-
     fromCellsDataCreatePage(cellChain){
         // use a cell chain to create section array
-
         this.sectionArray = cellChain.map((p,i) => new Section(`cell_${p.cellID}`, p))
-        console.log(this.sectionArray);
-
-        // use the array to append the section html object to the tab
     }// fromCellsDataCreatePage
 
     updateSection(){
@@ -289,31 +301,31 @@ class ReferenceTab extends Tab{
     constructor(tabID, position, name, cellType){
         super(tabID, position, name, cellType)
         this.tabWindowHtmlObject.classList.add("referenceTabContainer")
-        this.wrapper = this.createReferenceTabWrapper()
-        this.functionBar = null
+        this.wrapperHtmlObject = this.createReferenceTabWrapper()
         this.searchInput = null
+        this.functionBar = this.createFunctionBar()
 
-        this.createFunctionBar()
+        console.log(this.wrapperHtmlObject);
+
+        this.tabWindowHtmlObject.append(this.functionBar, this.wrapperHtmlObject)
     }
 
 
     createReferenceTabWrapper(){
         let wrapper = document.createElement("div")
+        wrapper.classList.add("referenceTabWrapper")
         return wrapper
     }
 
     createFunctionBar(){
         let functionBar = document.createElement("div")
         functionBar.classList.add("functionBar")
-        this.functionBar = functionBar
 
         this.searchInput = this.createSearch()
 
         functionBar.append(this.searchInput)
 
-        this.tabWindowHtmlObject.append(functionBar)
-
-
+        return functionBar
     }
 
     createSearch(){
@@ -323,11 +335,9 @@ class ReferenceTab extends Tab{
             console.log(event.target.value);
         })
 
-        this.tabWindowHtmlObject.append(searchInput)
+
 
         return searchInput
-
-
 
     }
 
