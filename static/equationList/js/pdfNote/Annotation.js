@@ -1,4 +1,4 @@
-class Annotation{
+  class Annotation{
     constructor(cellID, annotationID, relatedCell, data = null, addCellID=true, pinned=false){
         this.upperCell = relatedCell
         this.parentTab = this.upperCell.parentTab
@@ -22,7 +22,7 @@ class Annotation{
             res("finish loading")
         })
         .then((res, err)=>{
-            this.mother.classList.add(`latexMotherCell_${this.cellID}_${this.annotationID}`)
+            this.mother.latexMotherCellHTMLObject.classList.add(`latexMotherCell_${this.cellID}_${this.annotationID}`)
             // this.addChangeEvent(this.mother)
 
         })
@@ -32,9 +32,10 @@ class Annotation{
     create(){
         let self = this
         let annotation = document.createElement("div")
-        let annotationContent = this.createLatexCells()
         annotation.soul = this
-
+        let annotationContent = this.createLatexCells()
+        annotationContent.parentTab = this.parentTab
+        annotationContent.soul = this
 
         annotation.append(annotationContent)
         this.annotationType = "textAnnotation"
@@ -75,63 +76,14 @@ class Annotation{
         let self = this
         // annotation.update = function
         let annotationContent = document.createElement("div")
-        annotationContent.classList.add("annotationContent")
+        annotationContent.classList.add("annotationContent", )
 
+        let latexMotherCell =  new LatexMothercell(this.parentTab)
+        let latexChildCell = new LatexChildCell(this.parentTab)
 
-        // latexMotherCell
-        let latexMotherCell = document.createElement("div")
-        this.mother = latexMotherCell
-        latexMotherCell.soul = this
-        this.latexMotherCell = latexMotherCell
-        latexMotherCell.classList.add("latexMotherCell")
-        latexMotherCell.contentEditable = true;
-        latexMotherCell.style.minHeight = "40px"
-        latexMotherCell.style.fontSize = "20px"
-        latexMotherCell.style.border = "2px green solid"
-
-
-
-        // to run render when the content of the latexMotherCell is changed. latexMotherCell
-        latexMotherCell.addEventListener("DOMSubtreeModified", function(){
-            let motherInnerText = latexMotherCell.innerHTML
-            self.renderLatex(latexMotherCell, latexChildCell)
-            latexMotherCell.classList.remove("selected")
-
-            // changeMode("Command")
-
-        })
-
-        // to focus on the choosen latexMotherCell
-        latexMotherCell.addEventListener("click", function(){
-
-            let allMother = document.querySelectorAll(".latexMotherCell")
-            allMother.forEach(mother=>{
-                if (mother!=event.target){
-                    mother.classList.remove("selected")
-                    // mother.parentNode.querySelector("selectedLatexChildCell").classList.remove("selectedLatexChildCell")
-                }
-            })
-            event.target.classList.add("selected")
-            latexChildCell.classList.add("selectedLatexChildCell")
-        })
-
-
-        // why do we need this setTimeout method here?
-        setTimeout(function(){
-            self.renderLatex(latexMotherCell, latexChildCell)
-        }, 2000)
-
-        // latexChildCell
-        let latexChildCell = document.createElement("div")
-        this.child = latexChildCell
-        latexChildCell.classList.add("latexChildCell")
-        latexChildCell.contentEditable = false;
-
-        // to hide the mother cell
-        latexChildCell.addEventListener("click", function(){
-            let latexMotherCell = latexChildCell.previousSibling
-            latexMotherCell.style.display = "block"
-        })
+        // 母子相認
+        latexMotherCell.addEvents(latexChildCell)
+        latexChildCell.addEvents(latexMotherCell)
 
         let compileButton = document.createElement("button")
         this.compileButton = compileButton
@@ -140,53 +92,28 @@ class Annotation{
         compileButton.style.left = "90%"
 
         compileButton.addEventListener("click", function(){
-            let innerText = latexMotherCell.innerHTML
-            latexMotherCell.style.display = "none"
-            latexChildCell.classList.remove("selectedLatexChildCell")
+            let innerText = latexMotherCell.latexMotherCellHTMLObject.innerHTML
+            latexMotherCell.latexMotherCellHTMLObject.style.display = "none"
+            latexChildCell.latexChildCellHTMLObject.classList.remove("selectedLatexChildCell")
         })
         compileButton.click()
+
+
+
+
+        this.mother = latexMotherCell
+        this.child = latexChildCell
+        this.latexMotherCell = latexMotherCell
 
         annotationContent.mother = latexMotherCell
         annotationContent.child= latexChildCell
         annotationContent.compileButton = compileButton
 
-        annotationContent.append(latexMotherCell, latexChildCell, compileButton)
+        annotationContent.append(latexMotherCell.latexMotherCellHTMLObject, latexChildCell.latexChildCellHTMLObject, compileButton)
 
         return annotationContent
     }
 
-    renderLatex(latexMotherCell, latexChildCell){
-
-         function findPattern(pattern){
-            let motherText = latexMotherCell.innerHTML.match(pattern)
-            let newMotherHTML = latexMotherCell.innerHTML
-            if (motherText){
-
-                motherText.forEach(p=>{
-                    let beforePattern = p
-                    p = p.slice(2, p.length-2);
-                    p = p.split("@").join("\\").split("##").join("$$")
-
-                     MathJax.tex2svgPromise(p, {em: 12, ex: 6, display: false})
-                      .then((html) => {
-                          newMotherHTML=  newMotherHTML.replace(beforePattern, html.outerHTML)
-                          latexChildCell.innerHTML = newMotherHTML
-                      });
-                })
-            } else{
-                latexChildCell.innerHTML = newMotherHTML
-            }
-        }//findPattern
-
-
-        let pattern1 = /@[(](.*?)@[)]/g
-        let pattern2 = /##(.*?)##/g
-
-
-        findPattern(pattern1)
-        findPattern(pattern2)
-
-    }// renderLatex
 
     createImageAnnotation(){
         let self = this
@@ -240,14 +167,14 @@ class Annotation{
             "annotationType": this.annotationType
         }
 
+
         if (this.annotationType == "textAnnotation"){
-            saveObject["latexMotherCellInnerHTML"] = this.mother.innerHTML
+            saveObject["latexMotherCellInnerHTML"] = this.mother.latexMotherCellHTMLObject.innerHTML
         } else {
             saveObject["imageText"] = this.getImageTextArray()
             saveObject["fileName"] = this.fileName
             saveObject["src"] = this.src
         }
-
         return saveObject
     }
 
@@ -260,13 +187,13 @@ class Annotation{
 
         this.annotationHtmlObject.setAttribute("data-level", this.levelOfDifficulty)
 
-
         // update text or image Annotation
         if (this.annotationType == "textAnnotation"){
             // to add the data of latexMotherCell Data to the dom element
             // each this["property"] equal to an html Object
 
-            this.annotationContent.mother.innerHTML = this["latexMotherCellInnerHTML"]
+            this.annotationContent.mother.latexMotherCellHTMLObject.innerHTML = this["latexMotherCellInnerHTML"]
+
         } else if (this.annotationType == "imageAnnotation"){
             let imageCluster = this.createImageAnnotation()
             let [image, fileNameInput, imageTextButton] = this.createImageAnnotation()
@@ -274,8 +201,8 @@ class Annotation{
             this.annotationContent.append(image, fileNameInput, imageTextButton)
 
             // hide the latex mother cell
-            this.mother.style.display = "none"
-            this.child.style.display = "none"
+            this.mother.latexMotherCellHTMLObject.style.display = "none"
+            this.child.latexChildCellHTMLObject.style.display = "none"
             this.compileButton.style.display = "none"
         } // update text or image Annotation
 
@@ -506,4 +433,117 @@ class AnnotationControlPanel{
         this.AnnotationControlPanelHtmlObject.append(questionButton,  deleteButton, insertAbove, insertBelow, addToFlashCardButton, levelOfDifficultyButton)
     }// create new annotation
 
+}
+
+class LatexMothercell {
+    constructor(parentTab){
+        this.latexMotherCellHTMLObject = this.createHTMLObject()
+        this.parentTab = parentTab
+
+    }
+
+    createHTMLObject(){
+      let latexMotherCell = document.createElement("div")
+      latexMotherCell.classList.add("latexMotherCell")
+      latexMotherCell.contentEditable = true;
+      latexMotherCell.style.minHeight = "40px"
+      latexMotherCell.style.fontSize = "20px"
+      latexMotherCell.style.border = "2px green solid"
+      latexMotherCell.soul = this
+      return latexMotherCell
+    }
+
+    addEvents(childCell){
+      let self = this
+      this.childCell = childCell
+
+      this.latexMotherCellHTMLObject.addEventListener("DOMSubtreeModified", function(){
+          let motherInnerText = self.latexMotherCellHTMLObject.innerHTML
+          self.renderLatex()
+          self.latexMotherCellHTMLObject.classList.remove("selected")
+
+      })
+
+      // to focus on the choosen latexMotherCell
+      this.latexMotherCellHTMLObject.addEventListener("click", function(){
+          let allMother = document.querySelectorAll(".latexMotherCell")
+          allMother.forEach(mother=>{
+              if (mother!=event.target){
+                  mother.classList.remove("selected")
+                  // mother.parentNode.querySelector("selectedLatexChildCell").classList.remove("selectedLatexChildCell")
+              }
+          })
+          event.target.classList.add("selected")
+          self.childCell.latexChildCellHTMLObject.classList.add("selectedLatexChildCell")
+      })
+    }// addEditEvent
+
+    renderLatex(){
+        let pattern1 = /@[(](.*?)@[)]/g
+        let pattern2 = /##(.*?)##/g
+
+        this.findPattern(pattern1)
+        this.findPattern(pattern2)
+
+        let imageArray = this.latexMotherCellHTMLObject.querySelectorAll("img")
+
+        imageArray.forEach(p=>{
+          if (p.src.substring(0, 10) == "data:image"){
+
+          }
+        })
+// data:image/png
+    }
+
+    findPattern(pattern){
+        let motherTextArray = this.latexMotherCellHTMLObject.innerHTML.match(pattern)
+        let renderedHTML = this.latexMotherCellHTMLObject.innerHTML
+        if (motherTextArray){
+
+            motherTextArray.forEach(p=>{
+                let beforePattern = p
+                p = p.slice(2, p.length-2);
+                p = p.split("@").join("\\").split("##").join("$$")
+
+                 MathJax.tex2svgPromise(p, {em: 12, ex: 6, display: false})
+                  .then((html) => {
+                      renderedHTML =  renderedHTML.replace(beforePattern, html.outerHTML)
+                      this.childCell.latexChildCellHTMLObject.innerHTML = renderedHTML
+                  });
+            })
+
+        } else{
+            this.childCell.latexChildCellHTMLObject.innerHTML = renderedHTML
+        }
+
+    }
+
+
+
+
+}
+
+class LatexChildCell {
+    constructor(parentTab){
+        this.latexChildCellHTMLObject = this.createHTMLObject()
+        this.parentTab = parentTab
+        this.addEvents()
+    }
+
+    createHTMLObject(){
+      let latexChildCell = document.createElement("div")
+      latexChildCell.classList.add("latexChildCell")
+      latexChildCell.contentEditable = false;
+      latexChildCell.soul = this
+      return latexChildCell
+    }
+
+    addEvents(motherCell){
+      let self = this
+      this.motherCell = motherCell
+
+      this.latexChildCellHTMLObject.addEventListener("click", function(){
+          self.motherCell.latexMotherCellHTMLObject.style.display = "block"
+      })
+    }
 }

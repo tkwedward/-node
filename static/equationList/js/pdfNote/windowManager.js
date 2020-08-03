@@ -33,6 +33,9 @@ class WindowManager {
             let starterTab2 = this.createNewTab("right", "Note", loadDataExist, "mirrorTab", NoteTabCell)
             this.mirrorTab = starterTab2
 
+            starterTab1.twins = starterTab2
+            starterTab2.twins = starterTab1
+
             this.mainTab.fromLoadCreatePage(loadData)
             this.mirrorTab.fromLoadCreatePage(loadData)
 
@@ -72,11 +75,24 @@ class WindowManager {
             this.tabArray["right"].forEach(t=>t.createToolBox())
         }).then(()=>{
             this.showTab("left", 0)
+            this.showTab("right", 1)
         }).then(()=>{ // load the position
             let tabScrollTopData = this.loadData["scrollTopData"]
             if (tabScrollTopData){
                 console.log(tabScrollTopData);
                 this.loadTabPositions(tabScrollTopData)
+            } else {
+                console.log("no position data yet");
+            }
+      }).then(()=>{ // add bookmarks
+            let bookmarkDictData = this.loadData["bookmarkSaveObject"]
+            if (bookmarkDictData){
+                bookmarkDictData.forEach(p=>{
+                  let tabID = p["tabID"]
+                  let tab = this.getTabFromID("left", p.tabID) || this.getTabFromID("right", p.tabID);
+                  tab.bookmarkInterface.loadBookmark(p);
+                  // console.log(tab.bookmarkInterface);
+                })
             } else {
                 console.log("no position data yet");
             }
@@ -107,13 +123,10 @@ class WindowManager {
     }
 
     createSectionTabContent(source, sectionTab){
-        console.log(source, sectionTab);
         let cellChain = source.getCellChain()
-        console.log(cellChain);
 
         sectionTab.fromCellsDataCreatePage(cellChain)
         sectionTab.createSectionTree()
-        console.log(sectionTab.tree);
         sectionTab.tree.printAllChild(sectionTab.wrapperHtmlObject)
     }
 
@@ -146,6 +159,16 @@ class WindowManager {
             tabButton.addEventListener("click", function(){
                 let targetTabID = tabButton.getAttribute("tabid");
                 let targetTabPosition = tabButton.getAttribute("tabposition");
+
+                let bookmarks = document.querySelectorAll(`.${tab.position}_bookmark`)
+
+                bookmarks.forEach(p=>{
+                  console.log(p);
+                  p.style.display = "none"
+                })
+
+                tab.bookmarkInterface.bookmarkHtmlObject.style.display = "block"
+
                 self.tabArray[targetTabPosition].forEach(p=>{
 
                     console.log(p.tabID, targetTabID);
@@ -184,8 +207,10 @@ class WindowManager {
             this.tabArray[position].forEach(tab=>{
                 if (tab.tabID == tabID){
                     tab.tabWindowHtmlObject.style.display = "block"
+                    tab.bookmarkInterface.bookmarkHtmlObject.style.display = "block"
                 } else {
                     tab.tabWindowHtmlObject.style.display = "none"
+                    tab.bookmarkInterface.bookmarkHtmlObject.style.display = "none"
                 }
             })
         }
@@ -323,17 +348,21 @@ class WindowManager {
         let tabType = ["mainTab", "mirrorTab"]
 
         let sourceClass = sourceElement.classList[1]
-        console.log(sourceElement);
+        console.log(sourceElement, sourceElement.soul, sourceClass);
 
         if (!parentTab){
-            parentTab = sourceElement.soul.parentTab
+            // console.log(sourceElement, sourceElement.soul);
+
+            parentTab = sourceElement.soul.parentTab || sourceElement.soul.upperTab
         }
 
         let targetTab = parentTab == "mainTab"? "mirrorTab" : "mainTab"
         targetTab = windowManager[targetTab].tabWindowHtmlObject
 
+
+
         let targetElement = targetTab.querySelector(`.${sourceClass}`)
-        console.log(targetElement, sourceClass);
+        console.log(sourceClass, targetElement);
 
         actionFunction(targetElement)
         if (sourceAction){
@@ -363,17 +392,31 @@ class WindowManager {
 
     // saveData
     save(action=true){
+      // action = false
         let mainTabSaveObject = this.mainTab.save()
         let referenceTabSaveObject = this.referenceTab.save()
-
         let scrollTopSaveObject = this.getScrollTopOfTabs()
+
+
+        let bookmarkSaveObject = []
+
+        this.tabArray["left"].forEach(tab=>{
+            let tabBookmarkDict = tab.bookmarkInterface.saveBookmark()
+            bookmarkSaveObject.push(tabBookmarkDict)
+        })
+        this.tabArray["right"].forEach(tab=>{
+            let tabBookmarkDict = tab.bookmarkInterface.saveBookmark()
+            bookmarkSaveObject.push(tabBookmarkDict)
+        })
 
 
 
         mainTabSaveObject["referenceTab"] = referenceTabSaveObject
 
         mainTabSaveObject["scrollTopData"] = scrollTopSaveObject
+        mainTabSaveObject["bookmarkSaveObject"] = bookmarkSaveObject
 
+        console.log(mainTabSaveObject);
         if (action){
             this.ajaxSendJson(url, mainTabSaveObject, "save state", "success to save", function(){
                 console.log("after sent ajax");

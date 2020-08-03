@@ -11,6 +11,7 @@ class Tab{
         this.cellHead = null
         this.cellTail = null
         this.cellType = cellType
+        this.bookmarkInterface = this.createBookmarkInterface()
     }
 
     create(){
@@ -19,6 +20,11 @@ class Tab{
         slaveWindow.classList.add("tabWindow", this.position, `tab_${this.tabID}`)
 
         return slaveWindow
+    }
+
+    createBookmarkInterface(){
+      let bookmarkInterface = new TabBookmarkManager(this)
+      return bookmarkInterface
     }
 
     createNewCell(cellData, append = true){
@@ -81,7 +87,8 @@ class Tab{
         let saveObject = {
             "title": title,
             "chapter": chapter,
-            "cells": []
+            "cells": [],
+            "bookmarkDict": null
         }
 
 
@@ -344,6 +351,78 @@ class ReferenceTab extends Tab{
     takeAction(ele, actionFunction){
         actionFunction(ele)
     }
+
+
+}
+
+
+class TabBookmarkManager{
+  constructor(tab){
+    this.motherTab = tab
+    this.color = ["red", "orange", "yellow", "purple"]
+    this.bookmarkDict = {
+      "tabID": tab.tabID,
+      "1": {},
+      "2": {},
+      "3": {},
+      "4": {}
+    }
+    this.buttonArray = []
+
+    this.bookmarkHtmlObject = this.createBookmarkHtmlObject()
+
+  }
+
+  createBookmarkHtmlObject(){
+      let bookmarkArea = document.querySelector("." + this.motherTab.position + "TabBookmarkArea")
+
+      let bookmarkInterface = document.createElement("div")
+      bookmarkInterface.classList.add("tab_"+ this.motherTab.tabID, this.motherTab.position+"_bookmark")
+      bookmarkInterface.setAttribute("tabid", this.motherTab.tabID)
+      bookmarkInterface.innerHTML = "tab_" + this.motherTab.tabID
+
+      let numberOfBookmark = 4
+
+      for (let i = 0; i < numberOfBookmark; i++){
+          let button = document.createElement("button")
+          button.innerHTML = i+1
+          console.log(this.bookmarkDict);
+          this.bookmarkDict[i+1]["color"] = this.color[i]
+          this.bookmarkDict[i+1]["position"] = 0
+          this.bookmarkDict[i+1]["button"] = i+1
+          this.buttonArray.push(button)
+          bookmarkInterface.append(button)
+      }
+
+      bookmarkArea.append(bookmarkInterface)
+      return bookmarkInterface
+  }
+
+  addBookmark(number, position){
+    this.bookmarkDict[number]["position"] = position
+    this.buttonArray[number-1].style.background = this.bookmarkDict[number]["color"]
+
+  }
+
+  saveBookmark(){
+    return this.bookmarkDict
+  }
+
+  loadBookmark(data){
+    this.bookmarkDict = data
+
+    Object.entries(data).forEach(p=>{
+      if (p[0]!="tabID"){
+        let bookmarkDict = p[1]
+        let button = this.buttonArray[bookmarkDict.button-1];
+        if (bookmarkDict.position != 0){
+            button.style.background = bookmarkDict.color
+        }
+      }
+
+    })
+
+  }
 
 
 }

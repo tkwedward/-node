@@ -4,7 +4,7 @@ class EventSelfDefined{
         this.createCopyMainTabEvent()
         this.createGetFocusCellEvent()
         this.createKeyboardEvent()
-        this.createPasteImageEvent()
+        // this.createPasteImageEvent()
         this.windowManager = windowManager
 
 
@@ -207,6 +207,21 @@ class EventSelfDefined{
                 windowManager.fillInPopUpBox("questionText", ["up", "down"], selectedCell,  selectedCell.soul.upperTab.pasteCellEvent);
             }// new Cell Below
 
+            // save function, 80 = to let the left or right side equal
+            if (event.keyCode==80 && event.ctrlKey){
+                let selectedCell = document.querySelector(".selectedCell")
+
+                let targetCellID = selectedCell.soul.cellID
+                let targetTab = selectedCell.soul.upperTab.twins
+
+                let targetCellInTwinsTab = targetTab.tabWindowHtmlObject.querySelector(`.cell_${targetCellID}`)
+
+                let topOffset = targetCellInTwinsTab.offsetTop
+
+                targetTab.tabWindowHtmlObject.scrollTop = topOffset -27
+            }
+
+
             // deleteCell, 68 = d
             if (event.keyCode==68 && event.ctrlKey){// to delete the cell
 
@@ -228,6 +243,27 @@ class EventSelfDefined{
 
                 windowManager.symmetryAction(selectedCell, actionFunction)
             }// insert after the cell
+
+
+            // savebookmark position
+            if ((event.keyCode==49 || event.keyCode==50 || event.keyCode==51 || event.keyCode==52) && event.ctrlKey && !event.shiftKey){// to delete the cell
+                let number = event.keyCode - 48
+                let selectedCell = document.querySelector(".selectedCell")
+                let selectedTab = selectedCell.soul.upperTab
+
+                selectedTab.bookmarkInterface.addBookmark(number, selectedTab.tabWindowHtmlObject.scrollTop);
+                console.log(selectedTab.bookmarkInterface);
+            }// savebookmark position
+
+
+            // load bookmark position
+            if ((event.keyCode==49 || event.keyCode==50 || event.keyCode==51 || event.keyCode==52) && event.ctrlKey && event.shiftKey){// to delete the cell
+                let number = event.keyCode - 48
+                let selectedCell = document.querySelector(".selectedCell")
+                let selectedTab = selectedCell.soul.upperTab
+
+                selectedTab.tabWindowHtmlObject.scrollTop = selectedTab.bookmarkInterface.bookmarkDict[number]["position"];
+            }// load bookmark position
 
         })
     } // createKeyboardEvent

@@ -54,6 +54,7 @@ class Cell{
 
     // create new objects
     createCellTitle(){
+        let self = this
         let cellTitle = document.createElement("h2")
         cellTitle.soul = this
         cellTitle.classList.add("cellTitle")
@@ -61,10 +62,16 @@ class Cell{
         cellTitle.innerHTML = `Cell Title ${this.cellID}`
         cellTitle.sectionTitle = "false"
         cellTitle.classList.add(`cellTitle_${this.cellID}`)
+        // cellTitle.parentTab = this.upperTab
 
         // methods
+        console.log();
         cellTitle.update = function(title){
             cellTitle.innerHTML = title
+            cellTitle.classList.remove(cellTitle.classList[1])
+            cellTitle.classList.add(`cellTitle_${self.cellID}`)
+            console.log(cellTitle.classList);
+
         }
 
         // put the cellTitle as attribute and append it to the cell
@@ -213,9 +220,11 @@ class Cell{
     load(loadData){
         // console.log(loadData);
         // load cellID
-        this.cellTitle.update(loadData["cellTitle"])
-        this.cellHtmlObject.classList.add("cell", `cell_${loadData["cellID"]}`)
         this.cellID = loadData["cellID"]
+        this.cellHtmlObject.classList.add("cell", `cell_${loadData["cellID"]}`)
+
+        this.cellTitle.update(loadData["cellTitle"])
+
 
         this.loadMaxCellID(loadData)
         this.loadInSectionData(loadData)
@@ -413,16 +422,30 @@ class NoteTabCell extends Cell{
         let observer = new MutationObserver(function(mutations){
             let notTriggerList = ["latexChildCell"]
             let sourceElement = mutations[0].target
+            console.log(mutations);
 
             if (mutations[0].type=="characterData"){
-                console.log(mutations[0]);
-                sourceElement = sourceElement.parentElement
+
+                if (sourceElement.parentElement.parentElement.classList.contains("latexMotherCell")){
+                    sourceElement = sourceElement.parentElement.parentElement
+                } else if (sourceElement.parentElement.classList.contains("latexMotherCell")) {
+                  sourceElement = sourceElement.parentElement
+                }
+                else {
+                    console.log(sourceElement);
+                    sourceElement = sourceElement.parentElement.parentElement
+                }
+
                 let actionFunction = function(ele){
                     ele.innerHTML = sourceElement.innerHTML
                 }
 
+                console.log(sourceElement);
                 windowManager.symmetryAction(sourceElement, actionFunction, this.parentTab, false)
             }// mutations[0]=="characterData"
+
+
+
         })
 
         observer.observe(this.cellHtmlObject, {"characterData":true, "subtree": true, "childList": true})
