@@ -18,17 +18,12 @@ annotation.addEventListener("keydown", function(e){
 })
 
 
-
-
 // in the tabs.js
-
 else if (data.action == "updateCellTitle"){
     content = data["message"]["content"]
     target = this.tabWindowHtmlObject.querySelector(`.cellTitle_${_cellID}`)
     property = "innerHTML"
 } // updateCellTitle
-
-
 
 // add button
 // 以下是用作加 event

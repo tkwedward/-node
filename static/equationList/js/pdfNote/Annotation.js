@@ -32,6 +32,8 @@ class Annotation{
     create(){
         let self = this
         let annotation = document.createElement("div")
+        annotation.setAttribute("aid", this.annotationID)
+
         let annotationContent = this.createLatexCells()
         annotation.soul = self
 
@@ -340,6 +342,7 @@ class Annotation{
         // add annotation ID
         // this.annotationID = loadData["annotationID"]
         this.annotationHtmlObject.classList.add("annotation", `annotation_${this.cellID}_${this.annotationID}`)
+        this.annotationHtmlObject.setAttribute("aid", this.annotationID)
         this.appendIDHtmlObject()
 
         // the above part is only for loading data, this part is for filling in the html object
@@ -428,8 +431,11 @@ class AnnotationControlPanel{
         button.classList.add(buttonType)
 
         button.addEventListener("click", function(e){
+          console.log("what is the detail?");
           console.log(e.detail);
+
           eventFunction()
+          console.log(`________${e.target.soul.cellID}, ${e.target.soul.upperAnnotation.annotationHtmlObject.getAttribute("aid")}_________`);
 
           if (e.detail){
               stop = e.detail.stop
@@ -441,11 +447,11 @@ class AnnotationControlPanel{
                       'tab_identifier': e.target.soul.upperAnnotation.upperCell.upperTab.tabWindowHtmlObject.identifier,
                       'sender': "annotationControlPanelButton",
                       "cellID": e.target.soul.cellID,
-                      "annotationID": e.target.soul.annotationID-1,
+                      "annotationID": e.target.soul.upperAnnotation.annotationHtmlObject.getAttribute("aid"),
                     },
                     'action': "annotationControlPanelButton"
                   }
-                  console.log(message_data);
+
                   chatSocket.send(JSON.stringify(message_data));
               }
           }
@@ -461,19 +467,21 @@ class AnnotationControlPanel{
     create(){
         let self = this
         let annotation = this.upperAnnotation.annotationHtmlObject
+
+        // create question buttun
         let questionButton = this.createButton("questionButton", function(){
 
-                let status = ele.innerHTML
-                ele.innerHTML = status=="question"? "solved": "question"
-                self.upperAnnotation.questionStatus = ele.innerHTML
+                let status = questionButton.innerHTML
+                questionButton.innerHTML = status=="question"? "solved": "question"
+                self.upperAnnotation.questionStatus = questionButton.innerHTML
 
 
                 if (status=="question"){
-                    ele.parentNode.previousSibling.style.border = "yellow 14px dashed"
-                    ele.questionCreateDate = new Date()
+                    questionButton.parentNode.previousSibling.style.border = "yellow 14px dashed"
+                    questionButton.questionCreateDate = new Date()
                 } else {
-                    ele.parentNode.previousSibling.style.border = "none"
-                    ele.questionCreateDate = null
+                    questionButton.parentNode.previousSibling.style.border = "none"
+                    questionButton.questionCreateDate = null
                 }
 
         })
@@ -483,38 +491,30 @@ class AnnotationControlPanel{
 
         // 2. delete Button
         let deleteButton = this.createButton("deleteButton", ()=>{
-            let sourceElement = event.target.parentNode.parentNode
-            let actionFunction = function(ele){
-                ele.remove()
-            }
-
-            self.upperAnnotation.takeActions(sourceElement, actionFunction)
+            let targetAnnotation = event.target.parentNode.parentNode
+            targetAnnotation.remove()
         })
         deleteButton.innerHTML = "delete"
         this.deleteButton = deleteButton
         // 3. insertAbove
-        let insertAbove = this.createButton("insertAbove", function(){
-            let sourceElement = self.upperAnnotation.annotationHtmlObject
-            let actionFunction = function(ele){
-                let newAnnotation = ele.soul .upperCell.createAnnotation()
-                let parentNode = ele.parentNode
-                parentNode.insertBefore(newAnnotation, ele)
-            }
 
-            self.upperAnnotation.takeActions(sourceElement, actionFunction)
+        let insertAbove = this.createButton("insertAbove", function(){
+            console.log("insert above");
+            let newAnnotation = self.upperAnnotation.upperCell.createAnnotation()
+            let parentNode = self.upperAnnotation.annotationHtmlObject.parentNode
+            parentNode.insertBefore(newAnnotation, self.upperAnnotation.annotationHtmlObject)
         })
         insertAbove.innerHTML = "insertAbove"
         this.insertAbove = insertAbove
 
         // 4. insertBelow
         let insertBelow = this.createButton("insertBelow", function(e){
-            let annotationObject = e.target.soul.upperAnnotation
 
-            let newAnnotation = annotationObject.upperCell.createAnnotation()
+            let newAnnotation = self.upperAnnotation.upperCell.createAnnotation()
 
-            let parentNode = annotationObject.annotationHtmlObject.parentNode
-            parentNode.insertBefore(newAnnotation, annotationObject.annotationHtmlObject)
-            parentNode.insertBefore(annotationObject.annotationHtmlObject, newAnnotation)
+            let parentNode = self.upperAnnotation.annotationHtmlObject.parentNode
+            parentNode.insertBefore(newAnnotation, self.upperAnnotation.annotationHtmlObject)
+            parentNode.insertBefore(self.upperAnnotation.annotationHtmlObject, newAnnotation)
         })
         insertBelow.innerHTML = "insertBelow"
         this.insertBelow = insertBelow

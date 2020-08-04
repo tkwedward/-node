@@ -88,8 +88,6 @@ class Cell{
             cellTitle.innerHTML = title
             cellTitle.classList.remove(cellTitle.classList[1])
             cellTitle.classList.add(`cellTitle_${self.cellID}`)
-            console.log(cellTitle.classList);
-
         }
 
         // put the cellTitle as attribute and append it to the cell
@@ -320,20 +318,29 @@ class CellControlPanel{
         let button = document.createElement("button")
         button.soul = this
         button.classList.add(buttonType, buttonType + "_" + this.upperCell.cellID)
-        button.addEventListener("click", eventFunction)
+
+
         button.addEventListener("click", function(e){
-          let message_data = {
-            'message': {
-                "latexMotherCellInnerHTML": e.target.innerHTML,
-                'tab_identifier': e.target.soul.upperCell.upperTab.tabWindowHtmlObject.identifier,
-                'sender': "cellControlPanelButton",
-                "cellID": e.target.soul.cellID
-            },
-            'action': "cellControlButtonAction"
+          eventFunction()
+
+          console.log(`________${e.target.soul.upperCell.cellID}_______`);
+
+          if (e.detail){
+              stop = e.detail.stop
+              console.log("I am not going to continue");
+              if (!stop){ // stop
+                let message_data = {
+                  'message': {
+                      "content": e.target.classList[1],
+                      'tab_identifier': e.target.soul.upperCell.upperTab.tabWindowHtmlObject.identifier,
+                      'sender': "cellControlPanelButton",
+                      "cellID": e.target.soul.upperCell.cellID
+                  },
+                  'action': "cellControlButtonAction"
+                }
+                chatSocket.send(JSON.stringify(message_data));
+              }// if not stop
           }
-          chatSocket.send(JSON.stringify(message_data));
-
-
         })
         return button
     }// createButton
@@ -347,8 +354,8 @@ class CellControlPanel{
         this.pinButton = pinButton
 
 
-        let addAnnotationButton = this.createButton("addAnnotationButton", function(){
-            let newAnnotation = self.createAnnotation(this.cellID, this.maxAnnotationID)
+        let addAnnotationButton = this.createButton("addAnnotationButton", function(e){
+            let newAnnotation = self.createAnnotation(addAnnotationButton.soul.cellID, addAnnotationButton.soul.maxAnnotationID)
         })
 
         addAnnotationButton.innerHTML = "addAnnotation"
@@ -493,11 +500,5 @@ class NoteTabCell extends Cell{
 class ReferenceTabCell extends Cell{
     constructor(upperTab, data = null, annotationID=0, pinned=false, tabAnnotationType=ReferenceTabAnnotation){
         super(upperTab, data, annotationID, pinned, tabAnnotationType)
-        this.kick()
-    }
-
-    kick(){
-        console.log(this.upperTab);
-        console.log("i am reference tab cell");
     }
 }

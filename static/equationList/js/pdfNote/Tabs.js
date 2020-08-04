@@ -29,8 +29,6 @@ class Tab{
           "CHAT_USER_ID": CHAT_USER_ID,
         }
 
-        console.log(slaveWindow.classList);
-
         return slaveWindow
     }
 
@@ -115,9 +113,7 @@ class Tab{
     }
 
     fromLoadCreatePage(jsonResult){
-        console.log(jsonResult);
         if (Object.entries(jsonResult["cells"]).length){ // check whether any data in the jsonResult Dictionary
-            console.log(jsonResult);
             this.data = jsonResult
             this.maxAnnotationBlockID = parseInt(jsonResult["maxAnnotationBlockID"]) || 1
 
@@ -128,8 +124,6 @@ class Tab{
             } else {
                 this.maxCellID = 1
             }
-
-
 
             let cellsData = jsonResult["cells"]
             // console.log(this.mainTab);
@@ -178,7 +172,7 @@ class Tab{
       let target;
       let property;
       let content;
-      let action;
+      let buttonAction;
 
       let checkroomName = ROOMNAME == _roomName
 
@@ -202,33 +196,40 @@ class Tab{
               let _annotationID = data["message"]["annotationID"]
               let buttonType = data["message"]["content"]
 
+              let targetAnnotation = this.tabWindowHtmlObject.querySelector(`.annotation_${_cellID}_${_annotationID}`)
+              if (targetAnnotation){
+                  target = targetAnnotation.querySelector(`.${buttonType}`)
+              }
 
-
-              target = this.tabWindowHtmlObject.querySelector(`.annotation_${_cellID}_${_annotationID}`).querySelector(`.${buttonType}`)
-              console.log(target);
-              action = new Event('click', {
-                "detail": {
-                  "stop": true}
+              buttonAction = new Event('click', {
+                    "detail": {
+                      "stop": true
+                    }
                 });
-
-              console.log("i want to add new annotation");
-              target.dispatchEvent(action)
 
           }// annotationControlPanelButton
           else if (data.action == "cellControlButtonAction"){
+              let targetClassName = data["message"]["content"]
+              console.log(targetClassName);
 
+              // targetCell
+              target = this.tabWindowHtmlObject.querySelector(`.${targetClassName}`)
+
+              buttonAction = new Event('click', {
+                "detail": {
+                  "stop": true}
+              });
+              console.log(target, buttonAction);
           }
 
-          this.updateFromSocketHelperFunction(_tabPostion, _chatID, target, property, content)
+          this.updateFromSocketHelperFunction(_tabPostion, _chatID, target, property, content, buttonAction)
 
 
       } // if same room, then do this
 
     } // updateFromSocketMessage
 
-    updateFromSocketHelperFunction(_tabPostion, _chatID, target, property, content){
-
-        if (property){
+    updateFromSocketHelperFunction(_tabPostion, _chatID, target, property, content, buttonAction){
             let differentPosition = this.position != _tabPostion
             let differentChatID = CHAT_USER_ID != _chatID
 
@@ -237,11 +238,14 @@ class Tab{
 
               if (property){
                 target[property] = content
-              } else {
+              }
 
+
+              if (buttonAction && target){
+                console.log("Take button action", target);
+                target.dispatchEvent(buttonAction)
               }
             } // check if different by chat id and position
-        }
 
     }
 
@@ -407,8 +411,6 @@ class ReferenceTab extends Tab{
         this.searchInput = null
         this.functionBar = this.createFunctionBar()
 
-        console.log(this.wrapperHtmlObject);
-
         this.tabWindowHtmlObject.append(this.functionBar, this.wrapperHtmlObject)
     }
 
@@ -482,7 +484,6 @@ class TabBookmarkManager{
       for (let i = 0; i < numberOfBookmark; i++){
           let button = document.createElement("button")
           button.innerHTML = i+1
-          console.log(this.bookmarkDict);
           this.bookmarkDict[i+1]["color"] = this.color[i]
           this.bookmarkDict[i+1]["position"] = 0
           this.bookmarkDict[i+1]["button"] = i+1

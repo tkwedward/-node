@@ -53,7 +53,6 @@ class WindowManager {
             let referenceTabSectionTab = this.createNewTab("left", "Section", loadDataExist, "referenceSectionTab", NoteTabCell, this.referenceTab)
             this.referenceTabSectionTab = referenceTabSectionTab
 
-            console.log(loadData["referenceTab"]);
             if (loadData["referenceTab"]){
                 referenceTab.fromLoadCreatePage(loadData["referenceTab"])
             } else {
@@ -78,7 +77,6 @@ class WindowManager {
         }).then(()=>{ // load the position
             let tabScrollTopData = this.loadData["scrollTopData"]
             if (tabScrollTopData){
-                console.log(tabScrollTopData);
                 this.loadTabPositions(tabScrollTopData)
             } else {
                 console.log("no position data yet");
