@@ -17,13 +17,15 @@ class Tab{
 
     create(){
         let slaveWindow = document.createElement("div");
-        console.log(roomName);
+
         slaveWindow.classList.add("tabWindow", this.position, `tab_${this.tabID}`, this.tabType)
+
+        slaveWindow.soul = this
 
         slaveWindow.identifier = {
           "position": this.position,
           "tabType": this.tabType,
-          "roomName": roomName,
+          "roomName": ROOMNAME,
           "CHAT_USER_ID": CHAT_USER_ID,
         }
 
@@ -161,6 +163,88 @@ class Tab{
         }
 
     }// check if
+
+
+    updateFromSocketMessage(data){
+      let _content = data["message"]["content"]
+      let _sender = data["message"]["sender"]
+      let _cellID = data["message"]["cellID"]
+
+      let _tab_identifier = data["message"]["tab_identifier"]
+      let _tabPostion = _tab_identifier["position"]
+      let _roomName = _tab_identifier["roomName"]
+      let _chatID = _tab_identifier["CHAT_USER_ID"]
+
+      let target;
+      let property;
+      let content;
+      let action;
+
+      let checkroomName = ROOMNAME == _roomName
+
+      if (checkroomName){
+          if (data.action == "motherCellUpdate"){
+              let _annotationID = _content["annotationID"]
+              // the inner html of mother cell
+              content = data["message"]["latexMotherCellInnerHTML"]
+
+              // the taret mother cell
+              target = this.tabWindowHtmlObject.querySelector(`.latexMotherCell_${_cellID}_${_annotationID}`)
+
+              property = "innerHTML"
+          } // mother cell update
+          else if (data.action == "updateCellTitle"){
+              content = data["message"]["content"]
+              target = this.tabWindowHtmlObject.querySelector(`.cellTitle_${_cellID}`)
+              property = "innerHTML"
+          } // updateCellTitle
+          else if (data.action == "annotationControlPanelButton"){
+              let _annotationID = data["message"]["annotationID"]
+              let buttonType = data["message"]["content"]
+
+
+
+              target = this.tabWindowHtmlObject.querySelector(`.annotation_${_cellID}_${_annotationID}`).querySelector(`.${buttonType}`)
+              console.log(target);
+              action = new Event('click', {
+                "detail": {
+                  "stop": true}
+                });
+
+              console.log("i want to add new annotation");
+              target.dispatchEvent(action)
+
+          }// annotationControlPanelButton
+          else if (data.action == "cellControlButtonAction"){
+
+          }
+
+          this.updateFromSocketHelperFunction(_tabPostion, _chatID, target, property, content)
+
+
+      } // if same room, then do this
+
+    } // updateFromSocketMessage
+
+    updateFromSocketHelperFunction(_tabPostion, _chatID, target, property, content){
+
+        if (property){
+            let differentPosition = this.position != _tabPostion
+            let differentChatID = CHAT_USER_ID != _chatID
+
+            // first check if they have the same id, if not, then check if they have the same position
+            if (differentChatID || differentPosition){
+
+              if (property){
+                target[property] = content
+              } else {
+
+              }
+            } // check if different by chat id and position
+        }
+
+    }
+
 
 }
 

@@ -56,7 +56,7 @@ class Cell{
     createCellTitle(){
         let self = this
         let cellTitle = document.createElement("h2")
-        cellTitle.soul = this
+        cellTitle.soul = self
         cellTitle.classList.add("cellTitle")
         cellTitle.contentEditable = true
         cellTitle.innerHTML = `Cell Title ${this.cellID}`
@@ -65,7 +65,25 @@ class Cell{
         // cellTitle.parentTab = this.upperTab
 
         // methods
-        console.log();
+
+        cellTitle.addEventListener("keydown", function(e){
+          setTimeout(function(){
+            console.log(e.target.soul);
+            let message_data = {
+              'message': {
+                  "content": e.target.innerHTML,
+                  'tab_identifier': e.target.soul.upperTab.tabWindowHtmlObject.identifier,
+                  'sender': "cellTitle",
+                  "cellID": e.target.soul.cellID
+              },
+              'action': "updateCellTitle"
+            }
+
+            chatSocket.send(JSON.stringify(message_data));
+
+          }, 5)
+        })
+
         cellTitle.update = function(title){
             cellTitle.innerHTML = title
             cellTitle.classList.remove(cellTitle.classList[1])
@@ -300,8 +318,23 @@ class CellControlPanel{
 
     createButton(buttonType, eventFunction){
         let button = document.createElement("button")
-        button.classList.add(buttonType)
+        button.soul = this
+        button.classList.add(buttonType, buttonType + "_" + this.upperCell.cellID)
         button.addEventListener("click", eventFunction)
+        button.addEventListener("click", function(e){
+          let message_data = {
+            'message': {
+                "latexMotherCellInnerHTML": e.target.innerHTML,
+                'tab_identifier': e.target.soul.upperCell.upperTab.tabWindowHtmlObject.identifier,
+                'sender': "cellControlPanelButton",
+                "cellID": e.target.soul.cellID
+            },
+            'action': "cellControlButtonAction"
+          }
+          chatSocket.send(JSON.stringify(message_data));
+
+
+        })
         return button
     }// createButton
 

@@ -1,0 +1,70 @@
+add new event
+
+
+
+// in the element want to react
+annotation.addEventListener("keydown", function(e){
+      let message_data = {
+        'message': {
+            "content": e.target.soul.save(),
+            "latexMotherCellInnerHTML": e.target.innerHTML,
+            'tab_identifier': e.target.soul.upperCell.upperTab.tabWindowHtmlObject.identifier,
+            'sender': "annotation",
+            "cellID": e.target.soul.cellID
+        },
+        'action': "motherCellUpdate"
+      }
+      chatSocket.send(JSON.stringify(message_data));
+})
+
+
+
+
+// in the tabs.js
+
+else if (data.action == "updateCellTitle"){
+    content = data["message"]["content"]
+    target = this.tabWindowHtmlObject.querySelector(`.cellTitle_${_cellID}`)
+    property = "innerHTML"
+} // updateCellTitle
+
+
+
+// add button
+// 以下是用作加 event
+
+let _annotationID = data["message"]["annotationID"]
+let buttonType = data["message"]["content"]
+target = this.tabWindowHtmlObject.querySelector(`.${buttonType}`)
+let clickEvent = new Event('click', {
+  "detail": {
+    "stop": true}
+  });
+target.dispatchEvent(clickEvent)
+
+button.addEventListener("click", function(e){
+  console.log(e.detail);
+  eventFunction()
+
+  if (e.detail){
+      stop = e.detail.stop
+      console.log("I am not going to continue");
+      if (!stop){ // stop
+        let message_data = {
+          'message': {
+              'content': buttonType,
+              'tab_identifier': e.target.soul.upperAnnotation.upperCell.upperTab.tabWindowHtmlObject.identifier,
+              'sender': "annotationControlPanelButton",
+              "cellID": e.target.soul.cellID,
+              "annotationID": e.target.soul.annotationID-1,
+            },
+            'action': "annotationControlPanelButton"
+          }
+          console.log(message_data);
+          chatSocket.send(JSON.stringify(message_data));
+      }
+  }
+
+  // eventFunction(e)
+
+})

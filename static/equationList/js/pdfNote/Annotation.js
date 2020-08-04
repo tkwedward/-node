@@ -55,22 +55,23 @@ class Annotation{
       let self = this
       annotation.addEventListener("keydown", function(e){
           console.log(e);
-          setTimeout(function(){
-            let message_data = {
-              'message': {
-                  "content": e.target.soul.save(),
-                  "latexMotherCellInnerHTML": e.target.innerHTML,
-                  'tab_identifier': e.target.soul.upperCell.upperTab.tabWindowHtmlObject.identifier,
-                  'sender': "annotation"
-              },
-              'action': "motherCellUpdate"
-            }
+          if (e.target.soul){
+            setTimeout(function(){
+              let message_data = {
+                'message': {
+                    "content": e.target.soul.save(),
+                    "latexMotherCellInnerHTML": e.target.innerHTML,
+                    'tab_identifier': e.target.soul.upperCell.upperTab.tabWindowHtmlObject.identifier,
+                    'sender': "annotation",
+                    "cellID": e.target.soul.cellID
+                },
+                'action': "motherCellUpdate"
+              }
 
-            chatSocket.send(JSON.stringify(message_data));
+              chatSocket.send(JSON.stringify(message_data));
 
-          }, 5)
-
-
+            }, 5)
+          }
       })
     }
 
@@ -423,19 +424,44 @@ class AnnotationControlPanel{
 
     createButton(buttonType, eventFunction){
         let button = document.createElement("button")
+        button.soul = this
         button.classList.add(buttonType)
-        button.addEventListener("click", eventFunction)
+
+        button.addEventListener("click", function(e){
+          console.log(e.detail);
+          eventFunction()
+
+          if (e.detail){
+              stop = e.detail.stop
+              console.log("I am not going to continue");
+              if (!stop){ // stop
+                let message_data = {
+                  'message': {
+                      'content': buttonType,
+                      'tab_identifier': e.target.soul.upperAnnotation.upperCell.upperTab.tabWindowHtmlObject.identifier,
+                      'sender': "annotationControlPanelButton",
+                      "cellID": e.target.soul.cellID,
+                      "annotationID": e.target.soul.annotationID-1,
+                    },
+                    'action': "annotationControlPanelButton"
+                  }
+                  console.log(message_data);
+                  chatSocket.send(JSON.stringify(message_data));
+              }
+          }
+
+          // eventFunction(e)
+
+        })
+
         return button
+
     }// createButton
 
     create(){
         let self = this
         let annotation = this.upperAnnotation.annotationHtmlObject
         let questionButton = this.createButton("questionButton", function(){
-            let sourceElement = event.target
-            console.log(sourceElement);
-
-            let actionFunction = function(ele){
 
                 let status = ele.innerHTML
                 ele.innerHTML = status=="question"? "solved": "question"
@@ -449,11 +475,7 @@ class AnnotationControlPanel{
                     ele.parentNode.previousSibling.style.border = "none"
                     ele.questionCreateDate = null
                 }
-            }
 
-
-            console.log(self.upperAnnotation);
-            windowManager.symmetryAction(sourceElement, actionFunction, self.upperAnnotation.parentTab)
         })
         questionButton.classList.add(`questionButton_${this.cellID}_${this.annotationID}`)
         questionButton.innerHTML = "question"
@@ -485,20 +507,14 @@ class AnnotationControlPanel{
         this.insertAbove = insertAbove
 
         // 4. insertBelow
-        let insertBelow = this.createButton("insertBelow", function(){
-            let sourceElement = self.upperAnnotation.annotationHtmlObject
-            let actionFunction = function(ele){
-              console.log(ele);
-                let newAnnotation = ele.soul .upperCell.createAnnotation()
-                let parentNode = ele.parentNode
-                parentNode.insertBefore(newAnnotation, ele)
-                parentNode.insertBefore(ele, newAnnotation)
-            }
+        let insertBelow = this.createButton("insertBelow", function(e){
+            let annotationObject = e.target.soul.upperAnnotation
 
-            // actionFunction(sourceElement)
-            console.log(self.upperAnnotation);
-            self.upperAnnotation.takeActions(sourceElement, actionFunction)
+            let newAnnotation = annotationObject.upperCell.createAnnotation()
 
+            let parentNode = annotationObject.annotationHtmlObject.parentNode
+            parentNode.insertBefore(newAnnotation, annotationObject.annotationHtmlObject)
+            parentNode.insertBefore(annotationObject.annotationHtmlObject, newAnnotation)
         })
         insertBelow.innerHTML = "insertBelow"
         this.insertBelow = insertBelow
