@@ -129,43 +129,6 @@ class Cell{
     }
 
     // insertBelow, insertAbove, copy, save and load
-    insertCell(position){
-        let self = this
-        let actionFunction = function(ele){
-            // ele is the html
-            console.log(ele);
-
-            let upperTab = ele.soul.upperTab
-            let newCell = upperTab.createNewCell()
-            newCell.cellHtmlObject.parentNode.insertBefore(newCell.cellHtmlObject, ele)
-            if (position == "below"){
-                newCell.cellHtmlObject.parentNode.insertBefore(ele, newCell.cellHtmlObject)
-            }
-
-            newCell.controlPanel.addAnnotationButton.click()
-
-            if (position == "below"){
-                newCell.nextCell = ele.soul.nextCell
-                newCell.previousCell = ele.soul
-                if (ele.soul.nextCell){
-                    ele.soul.nextCell.previousCell = newCell
-                }
-
-                ele.soul.nextCell = newCell
-            } else {
-                newCell.nextCell = ele.soul
-                newCell.previousCell = ele.soul.previousCell
-
-                if (ele.soul.previousCell){
-                    ele.soul.previousCell.nextCell = newCell
-                }
-
-                ele.soul.prevousCell = newCell
-            }
-        }
-
-        self.upperTab.takeAction(self.cellHtmlObject,actionFunction)
-    }
 
     selectAnnotationMode(){
         this.annotationArray.forEach(a=>{
@@ -322,7 +285,6 @@ class CellControlPanel{
 
         button.addEventListener("click", function(e){
           eventFunction()
-
           console.log(`________${e.target.soul.upperCell.cellID}_______`);
 
           if (e.detail){
@@ -373,6 +335,35 @@ class CellControlPanel{
             self.cellHtmlObject.setAttribute("sectionLevel", newValue)
         })
 
+        let insertAboveButton = this.createButton("insertAboveButton", function(){
+            let originalCell = insertAboveButton.soul.upperCell
+
+            let newCell = insertAboveButton.soul.upperCell.upperTab.createNewCell()
+            newCell.cellHtmlObject.querySelector(".addAnnotationButton").click()
+            originalCell.cellHtmlObject.parentNode.insertBefore(newCell.cellHtmlObject, originalCell.cellHtmlObject)
+
+        })
+        insertAboveButton.innerHTML = "insert above"
+        this.insertAboveButton = insertAboveButton
+
+        let insertBelowButton = this.createButton("insertBelowButton", function(){
+          let originalCell = insertBelowButton.soul.upperCell
+
+          let newCell = insertBelowButton.soul.upperCell.upperTab.createNewCell()
+          newCell.cellHtmlObject.querySelector(".addAnnotationButton").click()
+
+          originalCell.cellHtmlObject.parentNode.insertBefore(newCell.cellHtmlObject, originalCell.cellHtmlObject)
+          originalCell.cellHtmlObject.parentNode.insertBefore(originalCell.cellHtmlObject, newCell.cellHtmlObject)
+        })
+        insertBelowButton.innerHTML = "insert below"
+        this.insertBelowButton = insertBelowButton
+
+        let deleteButton = this.createButton("deleteButton", function(){
+            let originalCell = deleteButton.soul.upperCell.cellHtmlObject
+            originalCell.remove()
+        })
+        deleteButton.innerHTML = "deleteButton"
+        this.deleteButton = deleteButton
 
         let sectionTitleButton = this.createButton("sectionTitleButton", function(){
             let targetCell = event.target.parentNode.parentNode
@@ -409,7 +400,25 @@ class CellControlPanel{
         sectionTitleButton.innerHTML = "section"
         this.sectionTitleButton = sectionTitleButton
 
-        this.cellControlPanel.append(this.pinButton, this.addAnnotationButton, this.sectionTitleButton, this.sectionInput)
+
+        let increaseTitleLevelButton = this.createButton("increaseTitleLevelButton", function(){
+          console.log(sectionInput);
+          sectionInput.value = parseInt(sectionInput.value) + 1
+
+        })
+        increaseTitleLevelButton.innerHTML = "increase level"
+        this.increaseTitleLevelButton = increaseTitleLevelButton
+
+        let decreaseTitleLevelButton = this.createButton("decreaseTitleLevelButton", function(){
+          console.log(sectionInput);
+          sectionInput.value = parseInt(sectionInput.value) - 1
+
+        })
+        decreaseTitleLevelButton.innerHTML = "decrease level"
+        this.decreaseTitleLevelButton = decreaseTitleLevelButton
+
+
+        this.cellControlPanel.append(this.pinButton, this.addAnnotationButton, this.sectionTitleButton, this.insertAboveButton, this.insertBelowButton, this.increaseTitleLevelButton, this.decreaseTitleLevelButton, this.deleteButton, this.sectionInput)
         // console.log(this.cellControlPanel)
     }// create
 

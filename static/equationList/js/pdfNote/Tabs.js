@@ -160,6 +160,7 @@ class Tab{
 
 
     updateFromSocketMessage(data){
+      console.log(data);
       let _content = data["message"]["content"]
       let _sender = data["message"]["sender"]
       let _cellID = data["message"]["cellID"]
@@ -214,6 +215,7 @@ class Tab{
 
               // targetCell
               target = this.tabWindowHtmlObject.querySelector(`.${targetClassName}`)
+
 
               buttonAction = new Event('click', {
                 "detail": {

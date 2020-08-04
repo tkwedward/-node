@@ -53,19 +53,26 @@ class EventSelfDefined{
             }
 
             // new Cell Above, 65 = a
-            if (event.keyCode==65 && event.ctrlKey){
-                let selectedCell = document.querySelector(".selectedCell")
-
-                selectedCell.soul.insertCell("above")
-            }
+            // if (event.keyCode==65 && event.ctrlKey){
+            //     let selectedCell = document.querySelector(".selectedCell")
+            //     console.log(selectedCell);
+            //     let targetButton = selectedCell.querySelector(".insertAboveButton")
+            //     console.log(targetButton);
+            //
+            //
+            //     let clickEvent = new Event("click")
+            //     targetButton.dispatchEvent(clickEvent)
+            // }
 
             // new Cell below, 66 = b
-            if (event.keyCode==66 && event.ctrlKey){
-                let selectedCell = document.querySelector(".selectedCell")
-
-                selectedCell.soul.insertCell("below")
-
-            }// new Cell Below
+            // if (event.keyCode==66 && event.ctrlKey){
+            //     let selectedCell = document.querySelector(".selectedCell")
+            //     let targetButton = selectedCell.querySelector(".insertBelowButton")
+            //     console.log(targetButton);
+            //     targetButton.click()
+            //
+            // }
+            // new Cell Below
 
             // copy current Cell, 67 = c, 88 = x
             if ((event.keyCode==67 || event.keyCode==88) && event.ctrlKey ){
@@ -223,26 +230,12 @@ class EventSelfDefined{
 
 
             // deleteCell, 68 = d
-            if (event.keyCode==68 && event.ctrlKey){// to delete the cell
-
-                let selectedCell = document.querySelector(".selectedCell")
-
-                let nextCell = selectedCell.soul.nextCell
-                let previousCell = selectedCell.soul.previousCell
-
-                if (nextCell){
-                    nextCell.cellHtmlObject.classList.add("selectedCell")
-                } else {
-                    previousCell.cellHtmlObject.classList.add("selectedCell")
-                }
-
-                let actionFunction = function(ele){
-                    ele.remove()
-                    delete ele.soul
-                }
-
-                windowManager.symmetryAction(selectedCell, actionFunction)
-            }// insert after the cell
+            // if (event.keyCode==68 && event.ctrlKey){// to delete the cell
+            //
+            //     let selectedCell = document.querySelector(".selectedCell")
+            //     let deleteButton = selectedCell.querySelector(".deleteButton")
+            //     deleteButton.click()
+            // }// insert after the cell
 
 
             // savebookmark position
