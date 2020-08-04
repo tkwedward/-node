@@ -1,13 +1,14 @@
 class Tab{
-    constructor(tabID, position, name, cellType){
+    constructor(tabID, position, name, cellType, tabType){
         this.cellArray = []
         this.tabID = tabID
         this.position = position
         this.focusedCell = null
+        this.tabType = tabType
+        this.name = name
         this.tabWindowHtmlObject = this.create()
         this.Toolbox = null
         this.maxCellID = 0
-        this.name = name
         this.cellHead = null
         this.cellTail = null
         this.cellType = cellType
@@ -16,8 +17,17 @@ class Tab{
 
     create(){
         let slaveWindow = document.createElement("div");
+        console.log(roomName);
+        slaveWindow.classList.add("tabWindow", this.position, `tab_${this.tabID}`, this.tabType)
 
-        slaveWindow.classList.add("tabWindow", this.position, `tab_${this.tabID}`)
+        slaveWindow.identifier = {
+          "position": this.position,
+          "tabType": this.tabType,
+          "roomName": roomName,
+          "CHAT_USER_ID": CHAT_USER_ID,
+        }
+
+        console.log(slaveWindow.classList);
 
         return slaveWindow
     }
@@ -156,7 +166,7 @@ class Tab{
 
 class NoteTab extends Tab{
     constructor(tabID, position, name, cellType){
-        super(tabID, position, name, cellType)
+        super(tabID, position, name, cellType, "noteTab")
         this.tabWindowHtmlObject.classList.add("noteContainer")
         let titleField = document.createElement("h1")
         titleField.contentEditable = true
@@ -230,7 +240,7 @@ class NoteTab extends Tab{
 
 class SectionTab extends Tab{
     constructor(tabID, position, name, cellType, relatedTab){
-        super(tabID, position, name, cellType)
+        super(tabID, position, name, cellType, "sectionTab")
         this.tabWindowHtmlObject.classList.add("sectionContainer")
         this.wrapperHtmlObject = this.createSectionWrapper()
         this.relatedTab = relatedTab
@@ -306,7 +316,8 @@ class SectionTab extends Tab{
 
 class ReferenceTab extends Tab{
     constructor(tabID, position, name, cellType){
-        super(tabID, position, name, cellType)
+        super(tabID, position, name, cellType, "referenceTab")
+
         this.tabWindowHtmlObject.classList.add("referenceTabContainer")
         this.wrapperHtmlObject = this.createReferenceTabWrapper()
         this.searchInput = null
@@ -358,6 +369,7 @@ class ReferenceTab extends Tab{
 
 class TabBookmarkManager{
   constructor(tab){
+    this.tabType = "bookmarkManager"
     this.motherTab = tab
     this.color = ["red", "orange", "yellow", "purple"]
     this.bookmarkDict = {

@@ -2,7 +2,6 @@ class WindowManager {
     constructor(){
         this.pageWrapper = document.querySelector("#pageWrapper")
 
-
         this.tabBar = {
             "left": this.createTabBar("left"),
             "right":this.createTabBar("right")

@@ -414,7 +414,7 @@ class CellControlPanel{
 class NoteTabCell extends Cell{
     constructor(upperTab, data, annotationID, pinned, tabAnnotationType=NoteTabAnnotation){
         super(upperTab, data, annotationID=0, pinned=false, tabAnnotationType)
-        this.monitor()
+        // this.monitor()
     }
 
     monitor(){
@@ -425,6 +425,10 @@ class NoteTabCell extends Cell{
             console.log(mutations);
 
             if (mutations[0].type=="characterData"){
+
+                let socketMessage = {
+
+                }
 
                 if (sourceElement.parentElement.parentElement.classList.contains("latexMotherCell")){
                     sourceElement = sourceElement.parentElement.parentElement

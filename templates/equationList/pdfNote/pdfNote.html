@@ -47,6 +47,9 @@
             \(\require{physics}\)
             \(\usepackage{gensymb}\)
         </div>
+        {{ room_name|json_script:"room-name" }}
+
+
 
         <div class="navBar">
             <div class="functionButton">
@@ -75,14 +78,17 @@
         </div> <!-- navBar -->
 
         <div id="pageWrapper"></div>
-
     </body>
+
+
+
     <script type="text/javascript">
         let csrf_token = "{{ csrf_token }}"
         let url = "{% url 'processData' %}"
         let load = "{{load}}"
         let docTitle = "{{title}}"
         let docChapter = "{{chapter}}"
+        let CHAT_USER_ID = null
         let LOADACTION = "load state"
 
     </script>
@@ -102,24 +108,8 @@
         };
     </script>
 
-    <!--
-    <script src="{% static 'equationList/js/pdfNote/globalVariables.js' %}" charset="utf-8"></script>
+    <script src="{% static 'equationList/js/pdfNote/socketAction.js' %}" charset="utf-8"></script>
 
-    <script src="{% static 'equationList/js/pdfNote/pasteEvent.js' %}" charset="utf-8"></script>
-    <script src="{% static 'equationList/js/pdfNote/cellNew.js' %}" charset="utf-8"></script>
-    <script src="{% static 'equationList/js/pdfNote/resize.js' %}" charset="utf-8"></script> -->
-    <!-- <script src="{% static 'equationList/js/pdfNote/cell.js' %}" charset="utf-8"></script> -->
-    <!-- <script src="{% static 'equationList/js/pdfNote/cellsControl.js' %}" charset="utf-8"></script>
-    <script src="{% static 'equationList/js/pdfNote/keyboardEvent.js' %}" charset="utf-8"></script>
-    <script src="{% static 'equationList/js/pdfNote/newSaveAndLoad.js' %}" charset="utf-8"></script>
-    <script src="{% static 'equationList/js/pdfNote/noteCard.js' %}" charset="utf-8"></script> -->
-
-
-
-    <!-- <script src="{ static 'equationList/js/pdfNote/GRE.js' %}" charset="utf-8"></script> -->
-    <!-- <script src="{ static 'equationList/js/pdfNote/pdf.js' %}" charset="utf-8"></script> -->
-
-    <!-- <script src="{% static 'equationList/js/pdfNote/controlPDF.js' }" charset="utf-8"></script> -->
     <script src="{% static 'equationList/js/pdfNote/EventChain.js' %}" charset="utf-8"></script>
 
     <script src="{% static 'equationList/js/pdfNote/Event.js' %}" charset="utf-8"></script>

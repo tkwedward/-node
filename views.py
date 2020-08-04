@@ -54,7 +54,10 @@ def pdfNote(request, title="Neamen", chapter="6", load=True):
         # book = jsonFile.get("book") or "default"
         book = jsonFile.get("book") or "default"
         print("*"*10)
-    return render(request, 'equationList/pdfNote/pdfNote.html', {"pageData": pageData, "load": load, "title": title, "chapter": chapter, "book":book})
+
+
+
+    return render(request, 'equationList/pdfNote/pdfNote.html', {"pageData": pageData, "load": load, "title": title, "chapter": chapter, "book":book, 'room_name': title})
 
 
 def recordPage(request):
