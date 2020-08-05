@@ -47,6 +47,30 @@ class Cell{
         this.addCellEvents()
     }
 
+    searchCell(text){
+      let resultsFromAnnotations = this.annotationArray.map(annotation=>{
+        return annotation.searchAnnotation(text)
+      })
+      // if true, then no results from the annotation, make the cell disappear
+      let resultFromCell = resultsFromAnnotations.every(p=>p==-1)
+      console.log(resultsFromAnnotations);
+
+      if (resultFromCell){
+        this.cellHtmlObject.style.display = "none"
+      } else {
+        this.cellHtmlObject.style.display = "block"
+      }
+    }
+
+    endSearchMode(){
+      this.cellHtmlObject.style.display = "block"
+
+      this.annotationArrray.forEach(p=>{
+        p.annotationHtmlObject.style.display = "block"
+      })
+
+    }
+
     initiate(){
         let firstAnnotation = createAnnotation(this.cellID, this.maxAnnotationID)
         this.cellHtmlObject.append(firstAnnotation)
@@ -464,44 +488,6 @@ class NoteTabCell extends Cell{
     constructor(upperTab, data, annotationID, pinned, tabAnnotationType=NoteTabAnnotation){
         super(upperTab, data, annotationID=0, pinned=false, tabAnnotationType)
         // this.monitor()
-    }
-
-    monitor(){
-        let self = this
-        let observer = new MutationObserver(function(mutations){
-            let notTriggerList = ["latexChildCell"]
-            let sourceElement = mutations[0].target
-            console.log(mutations);
-
-            if (mutations[0].type=="characterData"){
-
-                let socketMessage = {
-
-                }
-
-                if (sourceElement.parentElement.parentElement.classList.contains("latexMotherCell")){
-                    sourceElement = sourceElement.parentElement.parentElement
-                } else if (sourceElement.parentElement.classList.contains("latexMotherCell")) {
-                  sourceElement = sourceElement.parentElement
-                }
-                else {
-                    console.log(sourceElement);
-                    sourceElement = sourceElement.parentElement.parentElement
-                }
-
-                let actionFunction = function(ele){
-                    ele.innerHTML = sourceElement.innerHTML
-                }
-
-                console.log(sourceElement);
-                windowManager.symmetryAction(sourceElement, actionFunction, this.parentTab, false)
-            }// mutations[0]=="characterData"
-
-
-
-        })
-
-        observer.observe(this.cellHtmlObject, {"characterData":true, "subtree": true, "childList": true})
     }
 
 }

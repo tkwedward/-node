@@ -13,6 +13,38 @@ class Tab{
         this.cellTail = null
         this.cellType = cellType
         this.bookmarkInterface = this.createBookmarkInterface()
+        this.tabSearchWrapperHtmlObject = this.createSearchForm()
+    }
+
+    createSearchForm(){
+      let tabSearchWrapper = document.createElement("div")
+
+
+      tabSearchWrapper.classList.add("tabSearchWrapper", "tabSearchWrapper_" + this.tabID)
+      tabSearchWrapper.setAttribute("position", this.position)
+
+      this.tabWindowHtmlObject.append(tabSearchWrapper)
+
+
+      let tabSearchInput = document.createElement("input")
+      tabSearchInput.classList.add("searchForm", "searchForm_" + this.tabID)
+
+
+
+      tabSearchInput.addEventListener("input", function(e){
+        console.log("I am searching...");
+        console.log(e.target.value);
+        let tab = document.querySelector(".tab_1.noteTab")
+        console.log(tab);
+        let cellArray = tab.soul.cellArray
+        cellArray.forEach(cell=>{
+          cell.searchCell(e.target.value)
+        })
+      })
+
+      tabSearchWrapper.append(tabSearchInput)
+
+      return tabSearchWrapper
     }
 
     create(){
@@ -230,6 +262,11 @@ class Tab{
       } // if same room, then do this
 
     } // updateFromSocketMessage
+
+    searchTabFunction(){
+
+    }
+
 
     updateFromSocketHelperFunction(_tabPostion, _chatID, target, property, content, buttonAction){
             let differentPosition = this.position != _tabPostion

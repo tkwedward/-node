@@ -218,6 +218,7 @@ def processAjaxRequest(request):
     if request.method=="POST":
         jsonData = request.body
         dictResponse = json.loads(jsonData)
+
         chapter = dictResponse.get("chapter") or None
         bookTitle = dictResponse.get("title") or None
         todo = dictResponse["todo"]
@@ -266,9 +267,13 @@ def processAjaxRequest(request):
 
         if todo == "save image":
             #### to save pdf image
+            print("*"*100)
+            print(dictResponse["fileName"], bookTitle, chapter)
+            print("*"*100)
+
             # folderName = chapter
-            fileName = dictResponse["fileName"]
-            imagePath = convertDataURLToLink(dictResponse["data"], bookTitle, chapter,fileName)
+
+            imagePath = convertDataURLToLink(dictResponse["data"], bookTitle, chapter,dictResponse["fileName"])
             imageData = {"src": imagePath}
             return JsonResponse(imageData)
 
@@ -336,8 +341,14 @@ def processAjaxRequest(request):
 
 
 def convertDataURLToLink(img_dataURL, bookTitle, chapter, fileName, folderName=None):
-
+    print("*"*100)
+    print(bookTitle, chapter, fileName)
+    print("*"*100)
     book_path = os.path.join(base_path, bookTitle)
+
+    import hashlib
+
+    hash_fileName = hashlib.md5(bytes(img_dataURL, 'utf-8'))
 
     if not os.path.exists(book_path):
         os.mkdir(book_path)
@@ -347,7 +358,7 @@ def convertDataURLToLink(img_dataURL, bookTitle, chapter, fileName, folderName=N
     if img_dataURL.startswith("data:image"):
         img = img_dataURL.split(",")[1]
         img = Image.open(BytesIO(base64.b64decode(img))).convert("RGB")
-        savePath = os.path.join(chapter_path, fileName+".jpg")
+        savePath = os.path.join(chapter_path, hash_fileName.hexdigest()+".jpg")
 
         # if folderName:
         #     print(fileName)

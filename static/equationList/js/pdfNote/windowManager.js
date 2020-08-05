@@ -429,16 +429,37 @@ class WindowManager {
         return cellChain
     }
 
+    sentImageSaveRequest(imageObject){
+        if (imageObject.src.startsWith("data:image/png")){
+          let createdDate = new Date().toLocaleString().split("/").join("-") + " "
+
+          let title = document.querySelector(".titleField").innerText
+          let chapter = document.querySelector(".chapterField").innerText
+
+          let fileName = imageObject.src.split(",")[1].substring(0, 20)
+          let imageSrc = imageObject.src
+
+          let imageSaveData = {
+            "fileName": fileName,
+            "data": imageSrc,
+            "chapter": chapter,
+            "title": title,
+          }
+
+          this.ajaxSendJson(url, imageSaveData, "save image", "success to save image", async function(data){
+              imageObject.src = await JSON.parse(data)["src"]
+              // console.log(imageObject);
+          })
+        }// if start with image/png
+    }
+
     ajaxSendJson(url, data, todo, msg, callback){
-        console.log(data);
         var xhr = new XMLHttpRequest();
         data["todo"] = todo
         xhr.open("POST", url, true);
         xhr.setRequestHeader("X-CSRFToken", csrf_token);
         xhr.onreadystatechange =  async function() { // Call a function when the state changes.
             if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                console.log("..........*******");
-                console.log(msg);
                 // console.log(xhr.response);
                 let result = await xhr.response
 

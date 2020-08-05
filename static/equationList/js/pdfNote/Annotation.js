@@ -55,9 +55,16 @@ class Annotation{
 
     annotationKeypressEvent(annotation){
       let self = this
-      annotation.addEventListener("keydown", function(e){
+      annotation.addEventListener("keydown", async function(e){
           console.log(e);
+
+
           if (e.target.soul){
+             let allImage = Array.from(e.target.querySelectorAll("img"))
+             await Promise.all(allImage.map(async (p) => {
+               windowManager.sentImageSaveRequest(p)
+             }))
+
             setTimeout(function(){
               let message_data = {
                 'message': {
@@ -282,6 +289,17 @@ class Annotation{
         return saveObject
     }
 
+    searchAnnotation(text){
+        let searchResult = this.mother.innerHTML.indexOf(text)
+        console.log(searchResult);
+        if (searchResult==-1){
+          this.annotationHtmlObject.style.display = "none"
+        } else {
+          this.annotationHtmlObject.style.display = "block"
+        }
+        return searchResult
+    }
+
     update(){
         let mapping = {
             "latexMotherCell": ["innerHTML"],
@@ -298,11 +316,17 @@ class Annotation{
             // each this["property"] equal to an html Object
 
             this.annotationContent.mother.innerHTML = this["latexMotherCellInnerHTML"]
+
+            let allImage = Array.from(this.annotationContent.mother.querySelectorAll("img"))
+            Promise.all(allImage.map(async (p) => {
+              windowManager.sentImageSaveRequest(p)
+            }))
         } else if (this.annotationType == "imageAnnotation"){
             let imageCluster = this.createImageAnnotation()
             let [image, fileNameInput, imageTextButton] = this.createImageAnnotation()
             image.src = this.src
             this.annotationContent.append(image, fileNameInput, imageTextButton)
+            windowManager.sentImageSaveRequest(image)
 
             // hide the latex mother cell
             this.mother.style.display = "none"
@@ -325,6 +349,8 @@ class Annotation{
         } else {
             this.latexMotherCellInnerHTML = loadData["latexMotherCell"]
         }
+
+
 
 
 
